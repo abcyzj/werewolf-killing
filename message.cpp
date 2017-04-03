@@ -5,7 +5,7 @@
 
 using namespace Werewolf;
 
-void Socket :: check_addr(std::string s)
+void Socket :: check_addr(const std::string& s)
 {
 	sockaddr_in tep;
 	::bzero(&tep, sizeof(tep));
@@ -19,7 +19,7 @@ Socket::Socket(int af, int type, int protocol): _af(af), _type(type), _protocol(
   ::bzero(&_addr, sizeof(_addr));
 }
 
-Socket::Socket(int af, int type, int protocol, std::string addr, int port): _af(af), _type(type), _protocol(protocol){
+Socket::Socket(int af, int type, int protocol, const std::string& addr, int port): _af(af), _type(type), _protocol(protocol){
   _socket = ::socket(af, type, protocol);
   ::bzero(&_addr, sizeof(_addr));
   _addr.sin_family = af;
@@ -48,7 +48,7 @@ Socket::~Socket(){
     ::close(_socket);
 }
 
-void Socket::assign_addr(std::string addr, int port){
+void Socket::assign_addr(const std::string& addr, int port){
   _addr.sin_family = _af;
   _addr.sin_addr.s_addr = inet_addr(addr.c_str());
   _addr.sin_port = htons(port);
@@ -86,7 +86,7 @@ Socket Socket :: accept()
   return Socket(_af, _type, _protocol, ::inet_ntoa(new_addr.sin_addr), new_addr.sin_port);
 }
 
-int Socket :: send(std::string msg, double delay)
+int Socket :: send(const std::string& msg, double delay)
 {
   if(delay == 0.0)
     return :: send(_socket, msg.c_str(), msg.length() + 1, 0);
@@ -171,7 +171,7 @@ std::string Socket::recv(double delay){
   }
 }
 
-int Socket::broadcast(std::string msg){
+int Socket::broadcast(const std::string& msg){
   static bool is_first = true;
   if(is_first){//仅在第一次调用时检查
     if(_type != SOCK_DGRAM)
@@ -216,7 +216,7 @@ void Socket::close(){
   _socket = -1;
 }
 
-int Socket :: recv_from(char* buf, int len, std::string addr, int port)
+int Socket :: recv_from(char* buf, int len, const std::string& addr, int port)
 {
   _addr.sin_family = _af;
   _addr.sin_addr.s_addr = ::inet_addr(addr.c_str());
@@ -225,7 +225,7 @@ int Socket :: recv_from(char* buf, int len, std::string addr, int port)
   return ::recvfrom(_socket, buf, len, 0, (sockaddr*)&_addr, &so);
 }
 
-std::string Socket :: recv_from(std::string addr, int port)
+std::string Socket :: recv_from(const std::string& addr, int port)
 {
   _addr.sin_family = _af;
   _addr.sin_addr.s_addr = ::inet_addr(addr.c_str());
@@ -238,7 +238,7 @@ std::string Socket :: recv_from(std::string addr, int port)
   return std::string(buf);
 }
 
-int Socket :: send_to (std::string msg, std::string addr, int port)
+int Socket :: send_to (const std::string& msg, const std::string& addr, int port)
 {
   _addr.sin_family = _af;
   _addr.sin_addr.s_addr = inet_addr(addr.c_str());
