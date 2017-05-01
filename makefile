@@ -6,10 +6,10 @@ else
 CXXFLAGS = -O3 -pthread
 endif
 
-all:br_main
+all:ac_main
 
-br_main:br_main.o broadcast.o message.o
-	$(CXX) $(CXXFLAGS) -o $@ $^
+ac_main:ac_main.o message.o client.o broadcast.o accept.o
+		$(CXX) $(CXXFLAGS) -o $@ $^
 
 clean:
 	rm *.o

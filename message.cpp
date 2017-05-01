@@ -1,6 +1,6 @@
 #include"message.h"
 #include<iostream>
-#include <stdexcept>//报错，抛出runtim_error
+#include <stdexcept>//报错，抛出runtime_error
 #include<cmath>
 
 using namespace Werewolf;
@@ -44,6 +44,8 @@ Socket::Socket(Socket &&s): _af(s._af), _type(s._type), _protocol(s._protocol){
 }
 
 Socket& Socket::operator = (Socket &&s){
+  if(this == &s)
+    return *this;
   _socket = s._socket;
   _af = s._af;
   _type = s._type;
@@ -340,7 +342,7 @@ int Socket :: send_to (const std::string& msg, const std::string& addr, int port
   return ::sendto(_socket, msg.c_str(), msg.length() + 1, 0, (sockaddr*) &_addr, sizeof(_addr));
 }
 
-std::string Socket::get_host_addr() const{
+std::string Socket::get_host_addr(){
   ::ifaddrs *ifsptr = NULL;
   ::getifaddrs(&ifsptr);
 

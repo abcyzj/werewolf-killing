@@ -36,7 +36,7 @@ namespace Werewolf{
     int bind();//将套接字和指定的地址及端口绑定,成功返回1，失败返回-1
     int connect();//将套接字和指定的地址及端口连接,返回值同上
     int listen();//监听，返回值同上
-    Socket accept(double delay) const;//接受连接，返回一个新的Socket类，内部存有客户端的地址信息,有延时功能，未成功accept则返回一个不可用的Socket
+    Socket accept(double delay = 0.0) const;//接受连接，返回一个新的Socket类，内部存有客户端的地址信息,有延时功能，未成功accept则返回一个不可用的Socket
     int send(const std::string &msg, double delay = 0.0) const;//功能和返回值与原send函数相同
     int recv(char* buf, int len, double delay = 0.0) const;//同上
     std::string recv(double delay = 0.0) const;//将获得的信息返回为一个std::string类,不成功时返回空的string,shutdown时返回"__SHUTDOWN"
@@ -47,7 +47,7 @@ namespace Werewolf{
     std::string recv_from(const std::string &addr, int port, double delay = 0.0);
     int send_to(const std::string& msg, const std::string &addr, int port);//功能和返回值同原函数
     void close();
-    std::string get_host_addr() const;//返回第一个不是127.0.0.1的本机ip
+    static std::string get_host_addr();//返回第一个不是127.0.0.1的本机ip
     bool valid() const;//返回当前对象是否可用
     void shutdown(Howto);//同原函数
   };
