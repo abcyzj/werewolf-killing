@@ -264,7 +264,7 @@ int Socket :: recv_from(char* buf, int len, const std::string& addr, int port, d
 {
   _addr.sin_family = _af;
   _addr.sin_addr.s_addr = ::inet_addr(addr.c_str());
-  _addr.sin_port = ::htons(port);
+  _addr.sin_port = htons(port);
   socklen_t so = sizeof(_addr);
 
   if(delay == 0.0)
@@ -294,7 +294,7 @@ std::string Socket :: recv_from(const std::string& addr, int port, double delay)
 {
   _addr.sin_family = _af;
   _addr.sin_addr.s_addr = ::inet_addr(addr.c_str());
-  _addr.sin_port = ::htons(port);
+  _addr.sin_port = htons(port);
   char buf[200];
   socklen_t so = sizeof(_addr);
 
