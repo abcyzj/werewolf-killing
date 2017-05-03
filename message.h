@@ -34,7 +34,7 @@ namespace Werewolf{
     ~Socket();
     void assign_addr(const std::string &addr, int port);//如果构造时没给出，可用这个函数指定地址和端口
     int bind();//将套接字和指定的地址及端口绑定,成功返回1，失败返回-1
-    int connect();//将套接字和指定的地址及端口连接,返回值同上
+    int connect(double delay = 0.0);//将套接字和指定的地址及端口连接,返回值同上,加上延时功能
     int listen();//监听，返回值同上
     Socket accept(double delay = 0.0) const;//接受连接，返回一个新的Socket类，内部存有客户端的地址信息,有延时功能，未成功accept则返回一个不可用的Socket
     int send(const std::string &msg, double delay = 0.0) const;//功能和返回值与原send函数相同

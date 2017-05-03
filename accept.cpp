@@ -18,6 +18,13 @@ Accept::Accept(int port, std::vector<Client> *vec): _sock(AF_INET, SOCK_STREAM, 
   _sock.listen();
 };
 
+Accept::~Accept(){
+  if(_show_th.joinable())
+    end_show();
+  if(_th.joinable())
+    end();
+}
+
 void Accept::set_vector(std::vector<Client> *vec){
   _vec = vec;
 }

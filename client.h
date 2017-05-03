@@ -3,6 +3,7 @@
 
 #include"message.h"
 #include<thread>
+#include<string>
 
 namespace Werewolf{
   class Client{
@@ -18,6 +19,7 @@ namespace Werewolf{
     Client(Socket&&);//给出Socket的构造函数
     void set_sock(Socket&&);//Socket也可不在构造时给出
     bool available();//返回当前Client是否可用
+    void send(const std::string&, double = 0.0);
   };
 }
 

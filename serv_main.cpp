@@ -26,5 +26,8 @@ int main(){
       break;
     }
   }
+  for(auto &i: cl_vec){
+    i.send("Hello.\n");
+  }
   return 0;
 }

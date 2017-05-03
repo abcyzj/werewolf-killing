@@ -45,3 +45,7 @@ void Client::set_sock(Socket &&sock){
 bool Client::available(){
   return _available;
 }
+
+void Client::send(const std::string &msg, double delay){
+  _sock.send(msg, delay);
+}

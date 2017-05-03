@@ -2,6 +2,7 @@
 #include<iostream>
 #include <stdexcept>//报错，抛出runtime_error
 #include<cmath>
+#include<sys/ioctl.h>
 
 using namespace Werewolf;
 
@@ -37,7 +38,7 @@ Socket::Socket(int af, int type, int protocol, const std::string& addr, int port
   _addr.sin_port = htons(port);
 }
 
-Socket::Socket(Socket &&s): _af(s._af), _type(s._type), _protocol(s._protocol){
+Socket::Socket(Socket &&s): _af(s._af), _type(s._type), _protocol(s._protocol), is_bind(s.is_bind){
   _socket = s._socket;
   s._socket = -1;//-1代表该socket无须被析构
   memcpy(&_addr, &s._addr, sizeof(s._addr));
@@ -46,10 +47,12 @@ Socket::Socket(Socket &&s): _af(s._af), _type(s._type), _protocol(s._protocol){
 Socket& Socket::operator = (Socket &&s){
   if(this == &s)
     return *this;
+  close();
   _socket = s._socket;
   _af = s._af;
   _type = s._type;
   _protocol = s._protocol;
+  is_bind = s.is_bind;
   s._socket = -1;
   memcpy(&_addr, &s._addr, sizeof(s._addr));
   return *this;
@@ -76,10 +79,35 @@ int Socket :: bind()
   return res;
 }
 
-int Socket :: connect()
+int Socket :: connect(double delay)
 {
 	check_addr("no address when connect");
-	return ::connect(_socket, (sockaddr*) &_addr, sizeof(_addr));
+  if(delay == 0)
+    return ::connect(_socket, (sockaddr*) &_addr, sizeof(_addr));
+
+  fd_set fds;
+  int sec = std::floor(delay);
+  int usec = (delay - std::floor(delay)) * 1e6;
+  timeval timeout = {sec, usec};
+  FD_ZERO(&fds);
+  FD_SET(_socket, &fds);
+  unsigned long ul = 1;
+  ::ioctl(_socket, FIONBIO, &ul);
+  bool ok = false;
+  if(::connect(_socket, (struct sockaddr*) &_addr, sizeof(_addr)) == -1){
+    if(::select(_socket + 1, NULL, &fds, NULL, &timeout) > 0){
+      int error = -1, len;
+      ::getsockopt(_socket, SOL_SOCKET, SO_ERROR, &error, (socklen_t *) &len);
+      if(error == 0)
+        ok = true;
+    }
+  }
+  ul = 0;
+  ::ioctl(_socket, FIONBIO, &ul);
+  if(ok)
+    return 1;
+  else
+    return -1;
 }
 
 int Socket :: listen()
@@ -88,7 +116,7 @@ int Socket :: listen()
 	return ::listen(_socket, 20);
 }
 
-Socket Socket::accept(double delay = 0.0) const
+Socket Socket::accept(double delay) const
 {
   sockaddr_in new_addr;
   socklen_t len = sizeof(new_addr);

@@ -22,6 +22,7 @@ namespace Werewolf{
     Accept();//默认构造函数
     Accept(int port);//给出端口
     Accept(int port, std::vector<Client>*);//给出一个想让Accept管理的vector的指针
+    ~Accept();
     void set_vector(std::vector<Client>*);//也可以不在构造时给出该指针
     void show(std::chrono::milliseconds);//多一个show线程，指定show的时间间隔
     void end_show();//结束show线程
