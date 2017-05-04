@@ -89,24 +89,48 @@ int Socket :: connect(double delay)
   int sec = std::floor(delay);
   int usec = (delay - std::floor(delay)) * 1e6;
   timeval timeout = {sec, usec};
-  FD_ZERO(&fds);
-  FD_SET(_socket, &fds);
+  // FD_ZERO(&fds);
+  // FD_SET(_socket, &fds);
+  // unsigned long ul = 1;
+  // ::ioctl(_socket, FIONBIO, &ul);
+  // bool ok = false;
+  // if(::connect(_socket, (struct sockaddr*) &_addr, sizeof(_addr)) == -1){
+  //   if(::select(_socket + 1, NULL, &fds, NULL, &timeout) > 0){
+  //     int error = -1, len;
+  //     ::getsockopt(_socket, SOL_SOCKET, SO_ERROR, &error, (socklen_t *) &len);
+  //     if(error == 0)
+  //       ok = true;
+  //   }
+  // }
+  // else
+  //   ok = true;
+  // ul = 0;
+  // ::ioctl(_socket, FIONBIO, &ul);
+  // if(ok)
+  //   return 1;
+  // else
+  //   return -1;
   unsigned long ul = 1;
+  int error = -1, len;
+  len = sizeof(int);
+  ioctl(_socket, FIONBIO, &ul); //设置为非阻塞模式  
+  bool ret = false;  
+  if( ::connect(_socket, (struct sockaddr *)&_addr, sizeof(_addr)) ==   
+      -1)  
+    {  
+      FD_ZERO(&fds);  
+      FD_SET(_socket, &fds);  
+      if(::select(_socket+1, NULL, &fds, NULL, &timeout) > 0)  
+        {  
+          ::getsockopt(_socket, SOL_SOCKET, SO_ERROR, &error, (socklen_t *)&len);  
+          if(error == 0) ret = true;  
+          else ret = false;  
+        } else ret = false;  
+    }  
+  else ret = true;  
+  ul = 0;  
   ::ioctl(_socket, FIONBIO, &ul);
-  bool ok = false;
-  if(::connect(_socket, (struct sockaddr*) &_addr, sizeof(_addr)) == -1){
-    if(::select(_socket + 1, NULL, &fds, NULL, &timeout) > 0){
-      int error = -1, len;
-      ::getsockopt(_socket, SOL_SOCKET, SO_ERROR, &error, (socklen_t *) &len);
-      if(error == 0)
-        ok = true;
-    }
-  }
-  else
-    ok = true;
-  ul = 0;
-  ::ioctl(_socket, FIONBIO, &ul);
-  if(ok)
+  if(ret)
     return 1;
   else
     return -1;

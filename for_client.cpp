@@ -113,53 +113,59 @@ std::string Connect::get_IP(std::string msg){
   return msg.substr(a, b - a + 1);
 }
 
-InputManager::InputManager(Messenger *parent): _parent_messenger(parent), _is_on(false){}
+InputManager::InputManager(Messenger *parent): _parent_messenger(parent){}
 
 InputManager::~InputManager(){
-  end_thread();
+  //end_thread();
 }
 
 void InputManager::do_input(){
-  while(!_input_over){
-    std::string msg;
+  // std::string msg;
+  // std::cin.sync();
+  // std::getline(std::cin, msg);
+  // if(msg == "")
+  //   continue;
+  // else if(_is_on){
+  //   _parent_messenger->send(msg);
+  // }
+  // else{
+  //   std::cout << "You cannot input now!\n";
+  // }
+  std::string msg;
+  while(msg == "")
     std::getline(std::cin, msg);
-    if(_is_on){
-      _parent_messenger->send(msg);
-    }
-    else{
-      std::cout << "You cannot input now!\n";
-    }
-  }
+  _parent_messenger->send(msg);
 }
 
 void InputManager::turn_on(){
-  _is_on = true;
-}
-
-void InputManager::turn_off(){
-  _is_on = false;
-}
-
-void InputManager::start_thread(){
-  _input_over = false;
   _th = std::thread(&InputManager::do_input, this);
-}
-
-void InputManager::end_thread(){
-  if(!_th.joinable())
-    return;
-
-  _input_over = true;
   _th.join();
-  _input_over = false;
 }
+
+// void InputManager::turn_off(){
+//   _is_on = false;
+// }
+
+// void InputManager::start_thread(){
+//   _input_over = false;
+//   _th = std::thread(&InputManager::do_input, this);
+// }
+
+// void InputManager::end_thread(){
+//   if(!_th.joinable())
+//     return;
+
+//   _input_over = true;
+//   _th.join();
+//   _input_over = false;
+// }
 
 ClientExecutor::ClientExecutor(Messenger *parent): _parent_messenger(parent), inputmanager(parent){
-  inputmanager.start_thread();
+  //inputmanager.start_thread();
 }
 
 ClientExecutor::~ClientExecutor(){
-  inputmanager.end_thread();
+  //inputmanager.end_thread();
 }
 
 void ClientExecutor::add_order(std::string info){
@@ -173,20 +179,20 @@ void ClientExecutor::add_order(std::string info){
 
 void ClientExecutor::execute(std::string order){
   if(order.compare(0, 6, "PRINT:") == 0){
-    std::cout << order.substr(6);
+    std::cout << order.substr(6) << std::endl;
   }
 
   else if(order.compare(0, 7, "TURN_ON") == 0){
     inputmanager.turn_on();
   }
 
-  else if(order.compare(0, 8, "TURN_OFF") == 0){
-    inputmanager.turn_off();
-  }
+  // else if(order.compare(0, 8, "TURN_OFF") == 0){
+  //   inputmanager.turn_off();
+  //}
 
   else if(order.compare(0, 9, "SHUT_DOWN") == 0){
-    std::cout << "Goodbye!\n";
-    inputmanager.end_thread();
+    std::cout << "Goodbye!" << std::endl;
+    //inputmanager.end_thread();
     _parent_messenger->end_thread();
   }
 }
@@ -214,16 +220,16 @@ void Messenger::do_commu(){
 
 void Messenger::start_thread(){
   _thread_over = false;
-  _th = std::thread(&Messenger::do_commu, this);
+  //_th = std::thread(&Messenger::do_commu, this);
+  do_commu();
 }
 
 void Messenger::end_thread(){
-  if(!_th.joinable())
-    return;
+  //if(!_th.joinable())
+  //return;
 
   _thread_over = true;
-  _th.join();
-  _thread_over = true;
+  //_th.join();
 }
 
 void Messenger::send(std::string msg){

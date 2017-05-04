@@ -30,7 +30,7 @@ int main(){
     }
   }
 
-  std::cout << "Input o to turn on input, f to turn off input, p to print, and q to quit.\n";
+  std::cout << "Input o to turn on input, p to print, and q to quit.\n";
 
   std::string msg;
   while(std::cin >> op){
@@ -39,13 +39,11 @@ int main(){
       for(auto &i: cl_vec)
         i.turn_on_input();
       break;
-    case 'f':
-      for(auto &i: cl_vec)
-        i.turn_off_input();
-      break;
     case 'p':
       std::cout << "Input the message you want to print.\n";
-      std::getline(std::cin, msg);
+      msg.clear();
+      while(msg == "")
+        std::getline(std::cin, msg);
       for(auto &i: cl_vec)
         i.print(msg);
       break;

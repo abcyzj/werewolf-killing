@@ -105,9 +105,9 @@ void Client::turn_on_input(){
   _sock.send("TURN_ON;");
 }
 
-void Client::turn_off_input(){
-  _sock.send("TURN_OFF;");
-}
+// void Client::turn_off_input(){
+//   _sock.send("TURN_OFF;");
+// }
 
 void Client::shut_down(){
   _sock.send("SHUT_DOWN;");

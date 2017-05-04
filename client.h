@@ -39,7 +39,7 @@ namespace Werewolf{
     //void send(const std::string&, double = 0.0);
     void print(std::string);//命令客户端打印信息
     void turn_on_input();//命令客户端打开输入读取
-    void turn_off_input();//命令客户端关闭输入读取
+    //void turn_off_input();//命令客户端关闭输入读取
     void shut_down();//命令客户端断开连接
   };
 }
