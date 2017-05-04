@@ -132,6 +132,7 @@ void InputManager::do_input(){
   //   std::cout << "You cannot input now!\n";
   // }
   std::string msg;
+  std::cin.ignore(1024, '\n');
   while(msg == "")
     std::getline(std::cin, msg);
   _parent_messenger->send(msg);
@@ -210,6 +211,8 @@ void Messenger::do_commu(){
       _info.clear();
       _info_mtx.unlock();
     }
+    else
+      _info_mtx.unlock();
 
     std::string order = _sock.recv(0.02);//尝试接受
     if(order != ""){

@@ -33,19 +33,23 @@ int main(){
   std::cout << "Input o to turn on input, p to print, and q to quit.\n";
 
   std::string msg;
+  int cnt = 0;
   while(std::cin >> op){
     switch(op){
     case 'o':
-      for(auto &i: cl_vec)
+      for(auto &i: cl_vec){
         i.turn_on_input();
+        std::cout << i.recv() << std::endl;
+      }
       break;
     case 'p':
       std::cout << "Input the message you want to print.\n";
       msg.clear();
-      while(msg == "")
-        std::getline(std::cin, msg);
-      for(auto &i: cl_vec)
-        i.print(msg);
+      std::cin.clear();
+      std::cin.ignore(1024, '\n');
+      std::getline(std::cin, msg);
+      for(std::vector<Werewolf::Client>::iterator i = cl_vec.begin(); i != cl_vec.end(); i++)
+        i->print(msg), std::cout << cnt++ << std::endl;
       break;
     case 'q':
       for(auto &i: cl_vec)

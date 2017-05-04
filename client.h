@@ -14,13 +14,13 @@ namespace Werewolf{
     bool _available;//指示当前Client是否可用
     std::string _nickname = "UNKOWN";//客户端的昵称
     Socket _sock;//和该客户端通信的Socket
-    std::thread _th;//和该客户端通信的进程
+    //std::thread _th;//监听线程
     std::mutex mtx;//该Client类的互斥量
     //bool _commu_over;//线程结束标记
     //void do_commu();//通信线程函数
     //std::string _order;//希望发送的命令
     std::mutex _order_mtx;//_order的互斥量
-    //character* _charac;//该客户端对应的角色类
+    //Character* _charac;//该客户端对应的角色类
   public:
     Client();//默认构造函数
     Client(Client&) = delete;//不允许拷贝构造
@@ -41,6 +41,8 @@ namespace Werewolf{
     void turn_on_input();//命令客户端打开输入读取
     //void turn_off_input();//命令客户端关闭输入读取
     void shut_down();//命令客户端断开连接
+    std::string recv(double delay = 0);//从客户端接受信息
+    //void set_charac(Character*);//绑定角色类
   };
 }
 

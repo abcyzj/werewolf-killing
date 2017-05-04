@@ -112,3 +112,7 @@ void Client::turn_on_input(){
 void Client::shut_down(){
   _sock.send("SHUT_DOWN;");
 }
+
+std::string Client::recv(double delay){
+  return _sock.recv(delay);
+}
