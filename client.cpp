@@ -42,10 +42,73 @@ void Client::set_sock(Socket &&sock){
     _available = true;
 }
 
+Client::~Client(){
+  //end_thread();
+}
+
 bool Client::available(){
   return _available;
 }
 
-void Client::send(const std::string &msg, double delay){
-  _sock.send(msg, delay);
+// void Client::send(const std::string &msg, double delay){
+//   _sock.send(msg, delay);
+// }
+
+// void Client::lock(){
+//   mtx.lock();
+// }
+
+// bool Client::try_lock(){
+//   return mtx.try_lock();
+// }
+
+// void Client::unlock(){
+//   mtx.unlock();
+// }
+
+// void Client::start_thread(){
+//   _commu_over = false;
+//   _th = std::thread(&Client::do_commu, this);
+// }
+
+// void Client::end_thread(){
+//   if(!_th.joinable())
+//     return;
+
+//   _commu_over = true;
+//   _th.join();
+//   _commu_over = false;
+// }
+
+// void Client::do_commu(){
+//   while(!_commu_over){
+//     if(_order_mtx.try_lock()){//检查是否有需要发送的命令
+//       if(_order != ""){
+//         _sock.send(_order);
+//         _order.clear();//发送后清空命令
+//       }
+//       _order_mtx.unlock();
+//     }
+
+//     std::string msg = _sock.recv(0.02);//接受客户端的消息
+//     if(msg != ""){
+//       _charac->add_order(msg);//在角色类的命令队列中加入收到的消息（防止粘包）
+//     }
+//   }
+// }
+
+void Client::print(std::string msg){
+  _sock.send("PRINT:" + msg +";");
+}
+
+void Client::turn_on_input(){
+  _sock.send("TURN_ON;");
+}
+
+void Client::turn_off_input(){
+  _sock.send("TURN_OFF;");
+}
+
+void Client::shut_down(){
+  _sock.send("SHUT_DOWN;");
 }

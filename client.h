@@ -4,12 +4,23 @@
 #include"message.h"
 #include<thread>
 #include<string>
+#include<mutex>
+//#include"character.h"
+#include<queue>
 
 namespace Werewolf{
-  class Client{
+  class Client{//使用之前应lock，之后unlock
   private:
     bool _available;//指示当前Client是否可用
+    std::string _nickname = "UNKOWN";//客户端的昵称
     Socket _sock;//和该客户端通信的Socket
+    std::thread _th;//和该客户端通信的进程
+    std::mutex mtx;//该Client类的互斥量
+    //bool _commu_over;//线程结束标记
+    //void do_commu();//通信线程函数
+    //std::string _order;//希望发送的命令
+    std::mutex _order_mtx;//_order的互斥量
+    //character* _charac;//该客户端对应的角色类
   public:
     Client();//默认构造函数
     Client(Client&) = delete;//不允许拷贝构造
@@ -17,9 +28,19 @@ namespace Werewolf{
     Client(Client&&);//移动构造函数
     Client& operator = (Client&&);//移动赋值
     Client(Socket&&);//给出Socket的构造函数
+    ~Client();
     void set_sock(Socket&&);//Socket也可不在构造时给出
     bool available();//返回当前Client是否可用
-    void send(const std::string&, double = 0.0);
+    //void lock();//获取使用权限
+    //bool try_lock();//非阻塞的lock，成功返回true
+    //void unlock();//解锁
+    //void start_thread();//开始通信进程
+    //void end_thread();//关闭通信进程(放在private里是否更好？)
+    //void send(const std::string&, double = 0.0);
+    void print(std::string);//命令客户端打印信息
+    void turn_on_input();//命令客户端打开输入读取
+    void turn_off_input();//命令客户端关闭输入读取
+    void shut_down();//命令客户端断开连接
   };
 }
 

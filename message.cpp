@@ -102,6 +102,8 @@ int Socket :: connect(double delay)
         ok = true;
     }
   }
+  else
+    ok = true;
   ul = 0;
   ::ioctl(_socket, FIONBIO, &ul);
   if(ok)

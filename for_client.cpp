@@ -89,7 +89,7 @@ Socket Connect::connect(int k){
 
   Socket newsock(AF_INET, SOCK_STREAM, 0, get_IP(_info[k]), _por);
   int res = newsock.connect(5);
-  if(res > 0)
+  if(res >= 0)
     return std::move(newsock);
   else
     return Socket();
@@ -108,5 +108,126 @@ Socket Connect::connect_via_IP(const std::string &IP){
 std::string Connect::get_IP(std::string msg){
   int a = msg.find("IP:");
   int b = msg.find(';', a);
-  return std::string(a, b - a + 1);
+  a += 3;
+  b -= 1;
+  return msg.substr(a, b - a + 1);
+}
+
+InputManager::InputManager(Messenger *parent): _parent_messenger(parent), _is_on(false){}
+
+InputManager::~InputManager(){
+  end_thread();
+}
+
+void InputManager::do_input(){
+  while(!_input_over){
+    std::string msg;
+    std::getline(std::cin, msg);
+    if(_is_on){
+      _parent_messenger->send(msg);
+    }
+    else{
+      std::cout << "You cannot input now!\n";
+    }
+  }
+}
+
+void InputManager::turn_on(){
+  _is_on = true;
+}
+
+void InputManager::turn_off(){
+  _is_on = false;
+}
+
+void InputManager::start_thread(){
+  _input_over = false;
+  _th = std::thread(&InputManager::do_input, this);
+}
+
+void InputManager::end_thread(){
+  if(!_th.joinable())
+    return;
+
+  _input_over = true;
+  _th.join();
+  _input_over = false;
+}
+
+ClientExecutor::ClientExecutor(Messenger *parent): _parent_messenger(parent), inputmanager(parent){
+  inputmanager.start_thread();
+}
+
+ClientExecutor::~ClientExecutor(){
+  inputmanager.end_thread();
+}
+
+void ClientExecutor::add_order(std::string info){
+  _order += info;
+  unsigned long a = info.find(';');
+  if(a != std::string::npos){
+    execute(_order.substr(0, a));
+    _order.erase(0, a + 1);
+  }
+}
+
+void ClientExecutor::execute(std::string order){
+  if(order.compare(0, 6, "PRINT:") == 0){
+    std::cout << order.substr(6);
+  }
+
+  else if(order.compare(0, 7, "TURN_ON") == 0){
+    inputmanager.turn_on();
+  }
+
+  else if(order.compare(0, 8, "TURN_OFF") == 0){
+    inputmanager.turn_off();
+  }
+
+  else if(order.compare(0, 9, "SHUT_DOWN") == 0){
+    std::cout << "Goodbye!\n";
+    inputmanager.end_thread();
+    _parent_messenger->end_thread();
+  }
+}
+
+Messenger::Messenger(Socket &&sock): _sock(std::move(sock)), executor(this){}
+
+Messenger::~Messenger(){
+  end_thread();
+}
+
+void Messenger::do_commu(){
+  while(!_thread_over){
+    if(_info_mtx.try_lock() && _info != ""){//若有需要发送的信息
+      _sock.send(_info);
+      _info.clear();
+      _info_mtx.unlock();
+    }
+
+    std::string order = _sock.recv(0.02);//尝试接受
+    if(order != ""){
+      executor.add_order(order);
+    }
+  }
+}
+
+void Messenger::start_thread(){
+  _thread_over = false;
+  _th = std::thread(&Messenger::do_commu, this);
+}
+
+void Messenger::end_thread(){
+  if(!_th.joinable())
+    return;
+
+  _thread_over = true;
+  _th.join();
+  _thread_over = true;
+}
+
+void Messenger::send(std::string msg){
+  _info_mtx.lock();
+  _info += msg;
+  _info_mtx.unlock();
 }
