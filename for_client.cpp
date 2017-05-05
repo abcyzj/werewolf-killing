@@ -17,7 +17,7 @@ Connect::~Connect(){
 
 void Connect::set_port(int port){
   _por = port;
-  _recv_sock = Socket(AF_INET, SOCK_DGRAM, 0, "0.0.0.0", port);
+  _recv_sock = Socket(AF_INET, SOCK_DGRAM, 0, "255.255.255.255", port);
 }
 
 void Connect::do_recv(){

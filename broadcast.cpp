@@ -5,7 +5,7 @@
 
 using namespace Werewolf;
 
-Broadcast::Broadcast(int port): _sock(AF_INET, SOCK_DGRAM, IPPROTO_UDP, "0.0.0.0", port), _over(false){}
+Broadcast::Broadcast(int port): _sock(AF_INET, SOCK_DGRAM, IPPROTO_UDP, "255.255.255.255", port), _over(false){}
 
 Broadcast::~Broadcast(){
   if(_th.joinable())
