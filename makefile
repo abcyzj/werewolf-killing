@@ -8,10 +8,10 @@ endif
 
 all:serv_main.out client_main.out
 
-serv_main.out:serv_main.o message.o client.o broadcast.o accept.o
+serv_main.out:serv_main.o message.o client.o broadcast.o accept.o character.o
 	$(CXX) $(CXXFLAGS) -o $@ $^
 
-client_main.out:client_main.o message.o for_client.o
+client_main.out:client_main.o message.o for_client.o character.o
 	$(CXX) $(CXXFLAGS) -o $@ $^
 
 clean:
