@@ -116,3 +116,20 @@ void Client::shut_down(){
 std::string Client::recv(double delay){
   return _sock.recv(delay);
 }
+
+void Client::set_charac(Character *ch){
+  _charac = ch;
+}
+
+
+Character* Client::selfCharacter(){
+  return _charac;
+}
+
+void Client::changename(std::string nickname){
+  _nickname = nickname;
+}
+
+std::string Client::get_nickname(){
+  return _nickname;
+}

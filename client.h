@@ -5,7 +5,7 @@
 #include<thread>
 #include<string>
 #include<mutex>
-//#include"character.h"
+#include"character.h"
 #include<queue>
 
 namespace Werewolf{
@@ -19,8 +19,8 @@ namespace Werewolf{
     //bool _commu_over;//线程结束标记
     //void do_commu();//通信线程函数
     //std::string _order;//希望发送的命令
-    std::mutex _order_mtx;//_order的互斥量
-    //Character* _charac;//该客户端对应的角色类
+    //std::mutex _order_mtx;//_order的互斥量
+    Character* _charac;//该客户端对应的角色类
   public:
     Client();//默认构造函数
     Client(Client&) = delete;//不允许拷贝构造
@@ -42,7 +42,10 @@ namespace Werewolf{
     //void turn_off_input();//命令客户端关闭输入读取
     void shut_down();//命令客户端断开连接
     std::string recv(double delay = 0);//从客户端接受信息
-    //void set_charac(Character*);//绑定角色类
+    void set_charac(Character*);//绑定角色类
+    Character* selfCharacter();
+    void changename(std::string);
+    std::string get_nickname();
   };
 }
 
