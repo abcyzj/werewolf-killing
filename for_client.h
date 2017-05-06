@@ -53,7 +53,7 @@ namespace Werewolf{
     void turn_on();//打开输入
     /* void turn_off();//关闭输入 */
     /* void start_thread();//开始进程 */
-    /* void end_thread();//关闭进程 */
+    void end_thread();//关闭进程
   };
 
   class ClientExecutor{//命令执行器

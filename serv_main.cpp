@@ -35,11 +35,12 @@ int main(){
   std::string msg;
   int cnt = 0;
   while(std::cin >> op){
+    for(auto &i: cl_vec)
+      std::cout << i.recv(0.01) << std::endl;
     switch(op){
     case 'o':
       for(auto &i: cl_vec){
         i.turn_on_input();
-        std::cout << i.recv() << std::endl;
       }
       break;
     case 'p':
@@ -49,7 +50,7 @@ int main(){
       std::cin.ignore(1024, '\n');
       std::getline(std::cin, msg);
       for(std::vector<Werewolf::Client>::iterator i = cl_vec.begin(); i != cl_vec.end(); i++)
-        i->print(msg), std::cout << cnt++ << std::endl;
+        i->print(msg);
       break;
     case 'q':
       for(auto &i: cl_vec)

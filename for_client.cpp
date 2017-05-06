@@ -139,8 +139,9 @@ void InputManager::do_input(){
 }
 
 void InputManager::turn_on(){
+  if(_th.joinable())
+    return;
   _th = std::thread(&InputManager::do_input, this);
-  _th.join();
 }
 
 // void InputManager::turn_off(){
@@ -152,14 +153,11 @@ void InputManager::turn_on(){
 //   _th = std::thread(&InputManager::do_input, this);
 // }
 
-// void InputManager::end_thread(){
-//   if(!_th.joinable())
-//     return;
-
-//   _input_over = true;
-//   _th.join();
-//   _input_over = false;
-// }
+void InputManager::end_thread(){
+  std::cout << "Game over.\nIf the program doesn't exit, please input q to quit.\n";
+  if(_th.joinable())
+    _th.join();
+}
 
 ClientExecutor::ClientExecutor(Messenger *parent): _parent_messenger(parent), inputmanager(parent){
   //inputmanager.start_thread();
@@ -192,9 +190,9 @@ void ClientExecutor::execute(std::string order){
   //}
 
   else if(order.compare(0, 9, "SHUT_DOWN") == 0){
-    std::cout << "Goodbye!" << std::endl;
-    //inputmanager.end_thread();
+    inputmanager.end_thread();
     _parent_messenger->end_thread();
+    std::cout << "Goodbye!" << std::endl;
   }
 }
 
