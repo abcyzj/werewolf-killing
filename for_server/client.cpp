@@ -102,12 +102,18 @@ void Client::print(std::string msg){
 }
 
 void Client::turn_on_input(){
+  while(_sock.recv(0.0001) != "");//清空缓冲区
   _sock.send("TURN_ON;");
 }
 
-// void Client::turn_off_input(){
-//   _sock.send("TURN_OFF;");
-// }
+void Client::hold_on_input(){
+  while(_sock.recv(0.0001) != "");//清空缓冲区
+  _sock.send("HOLD_ON;");
+}
+
+void Client::turn_off_input(){
+  _sock.send("TURN_OFF;");
+}
 
 void Client::shut_down(){
   _sock.send("SHUT_DOWN;");

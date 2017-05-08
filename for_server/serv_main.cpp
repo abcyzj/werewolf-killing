@@ -5,6 +5,16 @@
 #include<string>
 #include<vector>
 
+void show(std::vector<Werewolf::Client> &vec){
+  while(1){
+    for(auto &i: vec){
+      std::string msg;
+      if((msg = i.recv(0.01)) != "")
+        std::cout << "Client message:" << msg << std::endl;
+    }
+  }
+}
+
 int main(){
   int port;
   std::cout << "Input the port you want to use:\n";
@@ -30,13 +40,12 @@ int main(){
     }
   }
 
-  std::cout << "Input o to turn on input, p to print, and q to quit.\n";
+  std::cout << "Input o to turn on input, h to hold on input, f to turn off input, p to print, and q to quit.\n";
 
   std::string msg;
   int cnt = 0;
+  std::thread _th(show, std::ref(cl_vec));
   while(std::cin >> op){
-    for(auto &i: cl_vec)
-      std::cout << i.recv(0.01) << std::endl;
     switch(op){
     case 'o':
       for(auto &i: cl_vec){
@@ -56,6 +65,14 @@ int main(){
       for(auto &i: cl_vec)
         i.shut_down();
       return 0;
+      break;
+    case 'h':
+      for(auto &i: cl_vec)
+        i.hold_on_input();
+      break;
+    case 'f':
+      for(auto &i: cl_vec)
+        i.turn_off_input();
       break;
     }
   }

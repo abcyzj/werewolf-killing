@@ -1,7 +1,7 @@
 #ifndef FOR_CLIENT_H
 #define FOR_CLIENT_H
 
-#include"../message/message.h"
+#include"message.h"
 #include<string>
 #include<chrono>
 #include<thread>
@@ -44,15 +44,15 @@ namespace Werewolf{
   private:
     Messenger *_parent_messenger;
     std::thread _th;//读取输入的线程
-    //bool _is_on;
-    //bool _input_over;
+    bool _hold_on = 0;
+    bool _th_finished = true;;
     void do_input();//线程函数
   public:
     InputManager(Messenger *parent);//告知父亲指针
     ~InputManager();
     void turn_on();//打开输入
-    /* void turn_off();//关闭输入 */
-    /* void start_thread();//开始进程 */
+    void turn_off();//关闭输入
+    void hold_on();//打开并保持输入
     void end_thread();//关闭进程
   };
 
@@ -86,3 +86,12 @@ namespace Werewolf{
   };
 }
 #endif
+
+
+
+
+
+
+
+
+

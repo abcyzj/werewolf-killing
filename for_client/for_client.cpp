@@ -1,6 +1,7 @@
 #include"for_client.h"
 #include<algorithm>
 #include<iostream>
+#include<cstdio>
 
 using namespace Werewolf;
 
@@ -120,41 +121,59 @@ InputManager::~InputManager(){
 }
 
 void InputManager::do_input(){
-  // std::string msg;
-  // std::cin.sync();
-  // std::getline(std::cin, msg);
-  // if(msg == "")
-  //   continue;
-  // else if(_is_on){
-  //   _parent_messenger->send(msg);
-  // }
-  // else{
-  //   std::cout << "You cannot input now!\n";
-  // }
-  std::string msg;
-  std::cin.ignore(1024, '\n');
-  while(msg == "")
-    std::getline(std::cin, msg);
-  _parent_messenger->send(msg);
+  _th_finished = false;
+  do{
+    std::string msg;
+    int cnt = 0;
+    while(1){
+      auto tp = std::chrono::system_clock::now();
+      std::cin.clear();
+      std::cin.sync();
+      std::getline(std::cin, msg);
+      auto tp2 = std::chrono::system_clock::now();
+      if((msg != "" && tp2 - tp > std::chrono::milliseconds(10)) || !std::cin.good())
+        break;
+    }
+    _parent_messenger->send(msg);
+  } while(_hold_on);
+  _th_finished = true;
 }
 
 void InputManager::turn_on(){
-  if(_th.joinable())
+  if(_th.joinable() && _hold_on)
     return;
-  _th = std::thread(&InputManager::do_input, this);
+  else if(_th_finished){
+    if(_th.joinable())
+      _th.join();
+    _th = std::thread(&InputManager::do_input, this);
+  }
 }
 
-// void InputManager::turn_off(){
-//   _is_on = false;
-// }
+void InputManager::turn_off(){
+  if(_hold_on){
+    _hold_on = false;
+    if(_th_finished && _th.joinable())
+      _th.join();
+  }
+  else
+    return;
+}
 
-// void InputManager::start_thread(){
-//   _input_over = false;
-//   _th = std::thread(&InputManager::do_input, this);
-// }
+void InputManager::hold_on(){
+  if(_hold_on)
+    return;
+  else if(_th_finished){
+    if(_th.joinable())
+      _th.join();
+
+    _hold_on = true;
+    _th = std::thread(&InputManager::do_input, this);
+  }
+}
 
 void InputManager::end_thread(){
   std::cout << "Game over.\nIf the program doesn't exit, please input q to quit.\n";
+  _hold_on = false;
   if(_th.joinable())
     _th.join();
 }
@@ -185,14 +204,18 @@ void ClientExecutor::execute(std::string order){
     inputmanager.turn_on();
   }
 
-  // else if(order.compare(0, 8, "TURN_OFF") == 0){
-  //   inputmanager.turn_off();
-  //}
+  else if(order.compare(0, 8, "TURN_OFF") == 0){
+    inputmanager.turn_off();
+  }
 
   else if(order.compare(0, 9, "SHUT_DOWN") == 0){
     inputmanager.end_thread();
     _parent_messenger->end_thread();
     std::cout << "Goodbye!" << std::endl;
+  }
+
+  else if(order.compare(0, 7, "HOLD_ON") == 0){
+    inputmanager.hold_on();
   }
 }
 
