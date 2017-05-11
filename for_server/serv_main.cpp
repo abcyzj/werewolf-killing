@@ -4,6 +4,7 @@
 #include<iostream>
 #include<string>
 #include<vector>
+#include "processmanager"
 
 void show(std::vector<Werewolf::Client> &vec){
   while(1){
