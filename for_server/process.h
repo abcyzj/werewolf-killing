@@ -108,11 +108,11 @@ namespace Werewolf
     {
     protected:
         bool func();
-        Hunting* ht;
-        Po_passing* Po_p;
+        Process* ht;
+        Process* Po_p;
         bool is_end();
     public:
-        Voting(std::vector<Client> *cli);
+        Voting(std::vector<Client> *cli, Process*, Process*);
     };
     
     class Hunting : public Process

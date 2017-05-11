@@ -136,6 +136,6 @@ void Client::changename(std::string nickname){
   _nickname = nickname;
 }
 
-std::string Client::get_nickname(){
+std::string Client::getnickname(){
   return _nickname;
 }

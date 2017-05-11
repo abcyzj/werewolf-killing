@@ -2,6 +2,10 @@
 #include <iostream>
 using namespace Werewolf;
 
+std::vector<logging> Process::_log;
+int Process::have_police = -1;
+std::vector<logging>* Chat::_log = nullptr;
+
 Process::Process(std::vector<Client>* _all):allclient(_all), _valid(false){
     std::cout<<"All clients have been loaded.\n";
     
@@ -204,7 +208,7 @@ bool Predicting :: func()    //预言家进行身份检测
         std::string player = _rel_cli[0] -> recv();
         int t = (*allclient)[atoi(player.c_str()) - 1].selfCharacter() -> type();
         if (t == 1)
-            _rel_cli[0] -> print("The identity of the player is werewolf\n");
+            _rel_cli[0] -> print("The identity of the player is werewolf\n");
         else
             _rel_cli[0] -> print("The identity of the player is goodman\n");
         writelog(SEER, PREDICT, atoi(player.c_str()) - 1);
@@ -212,7 +216,7 @@ bool Predicting :: func()    //预言家进行身份检测
     return true;
 }
 
-Voting::Voting(std::vector<Client>* _all):Process(_all){}
+Voting::Voting(std::vector<Client>* _all, Process* hunt,Process* Po_passing ):Process(_all), ht(hunt),Po_p(Po_passing){}
 Po_passing::Po_passing(std::vector<Client>* _all):Process(_all){}
 bool Voting::func(){
     int n=allclient->size();

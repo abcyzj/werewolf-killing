@@ -5,7 +5,12 @@
 #include<thread>
 #include<vector>
 #include<chrono>
+
+#ifdef WIN32
 #include "message_win.h"
+#else
+#include "message.h"
+#endif
 
 namespace Werewolf{
   class Accept{//该类被设计用于管理一个负责accept的线程，并把连接生成的Client类放入一个vector中

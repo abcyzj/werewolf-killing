@@ -1,6 +1,7 @@
 #include "client.h"
 #include "character.h"
 #include "characterfac.h"
+#include "processmanager.h"
 #include <iostream>
 #include <vector>
 #include <time.h>
@@ -8,7 +9,7 @@
 
 //²»ÍêÉÆ´úÂë
 
-
+using namespace Werewolf;
 void Characterfac::produce(int wolf, int witch, int prophet, int hunter, int guard, int villager){
 	int size = 0;
 	int num = 0;

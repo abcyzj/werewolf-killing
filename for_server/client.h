@@ -1,7 +1,12 @@
 #ifndef CLIENT_H
 #define CLIENT_H
 
+#ifdef WIN32
 #include"message_win.h"
+#else
+#include"message.h"
+#endif
+
 #include<thread>
 #include<string>
 #include<mutex>
@@ -13,7 +18,7 @@ namespace Werewolf{
   private:
     bool _available;//指示当前Client是否可用
     std::string _nickname = "UNKOWN";//客户端的昵称
-    Sockets _sock;//和该客户端通信的Socket
+    Socket _sock;//和该客户端通信的Socket
     //std::thread _th;//监听线程
     std::mutex mtx;//该Client类的互斥量
     //bool _commu_over;//线程结束标记

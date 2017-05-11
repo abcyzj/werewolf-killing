@@ -1,5 +1,7 @@
 ﻿#include "processmanager.h"
 
+using namespace Werewolf;
+
 int ProcessManager :: calibration(){//选择屠边还是屠城
 	(*_client)[0].print("please choose judge method : 1 for kill one side 2 for kill all");
 	(*_client)[0].turn_on_input();
