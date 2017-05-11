@@ -19,7 +19,6 @@ public:
 	~Characterfac();
 	void produce(int wolf, int witch, int prophet, int hunter, int guard, int villager);
 	void set_client();
-	void set_management();
 
 };
 

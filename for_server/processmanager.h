@@ -7,6 +7,7 @@
 #include "client.h"
 #include "character.h"
 #include <string>
+#include "characterfac.h"
 
 using namespace Werewolf;
 

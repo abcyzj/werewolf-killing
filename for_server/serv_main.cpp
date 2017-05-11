@@ -79,6 +79,8 @@ int main(){
   }
     
     ProcessManager debug(&cl_vec);
+	Characterfac fac(&cl_vec, &debug);
+	fac.set_client();
     debug.run();
   return 0;
 }
