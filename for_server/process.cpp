@@ -525,25 +525,22 @@ bool Voting::is_end(){
 }
 
 
-bool Calculating::is_guarded(Character* _cha){
-    int type = _cha -> type();
-    if((*_log)[0]._geter == type){
+bool Calculating::is_guarded(int i){
+    if((*_log)[0]._geter == i){
         return true;
     }
     return false;
 }
 
-bool Calculating::is_saved(Character* _cha){
-    int type = _cha -> type();
-    if((*_log)[1]._geter == type && (*_log)[1]._act == 2){
+bool Calculating::is_saved(int i){
+    if((*_log)[1]._geter == i && (*_log)[1]._act == 2){
         return true;
     }
     return false;
 }
 
-bool Calculating::is_poisoned(Character* _cha){
-    int type = _cha -> type();
-    if((*_log)[1]._geter == type && (*_log)[1]._act == 1){
+bool Calculating::is_poisoned(int i){
+    if((*_log)[1]._geter == i && (*_log)[1]._act == 1){
         return true;
     }
     return false;
@@ -557,7 +554,7 @@ bool Calculating::calculatewolf(){//∑÷æØª’∫Õ∑…æØª’√ª”�
         if(m[i].selfCharacter() -> type() == 1){
             sum++;
             if(m[i].selfCharacter() -> is_dead() == true){
-                if(is_guarded(m[i].selfCharacter()) && is_saved(m[i].selfCharacter())){
+                if(is_guarded(i) && is_saved(i)){
                     num++;
                     if(m[i].selfCharacter() -> is_police()){
                         _po -> begin();
@@ -565,10 +562,10 @@ bool Calculating::calculatewolf(){//∑÷æØª’∫Õ∑…æØª’√ª”�
                     
                     //willing(&m[i]);
                 }
-                else if(is_guarded(m[i].selfCharacter())){
+                else if(is_guarded(i)){
                     m[i].selfCharacter() -> set_alive();//±ª ÿŒ¿µƒ»À÷™µ¿◊‘º∫±ª ÿŒ¿√¥£ø
                 }
-                else if(is_saved(m[i].selfCharacter())){
+                else if(is_saved(i)){
                     m[i].selfCharacter() -> set_alive();
                 }
                 else{
@@ -580,7 +577,7 @@ bool Calculating::calculatewolf(){//∑÷æØª’∫Õ∑…æØª’√ª”�
                 }
             }
             else{
-                if(is_poisoned(m[i].selfCharacter())){
+                if(is_poisoned(i)){
                     num++;
                     if(m[i].selfCharacter() -> is_police()){
                         _po -> begin();
@@ -594,7 +591,6 @@ bool Calculating::calculatewolf(){//∑÷æØª’∫Õ∑…æØª’√ª”�
         }
         return false;
     }
-    return true;
 }
 
 bool Calculating::calculatepeo(){
@@ -606,17 +602,17 @@ bool Calculating::calculatepeo(){
             if(m[i].selfCharacter() -> type() == 2){
                 sum++;
                 if(m[i].selfCharacter() -> is_dead() == true){
-                    if(is_guarded(m[i].selfCharacter()) && is_saved(m[i].selfCharacter())){
+                    if(is_guarded(i) && is_saved(i)){
                         num++;
                         if(m[i].selfCharacter() -> is_police()){
                             _po -> begin();
                         }
                         //willing(&m[i]);
                     }
-                    else if(is_guarded(m[i].selfCharacter())){
+                    else if(is_guarded(i)){
                         m[i].selfCharacter() -> set_alive();//±ª ÿŒ¿µƒ»À÷™µ¿◊‘º∫±ª ÿŒ¿√¥£ø
                     }
-                    else if(is_saved(m[i].selfCharacter())){
+                    else if(is_saved(i)){
                         m[i].selfCharacter() -> set_alive();
                     }
                     else{
@@ -628,7 +624,7 @@ bool Calculating::calculatepeo(){
                     }
                 }
                 else{
-                    if(is_poisoned(m[i].selfCharacter())){
+                    if(is_poisoned(i)){
                         num++;
                         if(m[i].selfCharacter() -> is_police()){
                             _po -> begin();
@@ -643,7 +639,6 @@ bool Calculating::calculatepeo(){
         }
         return false;
     }
-    return true;
 }
 
 bool Calculating::calculategod(){
@@ -654,17 +649,17 @@ bool Calculating::calculategod(){
         if((m[i].selfCharacter() -> type() != 1 )&&(m[i].selfCharacter() -> type() != 2) && (m[i].selfCharacter() -> type() != 3)){
             sum++;
             if(m[i].selfCharacter() -> is_dead() == true){
-                if(is_guarded(m[i].selfCharacter()) && is_saved(m[i].selfCharacter())){
+                if(is_guarded(i) && is_saved(i)){
                     num++;
                     if(m[i].selfCharacter() -> is_police()){
                         _po -> begin();
                     }
                     //willing(&m[i]);
                 }
-                else if(is_guarded(m[i].selfCharacter())){
+                else if(is_guarded(i)){
                     m[i].selfCharacter() -> set_alive();//±ª ÿŒ¿µƒ»À÷™µ¿◊‘º∫±ª ÿŒ¿√¥£ø
                 }
-                else if(is_saved(m[i].selfCharacter())){
+                else if(is_saved(i)){
                     m[i].selfCharacter() -> set_alive();
                 }
                 else{
@@ -676,7 +671,7 @@ bool Calculating::calculategod(){
                 }
             }
             else{
-                if(is_poisoned(m[i].selfCharacter())){
+                if(is_poisoned(i)){
                     num++;
                     if(m[i].selfCharacter() -> is_police()){
                         _po -> begin();

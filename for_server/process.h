@@ -81,9 +81,9 @@ namespace Werewolf
         bool calculatewolf();
         bool calculatepeo();
         bool calculategod();
-        bool is_guarded(Character* _cha);
-        bool is_saved(Character* _cha);
-        bool is_poisoned(Character* _cha);
+        bool is_guarded(int);
+        bool is_saved(int);
+        bool is_poisoned(int);
         bool func();
     public:
         Calculating(std::vector<Client> *cli, Process* hun, int calibra, Process* po) : Process(cli), _hun(hun), _calibra(calibra), _po(po){
