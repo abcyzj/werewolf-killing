@@ -596,6 +596,7 @@ bool Calculating::calculatewolf(){//∑÷æØª’∫Õ∑…æØª’√ª”�
         }
         return false;
     }
+    return true;
 }
 
 bool Calculating::calculatepeo(){
@@ -1100,15 +1101,16 @@ bool Chat :: func()
 
 bool Hunting :: func()
 {
-    for(int i = 0 ; i < (*_cli).size() ; i++)
+    std::vector <Client>& tep_cli = *_cli;
+    for(int i = 0 ; i < tep_cli.size() ; i++)
     {
-        if((*_cli)[i].selfCharacter() -> type() == 3)//判断是不是猎人
+        if(tep_cli[i].selfCharacter() -> type() == 3)//判断是不是猎人
         {
-            cli[i].print("Please choose a man you want to kill");
-            cli[i].turn_on_input;
-            std::string s = cli[i].recv();
+            tep_cli[i].print("Please choose a man you want to kill");
+            tep_cli[i].turn_on_input();
+            std::string s = tep_cli[i].recv();
             int x = std::atoi(s.c_str());//杀死第几客户端
-            (*_cli)[x].selfCharacter() ->set_dead();
+            tep_cli[x].selfCharacter() ->set_dead();
         }
     }
     return true;

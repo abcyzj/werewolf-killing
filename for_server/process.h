@@ -118,7 +118,7 @@ namespace Werewolf
     class Hunting : public Process
     {
     protected:
-        int _cli;
+        std::vector<Client>* _cli;
         friend class Voting;
         friend class Calculating;
         bool func();
