@@ -1,4 +1,4 @@
-#ifndef PROCESSMANAGER_H
+ï»¿#ifndef PROCESSMANAGER_H
 #define PROCESSMANAGER_H
 
 #include <vector>
@@ -20,13 +20,13 @@ public:
 		_process.clear();
 	}
 	int calibration();
-	void add(Character* cha, Client* cli);//½«VIP½ÇÉ«Ìí¼Óµ½ÏàÓ¦µÄprocess
-	void constructlist();//È·¶¨ÓÎÏ·½ø³Ì
-	void Init(Client *cli);//³õÊ¼»¯ÓÃ»§Ãû¸¨Öúº¯Êı
-	void Init();//³õÊ¼»¯ÓÃ»§Ãû
-	void shutdown();//ÓÎÏ·ÖÕÖ¹º¯Êı
-	void run();//ÔËĞĞº¯Êı
-	void gameover();//Ğû²¼ÓÎÏ·½áÊø²¢¹«²¼ÓÎÏ·½á¹û
+	void add(Character* cha, Client* cli);//å°†VIPè§’è‰²æ·»åŠ åˆ°ç›¸åº”çš„process
+	void constructlist();//ç¡®å®šæ¸¸æˆè¿›ç¨‹
+	void Init(Client *cli);//åˆå§‹åŒ–ç”¨æˆ·åè¾…åŠ©å‡½æ•°
+	void Init();//åˆå§‹åŒ–ç”¨æˆ·å
+	void shutdown();//æ¸¸æˆç»ˆæ­¢å‡½æ•°
+	void run();//è¿è¡Œå‡½æ•°
+	void gameover();//å®£å¸ƒæ¸¸æˆç»“æŸå¹¶å…¬å¸ƒæ¸¸æˆç»“æœ
 	
 };
 

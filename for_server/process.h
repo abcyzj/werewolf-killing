@@ -108,8 +108,8 @@ namespace Werewolf
         Process* ht;
         bool is_end();
     public:
-        Voting(std::vector<Client> *cli);
-        };
+        Voting(std::vector<Client>*,Process*,Process*);
+    };
         
         class Hunting : public Process
         {

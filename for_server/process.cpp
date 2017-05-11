@@ -207,7 +207,7 @@ bool Predicting :: func()    //预言家进行身份检测
     return true;
 }
 
-Voting::Voting(std::vector<Client>* _all):Process(_all){}
+Voting::Voting(std::vector<Client>* _all, Process* _ht, Process* _pop):Process(_all), ht(_ht), Po_p(_pop){}
 Po_passing::Po_passing(std::vector<Client>* _all):Process(_all){}
 bool Voting::func(){
     int n=allclient->size();

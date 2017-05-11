@@ -46,7 +46,7 @@ namespace Werewolf{
     void set_charac(Character*);//绑定角色类
     Character* selfCharacter();
     void changename(std::string);
-    std::string get_nickname();
+    std::string getnickname();
   };
 }
 

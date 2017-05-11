@@ -1,6 +1,6 @@
-#include "processmanager.h"
+ï»¿#include "processmanager.h"
 
-int ProcessManager :: calibration(){//Ñ¡ÔñÍÀ±ß»¹ÊÇÍÀ³Ç
+int ProcessManager :: calibration(){//é€‰æ‹©å± è¾¹è¿˜æ˜¯å± åŸ
 	(*_client)[0].print("please choose judge method : 1 for kill one side 2 for kill all");
 	(*_client)[0].turn_on_input();
 	if((*_client)[0].recv() == "1"){
@@ -11,7 +11,7 @@ int ProcessManager :: calibration(){//Ñ¡ÔñÍÀ±ß»¹ÊÇÍÀ³Ç
 	}
 	(*_client)[0].turn_off_input();
 }
-void ProcessManager::constructlist(){//»ùÀàµÄ¹¹Ôìº¯Êı!!!
+void ProcessManager::constructlist(){//åŸºç±»çš„æ„é€ å‡½æ•°!!!
 	int msg = calibration();
 	Process* pro; 
 	Process* Pro = new Po_passing(_client);
@@ -27,16 +27,16 @@ void ProcessManager::constructlist(){//»ùÀàµÄ¹¹Ôìº¯Êı!!!
 	_process.push_back(pro4);
 	Process* pro5 = new Po_electing(_client);
 	_process.push_back(pro5);
-	Process* pro6 = new Voting(_client);
+	Process* pro6 = new Voting(_client, pro, Pro);
 	_process.push_back(pro6);
-	//ÒÔÉÏÊÇ²Î¼ÓÁ÷³ÌµÄÀà
+	//ä»¥ä¸Šæ˜¯å‚åŠ æµç¨‹çš„ç±»
 	pro =  new Hunting(_client);
 	_process.push_back(pro);
 	Process* _pro = new Chat(_client);
 	_process.push_back(_pro);
 	_process.push_back(Pro);
 
-	//ÒÔÏÂÊÇ´®³ÉÁ´±íµÄ¹ı³Ì
+	//ä»¥ä¸‹æ˜¯ä¸²æˆé“¾è¡¨çš„è¿‡ç¨‹
 	for(int i = 0; i < 7; i++){
 		if(i != 6)
 			_process[i] -> set_next(_process[++i]);
@@ -47,7 +47,7 @@ void ProcessManager::constructlist(){//»ùÀàµÄ¹¹Ôìº¯Êı!!!
 
 
 
-void ProcessManager :: add(Character* cha, Client* cli){//ÉèÖÃ¹ØÁªĞÔ
+void ProcessManager :: add(Character* cha, Client* cli){//è®¾ç½®å…³è”æ€§
 	switch(cha -> type()){
 	case 1:
 		_process[1] -> add_client(cli);
@@ -86,7 +86,7 @@ void ProcessManager::Init(){
 }
 
 
-void ProcessManager :: shutdown(){//ÍË³öÓÎÏ·
+void ProcessManager :: shutdown(){//é€€å‡ºæ¸¸æˆ
 	(*_client)[0].print("Press y to shut down the game");
 	(*_client)[0].turn_on_input();
 	if((*_client)[0].recv() == "y"){
@@ -98,7 +98,7 @@ void ProcessManager :: shutdown(){//ÍË³öÓÎÏ·
 	}
 }
 
-void ProcessManager::gameover(){//½áÊøÖ®ºóµÄ²Ù×÷£¬¹«²¼ÓÎÏ·½á¹û£¬¸æËßËùÓĞÈËÏàÓ¦Íæ¼ÒµÄÉí·İ
+void ProcessManager::gameover(){//ç»“æŸä¹‹åçš„æ“ä½œï¼Œå…¬å¸ƒæ¸¸æˆç»“æœï¼Œå‘Šè¯‰æ‰€æœ‰äººç›¸åº”ç©å®¶çš„èº«ä»½
 		for(auto i = 0; i < (*_client).size(); i++){
 			(*_client)[i].print("game over!!!");
 		}
@@ -155,7 +155,7 @@ void ProcessManager::gameover(){//½áÊøÖ®ºóµÄ²Ù×÷£¬¹«²¼ÓÎÏ·½á¹û£¬¸æËßËùÓĞÈËÏàÓ¦Íæ
 }
 }
 void ProcessManager :: run(){
-	Init();//³õÊ¼»¯ÓÃ»§Ãû
+	Init();//åˆå§‹åŒ–ç”¨æˆ·å
 	calibration();
 	for(auto i = 0; i < (*_client).size(); i++){
 		(*_client)[i].print("game started!!!");
@@ -164,7 +164,7 @@ void ProcessManager :: run(){
 	while(1)
 		for(int i = 0; i < 7; i++){
 			if(i != 4 && i != 6){
-				usepro -> begin();//²»ÖªµÀÊÇ²»ÊÇVCµÄÔ­Òò£¬Õâ¸öÊÇ²»ÊÇÓĞ´í°¡£¡
+				usepro -> begin();//ä¸çŸ¥é“æ˜¯ä¸æ˜¯VCçš„åŸå› ï¼Œè¿™ä¸ªæ˜¯ä¸æ˜¯æœ‰é”™å•Šï¼
 				usepro = usepro -> next();
 			}
 			else{
