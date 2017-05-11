@@ -1,11 +1,11 @@
 #ifndef ACCEPT_H
 #define ACCEPT_H
 
-#include"message.h"
 #include"client.h"
 #include<thread>
 #include<vector>
 #include<chrono>
+#include "message_win.h"
 
 namespace Werewolf{
   class Accept{//该类被设计用于管理一个负责accept的线程，并把连接生成的Client类放入一个vector中

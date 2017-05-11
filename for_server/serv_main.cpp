@@ -5,6 +5,7 @@
 #include<string>
 #include<vector>
 #include "processmanager.h"
+#include "characterfac.h"
 
 void show(std::vector<Werewolf::Client> &vec){
   while(1){
@@ -17,6 +18,8 @@ void show(std::vector<Werewolf::Client> &vec){
 }
 
 int main(){
+	WSADATA wsaData;
+	WSAStartup(MAKEWORD(2, 2), &wsaData);
   int port;
   std::cout << "Input the port you want to use:\n";
   std::cin >> port;
