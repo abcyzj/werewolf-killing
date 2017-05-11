@@ -25,6 +25,7 @@ namespace Werewolf
         virtual bool func() = 0;    //进程的主要执行函数
         static std::vector<logging> _log;
     public:
+        int con = 0;
         Process(std::vector<Client>*);//allclient
         static int have_police;
         virtual bool begin() ;//true继续，false退出
@@ -36,6 +37,7 @@ namespace Werewolf
         static void deletelog();
         static std::vector<logging>* readlog();
         static void writelog(Cha,Act,int);
+        virtual ~Process();
     };
     class Guarding : public Process    //守卫
     {
@@ -101,25 +103,27 @@ namespace Werewolf
     };
     
     class Hunting;
+    class Po_passing;
     class Voting : public Process //ͶƱ
     {
     protected:
         bool func();
-        Process* ht;
+        Hunting* ht;
+        Po_passing* Po_p;
         bool is_end();
     public:
-        Voting(std::vector<Client>*,Process*,Process*);
+        Voting(std::vector<Client> *cli);
     };
-        
-        class Hunting : public Process
-        {
-        protected:
-            friend class Voting;
-            friend class Calculating;
-            bool func();
-        public:
-            Hunting(std::vector<Client> *cli) : Process(cli){};
-        };
+    
+    class Hunting : public Process
+    {
+    protected:
+        friend class Voting;
+        friend class Calculating;
+        bool func();
+    public:
+        Hunting(std::vector<Client> *cli) : Process(cli){};
+    };
     
     class Po_passing:public Process
     {//移交警徽
@@ -134,17 +138,17 @@ namespace Werewolf
     protected:
         static std::vector<logging>* _log;
         std::vector<Client> &client = *allclient;
-        int size = client.size();
-        int dead_num = 0;//存放死的人数量
-        int dead_player[size];//存放死的人的序号,记住是从1开始，初始化均为-1
         int start_one;//存放发言开始之前的那个的人
         bool police=0;//判断有无警长的布尔值
         void read();//读取日志函数
         void right();//向右发言
         void left();//向左发言
         bool func();//行为函数
+        int size;
+        int dead_num = 0;//存放死的人数量
+        int dead_player[100];//存放死的人的序号,记住是从1开始，初始化均为-1
     public:
-        Chat();
+        Chat(std::vector<Client>*);
     };
 }
 #endif

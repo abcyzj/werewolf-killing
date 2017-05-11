@@ -4,8 +4,11 @@ using namespace Werewolf;
 
 Process::Process(std::vector<Client>* _all):allclient(_all), _valid(false){
     std::cout<<"All clients have been loaded.\n";
-
+    
 }
+
+Process :: ~Process() {}
+
 bool Process :: begin()
 {
     if(!valid())
@@ -50,28 +53,30 @@ void Process::writelog(Cha doer,Act act,int geter)
     _log.push_back(logging{doer,act,geter});
 }
 
-bool Guarding::func(){
-    (*allclient)[dynamic_cast<Guard*>(_rel_cli[0] -> selfCharacter()) -> last()].selfCharacter()->canc_guarded();
-    if(!_rel_cli[0]->selfCharacter()->is_dead()){
-        _rel_cli[0]->print("Please input the player number you want to guard:\n");
-        _rel_cli[0]->turn_on_input();
+bool Guarding :: func()
+{
+    dynamic_cast<Guard*>(_rel_cli[0] -> selfCharacter()) -> who_i_guard(-1);    //将守卫的人置为-1
+    if(!_rel_cli[0] -> selfCharacter() -> is_dead())
+    {
+        _rel_cli[0] -> print("Please input the player number you want to guard:\n");
+        _rel_cli[0] -> turn_on_input();
         std::string res1 = _rel_cli[0]->recv();
-        if ((*allclient)[res1[0]-'1'].selfCharacter() -> type() ==
+        if ((*allclient)[res1[0] - '1'].selfCharacter() -> type() ==
             dynamic_cast<Guard*>(_rel_cli[0] -> selfCharacter()) -> last())
         {
             _rel_cli[0] -> print("You have guarded the same one as last night, please change\n");
-            _rel_cli[0] -> print("Please input the player number you want to guard:\n");
+            _rel_cli[0] -> print("Please input the player number you want to guard again:\n");
             _rel_cli[0] -> turn_on_input();
-            std :: string res2 = _rel_cli[0]->recv();
+            std :: string res2 = _rel_cli[0] -> recv();
             (*allclient)[res2[0]-'1'].selfCharacter() -> guardfunc();
-            dynamic_cast<Guard*>(_rel_cli[0] -> selfCharacter()) -> who_i_guard(res2[0]-'1');
-            writelog(GUARD,GUARDING,res2[0]-'1');
+            dynamic_cast<Guard*>(_rel_cli[0] -> selfCharacter()) -> who_i_guard(res2[0] - '1');
+            writelog(GUARD, GUARDING, res2[0] - '1');
         }
         else
         {
-            (*allclient)[res1[0]-'1'].selfCharacter()->guardfunc();
-            dynamic_cast<Guard*>(_rel_cli[0] -> selfCharacter()) -> who_i_guard(res1[0]-'1');
-            writelog(GUARD,GUARDING,res1[0]-'1');
+            (*allclient)[res1[0] - '1'].selfCharacter() -> guardfunc();
+            dynamic_cast<Guard*>(_rel_cli[0] -> selfCharacter()) -> who_i_guard(res1[0] - '1');
+            writelog(GUARD, GUARDING, res1[0] - '1');
         }
     }
     return true;
@@ -172,7 +177,7 @@ bool Witching :: func() //女巫使用毒药或者解药
             }
         }
         
-
+        
         if (drug == "p")    //毒人
         {
             _rel_cli[0] -> print("Please Input the player you want to act on\n");
@@ -207,7 +212,7 @@ bool Predicting :: func()    //预言家进行身份检测
     return true;
 }
 
-Voting::Voting(std::vector<Client>* _all, Process* _ht, Process* _pop):Process(_all), ht(_ht), Po_p(_pop){}
+Voting::Voting(std::vector<Client>* _all):Process(_all){}
 Po_passing::Po_passing(std::vector<Client>* _all):Process(_all){}
 bool Voting::func(){
     int n=allclient->size();
@@ -515,6 +520,8 @@ bool Voting::is_end(){
     }
     if(wolfnum!=0&&villnum!=0&&godnum!=0)
         return false;
+    
+    return true;
 }
 
 
@@ -587,6 +594,7 @@ bool Calculating::calculatewolf(){//∑÷æØª’∫Õ∑…æØª’√ª”�
         }
         return false;
     }
+    return true;
 }
 
 bool Calculating::calculatepeo(){
@@ -635,6 +643,7 @@ bool Calculating::calculatepeo(){
         }
         return false;
     }
+    return true;
 }
 
 bool Calculating::calculategod(){
@@ -736,7 +745,7 @@ bool Po_electing :: func()  //选举警长
         for (int j = 0; j < (*allclient).size(); j++)//将竞选宣言发给所有玩家
             (*allclient)[j].print("words from player " + std::to_string(num[i]) + " is" + words);
         
-       
+        
         for (int j = 0; j < cnt && num[j] != 0; j++)    //每位竞选者发言后询问是否有人退出竞选
         {
             (*allclient)[num[j]].print("Do you want to quit electing, q or n");
@@ -903,30 +912,36 @@ bool Po_passing::func(){
     return true;
 }
 
+Chat :: Chat(std::vector<Client>* _cli) : Process(_cli)
+{
+    size = _cli -> size();
+}
+
 void Chat :: read()//获取dead_num,dead_player[],
 {
+    
     int bite_man = -1;
     int poison_man = -1;
     int save_man = -1;
     int guard_man = -1;
     memset(dead_player, -1, sizeof(dead_player));
     _log = readlog();
-    for(int i=0 ; i<_log.size() ; i++)//判断有没有被咬或者被毒,被守卫，被救
+    for(int i=0 ; i<_log -> size() ; i++)//判断有没有被咬或者被毒,被守卫，被救
     {
-        if((*_log)[i].Act == BITE)
-            bite_man = (*_log)[i].geter;
-        if((*_log)[i].Act == POISON)
-            poison_man = (*_log)[i].geter;
-        if((*_log)[i].Act == SAVE)
-            save_man = (*_log)[i].geter;
-        if((*_log)[i].Act == GUARDING)
-            guard_man = (*_log)[i].geter;
+        if((*_log)[i]._act == BITE)
+            bite_man = (*_log)[i]._geter;
+        if((*_log)[i]._act == POISON)
+            poison_man = (*_log)[i]._geter;
+        if((*_log)[i]._act == SAVE)
+            save_man = (*_log)[i]._geter;
+        if((*_log)[i]._act == GUARDING)
+            guard_man = (*_log)[i]._geter;
     }
     for(int i=0 ; i<size ; i++)//判断有没有被守卫或者被救
     {
         if((bite_man == i)&&(poison_man != i)&&(guard_man != i))//被咬，不被救，不被守卫
         {
-            dead_num++:
+            dead_num++;
             dead_player[dead_num]=i;
         }
         if((poison_man == i)&&(guard_man != i)) //  被毒，不被守卫
@@ -937,14 +952,15 @@ void Chat :: read()//获取dead_num,dead_player[],
         if((bite_man == i)&&(poison_man == i)&&(guard_man = i))//被咬，同守同救
         {
             dead_num++;
-            daed_player[dead_num]=i;
+            dead_player[dead_num]=i;
         }
     }
 }
 
 void Chat :: right()
 {
-    for(int m=start_one+1 ；m < size ; m++)
+    read();
+    for(int m=start_one+1; m < size; m++)
     {
         client[m].print("Please input your massages:");
         client[m].turn_on_input();
@@ -966,6 +982,8 @@ void Chat :: right()
 
 void Chat :: left()
 {
+    read();
+    int size = client.size();
     if(start_one==0)
     {
         for(int m = size-1; m > 0; m--)
@@ -1002,8 +1020,10 @@ void Chat :: left()
     }
 }
 
+
 bool Chat :: func()
 {
+    read();
     for(int i=0 ; i < size ; i++)//遗言环节
     {
         for(int j=1 ; j<=dead_num ; j++)
@@ -1028,6 +1048,7 @@ bool Chat :: func()
             {
                 start_one=dead_player[1];
                 client[i].print("Please choose left or right:");
+                client[i].turn_on_input();;
                 std::string p = client[i].recv();
                 if( p == "right")//向右
                     right();
@@ -1038,6 +1059,7 @@ bool Chat :: func()
             {
                 start_one=i;
                 client[i].print("Please choose left or right:");
+                client[i].turn_on_input();
                 std::string p = client[i].recv();
                 if( p == "right")//向右
                     right();
@@ -1075,4 +1097,3 @@ bool Chat :: func()
     }
     return true;
 }
-

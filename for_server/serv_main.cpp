@@ -77,7 +77,8 @@ int main(){
       break;
     }
   }
-  
-
+    
+    ProcessManager debug(&cl_vec);
+    debug.run();
   return 0;
 }
