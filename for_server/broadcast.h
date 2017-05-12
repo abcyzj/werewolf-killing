@@ -1,6 +1,12 @@
 #ifndef BROAD_H
 #define BROAD_H
+
+#ifdef _WIN32
+#include"message_win.h"
+#else
 #include"message.h"
+#endif
+
 #include<thread>
 #include<iostream>
 #include<string>
