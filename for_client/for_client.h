@@ -1,7 +1,11 @@
 #ifndef FOR_CLIENT_H
 #define FOR_CLIENT_H
 
+#ifdef _WIN32 
 #include"message_win.h"
+#else 
+#include"message.h"
+#endif
 #include<string>
 #include<chrono>
 #include<thread>
