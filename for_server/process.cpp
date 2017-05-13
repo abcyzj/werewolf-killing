@@ -14,6 +14,33 @@ Process::Process(std::vector<Client>* _all):allclient(_all), _valid(false){
 
 Process :: ~Process() {}
 
+Guarding :: Guarding(std::vector<Client> *cli) : Process(cli){}
+
+Killing :: Killing(std::vector<Client> *cli) : Process(cli){}
+
+Witching :: Witching(std::vector<Client> *cli) : Process(cli){}
+
+Predicting :: Predicting(std::vector<Client> *cli) : Process(cli){}
+
+Po_electing :: Po_electing(std::vector<Client> *cli) : Process(cli){}
+                     
+Hunting :: Hunting(std::vector<Client> *cli) : Process(cli), _cli(cli){}
+
+Calculating :: Calculating(std::vector<Client> *cli, Process* hun, int calibra, Process* po) : Process(cli), _hun(hun), _calibra(calibra), _po(po)
+{
+    _log = readlog();
+}
+
+Calculating :: ~Calculating()
+{
+    delete _hun;
+}
+
+Chat :: Chat(std::vector<Client>* _cli) : Process(_cli)
+{
+    size = _cli -> size();
+}
+
 bool Process :: begin()
 {
     if(!valid())
@@ -913,10 +940,6 @@ bool Po_passing::func(){
     return true;
 }
 
-Chat :: Chat(std::vector<Client>* _cli) : Process(_cli)
-{
-    size = _cli -> size();
-}
 
 void Chat :: read()//获取dead_num,dead_player[],
 {
