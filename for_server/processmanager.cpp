@@ -15,8 +15,9 @@ int ProcessManager :: calibration(){//选择屠边还是屠城
 }
 void ProcessManager::constructlist(){//基类的构造函数!!!
 	int msg = calibration();
-	Process* pro; 
+	Process* pro = new Hunting(_client);
 	Process* Pro = new Po_passing(_client);
+	_process.clear();
 	Process* pro0 = new Guarding(_client);
 	_process.push_back(pro0);
 	Process* pro1 = new Killing(_client);
@@ -32,7 +33,6 @@ void ProcessManager::constructlist(){//基类的构造函数!!!
 	Process* pro6 = new Voting(_client, pro, Pro);
 	_process.push_back(pro6);
 	//以上是参加流程的类
-	pro =  new Hunting(_client);
 	_process.push_back(pro);
 	Process* _pro = new Chat(_client);
 	_process.push_back(_pro);
@@ -41,7 +41,7 @@ void ProcessManager::constructlist(){//基类的构造函数!!!
 	//以下是串成链表的过程
 	for(int i = 0; i < 7; i++){
 		if(i != 6)
-			_process[i] -> set_next(_process[++i]);
+			_process[i] -> set_next(_process[i + 1]);
 		else 
 			_process[i] -> set_next(_process[0]);
 	}
@@ -162,6 +162,7 @@ void ProcessManager :: run(){
 		(*_client)[i].print("game started!!!");
 	}
 	Process* usepro;
+	usepro = _process[0];
 	for(int i = 0; i < 7; i++){
 		usepro -> activate();
 		usepro = usepro -> next();
