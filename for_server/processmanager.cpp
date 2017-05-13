@@ -74,7 +74,7 @@ void ProcessManager :: add(Character* cha, Client* cli){//设置关联�
 void ProcessManager::Init(Client* cli){
 	cli -> print("input your nickname");
 	cli -> turn_on_input();
-	std::string name = cli -> recv();
+	std::string name = cli -> recv(5);
 	cli -> turn_off_input();
 	cli -> changename(name);
 }
@@ -161,10 +161,15 @@ void ProcessManager :: run(){
 	for(auto i = 0; i < (*_client).size(); i++){
 		(*_client)[i].print("game started!!!");
 	}
+	_process[4] -> activate();
+	_process[6] -> activate(); 
 	Process* usepro;
 	usepro = _process[0];
 	for(int i = 0; i < 7; i++){
-		usepro -> activate();
+		int cnt = usepro -> get_size();
+		if(usepro -> get_size() != 0){
+			usepro -> activate();
+		}
 		usepro = usepro -> next();
 	}
 	while(1)
