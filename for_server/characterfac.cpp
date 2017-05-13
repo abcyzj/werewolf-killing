@@ -11,6 +11,7 @@
 
 using namespace Werewolf;
 void Characterfac::produce(int wolf, int witch, int prophet, int hunter, int guard, int villager){
+	_manager -> constructlist(); 
 	int size = 0;
 	int num = 0;
 	int sum = 0;
@@ -117,7 +118,11 @@ void Characterfac::produce(int wolf, int witch, int prophet, int hunter, int gua
 
 void Characterfac::set_client(){
 	int size = _client -> size();
-	if(size == 5 || size == 6)
+	if(size == 1)
+		produce(1, 0, 0, 0, 0, 0);
+	else if(size == 2)
+		produce(1, 0, 0, 0, 0, 1);
+	else if(size == 5 || size == 6)
 		produce(2, 1, 1, 0, 0, size - 4);
 	else if(size >= 7 && size <= 9)
 		produce(3, 1, 1, 0, 0, size - 5);

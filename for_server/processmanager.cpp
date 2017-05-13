@@ -1,4 +1,4 @@
-﻿#include "processmanager.h"
+#include "processmanager.h"
 
 using namespace Werewolf;
 
@@ -49,7 +49,7 @@ void ProcessManager::constructlist(){//基类的构造函数!!!
 
 
 
-void ProcessManager :: add(Character* cha, Client* cli){//设置关联性
+void ProcessManager :: add(Character* cha, Client* cli){//设置关联�
 	switch(cha -> type()){
 	case 1:
 		_process[1] -> add_client(cli);
@@ -82,7 +82,7 @@ void ProcessManager::Init(Client* cli){
 void ProcessManager::Init(){
 	std::vector<Client>& client = *_client;
 	int size = client.size(); 
-	for(int i = 0;  i <= size; i++){
+	for(int i = 0;  i < size; i++){
 		Init(&client[i]);
 	}
 }
@@ -158,11 +158,14 @@ void ProcessManager::gameover(){//结束之后的操作，公布游戏结果，�
 }
 void ProcessManager :: run(){
 	Init();//初始化用户名
-	calibration();
 	for(auto i = 0; i < (*_client).size(); i++){
 		(*_client)[i].print("game started!!!");
 	}
 	Process* usepro;
+	for(int i = 0; i < 7; i++){
+		usepro -> activate();
+		usepro = usepro -> next();
+	}
 	while(1)
 		for(int i = 0; i < 7; i++){
 			if(i != 4 && i != 6){
@@ -173,6 +176,9 @@ void ProcessManager :: run(){
 				if(!usepro -> begin()){
 					ptr = i;
 					gameover();
+				}
+				else{
+					usepro = usepro -> next(); 
 				}
 			}		
 
