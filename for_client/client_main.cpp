@@ -3,6 +3,10 @@
 #include<sstream>
 
 int main(){
+#ifdef _WIN32
+	WSADATA wsaData;
+    WSAStartup( MAKEWORD(2, 2), &wsaData);
+#endif
   std::cout << "Input the port you want to use:\n";
   int port;
   std::cin >> port;
@@ -43,6 +47,8 @@ int main(){
 
   Werewolf::Messenger messenger(std::move(order_sock));
   messenger.start_thread();
-
+#ifdef _WIN32
+	WSACleanup();
+#endif
   return 0;
 }

@@ -18,6 +18,10 @@ void show(std::vector<Werewolf::Client> &vec){
 }
 
 int main(){
+#ifdef _WIN32
+	WSADATA wsaData;
+	WSAStartup( MAKEWORD(2, 2), &wsaData);
+#endif
   int port;
   std::cout << "Input the port you want to use:\n";
   std::cin >> port;
@@ -83,5 +87,9 @@ int main(){
   Werewolf::Characterfac fac(&cl_vec, &test);
 	fac.set_client();
     test.run();
+#ifdef _WIN32
+	WSACleanup();
+#endif
   return 0;
+  
 }
