@@ -11,7 +11,6 @@ int ProcessManager :: calibration(){//閫夋嫨灞犺竟杩樻槸灞犲煄
 	else if((*_client)[0].recv() == "2"){
 		return (int) 2;
 	}
-	(*_client)[0].turn_off_input();
 }
 void ProcessManager::constructlist(){//鍩虹被鐨勬瀯閫犲嚱鏁?!!
 	int msg = calibration();
@@ -75,7 +74,6 @@ void ProcessManager::Init(Client* cli){
 	cli -> print("input your nickname");
 	cli -> turn_on_input();
 	std::string name = cli -> recv(5);
-	cli -> turn_off_input();
 	cli -> changename(name);
 }
 
@@ -95,7 +93,6 @@ void ProcessManager :: shutdown(){//閫�鍑烘父鎴?
 		for(auto i = 0; i < (*_client).size(); i++){
 			(*_client)[i].print("exited");
 		}
-		(*_client)[0].turn_off_input();
 		exit(0);
 	}
 }
@@ -157,6 +154,12 @@ void ProcessManager::gameover(){//缁撴潫涔嬪悗鐨勬搷浣滐紝鍏竷娓告垙缁撴灉锛屽
 }
 }
 void ProcessManager :: run(){
+	for(auto i = 0; i < (*_client).size(); i++){
+		(*_client)[i].print("you are Player");
+		char str[25];
+		itoa(i + 1, str, 10);
+		(*_client)[i].print(str);//让玩家自己知道自己是player 几
+	}
 	Init();//鍒濆鍖栫敤鎴峰悕
 	for(auto i = 0; i < (*_client).size(); i++){
 		(*_client)[i].print("game started!!!");

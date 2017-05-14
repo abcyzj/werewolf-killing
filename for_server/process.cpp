@@ -258,7 +258,7 @@ bool Voting::func(){
         if(isalive[i]||i!=have_police){
             (*allclient)[i].print("Please vote!\n"+voted);
             if(have_police>=0)
-                (*allclient)[i].print("The Police votes to Player "+std::to_string(voteinfo[have_police])+".\n");
+                (*allclient)[i].print("The Police votes to Player "+std::to_string(voteinfo[have_police]+1)+".\n");
             (*allclient)[i].turn_on_input();
             std::string tgt=(*allclient)[i].recv();
             while(!isalive[tgt[0]-'1']){
@@ -280,7 +280,7 @@ bool Voting::func(){
     std::string s="";//–Ë“™¥Ú”°µƒÕ∂∆±–≈œ¢
     for(int i=0;i<n;i++)
         if(isalive[i])
-            s+="Player "+std::to_string(i)+" votes to Player "+std::to_string(voteinfo[i])+".\n";
+            s+="Player "+std::to_string(i+1)+" votes to Player "+std::to_string(voteinfo[i]+1)+".\n";
     
     for(int i=0;i<n;i++)//π´≤ºÕ∂∆±–≈œ¢
         if(isalive[i])
@@ -344,7 +344,7 @@ bool Voting::func(){
     else{
         std::string tie="Player";
         for(int i=0;i<maxnum.size();i++)
-            tie+=" "+std::to_string(maxnum[i]);
+            tie+=" "+std::to_string(maxnum[i]+1);
         tie+=" have the same number of votes.\nRound 2 Chat begins.\nAt the following order:\n\tPlayer";
         int r1=rand()%maxnum.size();
         int r2=rand()%2;
@@ -357,13 +357,13 @@ bool Voting::func(){
         for(int i=0;i<maxnum.size();i++)
             chod.push_back(maxnum[(r1+i*order+maxnum.size())%maxnum.size()]);
         for(int i=0;i<maxnum.size();i++)
-            tie+=" "+std::to_string(chod[i]);
+            tie+=" "+std::to_string(chod[i]+1);
         for(int i=0;i<n;i++)
             (*allclient)[i].print(tie);
         for(int i=0;i<chod.size();i++){
             for(int j=0;j<n;j++)
                 if(isalive[j])
-                    (*allclient)[j].print("Player "+ std::to_string(chod[i])+"'s turn:\n");
+                    (*allclient)[j].print("Player "+ std::to_string(chod[i]+1)+"'s turn:\n");
             (*allclient)[chod[i]].print("Please input the words you want to say.\n:q + Enter represents ending.\n");
             std::string saying="";
             while(true){
@@ -376,7 +376,7 @@ bool Voting::func(){
                         else break;
             }
             for(int j=0;j<n;j++)
-                (*allclient)[j].print("Player "+std::to_string(chod[i])+"has finished.\n");
+                (*allclient)[j].print("Player "+std::to_string(chod[i]+1)+"has finished.\n");
         }
         for(int i=0;i<n;i++)
             (*allclient)[i].print("Round 2 Chat end.\nRound 2 Voting start.\n");
@@ -394,7 +394,7 @@ bool Voting::func(){
         }
         std::string sec="You can only vote to Player";
         for(int i=0;i<maxnum.size();i++)
-            sec+=" "+std::to_string(maxnum[i]);
+            sec+=" "+std::to_string(maxnum[i]+1);
         sec+=".\n";
         maxnum.clear();//«Âø’◊Ó∂‡∆± ˝µƒÕÊº“–Ú¡–
         for(int i=0;i<n;i++){
@@ -419,7 +419,7 @@ bool Voting::func(){
         std::string secs="";//–Ë“™¥Ú”°µƒÕ∂∆±–≈œ¢
         for(int i=0;i<n;i++)
             if(isalive[i]&&canvote[i])
-                secs+="Player "+std::to_string(i)+" votes to Player "+std::to_string(voteinfo2[i])+".\n";
+                secs+="Player "+std::to_string(i+1)+" votes to Player "+std::to_string(voteinfo2[i]+1)+".\n";
         for(int i=0;i<n;i++)//π´≤ºÕ∂∆±–≈œ¢
             if(isalive[i])
                 (*allclient)[i].print(s);
@@ -433,7 +433,7 @@ bool Voting::func(){
     //π´≤ºÀ¿’ﬂ–≈œ¢º∞Ω¯––∫Û–¯¥¶¿Ì
     std::string deathinfo="Player";
     for(int i=0;i<deadnum.size();i++)
-        deathinfo+=" "+std::to_string(deadnum[i]);
+        deathinfo+=" "+std::to_string(deadnum[i]+1);
     deathinfo+=" out!\n";
     for(int i=0;i<n;i++)
         if(isalive[i])
@@ -482,7 +482,7 @@ bool Voting::func(){
         for(int i=deadnum.size()-1;i>=0;i--){
             (*allclient)[deadnum[i]].print("Please input your last words.\n:q + Enter represents ending.\n");
             (*allclient)[deadnum[i]].turn_on_input();
-            std::string lword="Player "+std::to_string(deadnum[i])+"'s last wotds start:\n";
+            std::string lword="Player "+std::to_string(deadnum[i]+1)+"'s last wotds start:\n";
             std::string ladd="";
             ladd=(*allclient)[deadnum[i]].recv();
             while(ladd!=":q"){
