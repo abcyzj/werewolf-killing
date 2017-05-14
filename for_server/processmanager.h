@@ -8,6 +8,7 @@
 #include "character.h"
 #include <string>
 #include "characterfac.h"
+#include <stdlib.h>
 
 
 namespace Werewolf{
