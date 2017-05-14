@@ -13,7 +13,7 @@ int ProcessManager :: calibration(){//选择屠边还是屠城
 	}
 	(*_client)[0].turn_off_input();
 }
-void ProcessManager::constructlist(){//基类的构造函数!!!
+void ProcessManager::constructlist(){//基类的构造函�?!!
 	int msg = calibration();
 	Process* pro = new Hunting(_client);
 	Process* Pro = new Po_passing(_client);
@@ -32,7 +32,7 @@ void ProcessManager::constructlist(){//基类的构造函数!!!
 	_process.push_back(pro5);
 	Process* pro6 = new Voting(_client, pro, Pro);
 	_process.push_back(pro6);
-	//以上是参加流程的类
+	//以上是参加流程的�?
 	_process.push_back(pro);
 	Process* _pro = new Chat(_client);
 	_process.push_back(_pro);
@@ -88,7 +88,7 @@ void ProcessManager::Init(){
 }
 
 
-void ProcessManager :: shutdown(){//退出游戏
+void ProcessManager :: shutdown(){//退出游�?
 	(*_client)[0].print("Press y to shut down the game");
 	(*_client)[0].turn_on_input();
 	if((*_client)[0].recv() == "y"){
@@ -100,7 +100,7 @@ void ProcessManager :: shutdown(){//退出游戏
 	}
 }
 
-void ProcessManager::gameover(){//结束之后的操作，公布游戏结果，告诉所有人相应玩家的身份
+void ProcessManager::gameover(){//结束之后的操作，公布游戏结果，告诉所有人相应玩家的身�?
 		for(auto i = 0; i < (*_client).size(); i++){
 			(*_client)[i].print("game over!!!");
 		}
@@ -175,7 +175,7 @@ void ProcessManager :: run(){
 	while(1)
 		for(int i = 0; i < 7; i++){
 			if(i != 4 && i != 6){
-				usepro -> begin();//不知道是不是VC的原因，这个是不是有错啊！
+				usepro -> begin();//不知道是不是VC的原因，这个是不是有错啊�?
 				usepro = usepro -> next();
 			}
 			else{

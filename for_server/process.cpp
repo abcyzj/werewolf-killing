@@ -102,8 +102,9 @@ bool Killing::func(){
         cnt++;
         for(int i=0;i<_rel_cli.size();i++)
             if(isalive[i]){
+            	_rel_cli[i] -> print("please chat with you partner:"); 
                 _rel_cli[i]->turn_on_input();
-                std::string words=_rel_cli[i]->recv();
+                std::string words=_rel_cli[i]->recv(10);
                 for(int j=0;j<_rel_cli.size();j++)
                     if(isalive[j])
                         _rel_cli[j]->print(words);
@@ -112,7 +113,7 @@ bool Killing::func(){
             if(isalive[i]){
                 _rel_cli[i]->print("Please input the player number you want to kill.\nPlease reach a consensus!!!\n");
                 _rel_cli[i]->turn_on_input();
-                std::string tgt=_rel_cli[i]->recv();
+                std::string tgt=_rel_cli[i]->recv(10);
                 if(i==0)
                     num=tgt[0]-'1';
                 else if(num!=tgt[0]-'1')
