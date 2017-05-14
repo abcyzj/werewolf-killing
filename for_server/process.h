@@ -2,8 +2,7 @@
 #define PROCESS_H
 
 #include "character.h"
-#include "process.h"
-#include "client.h"
+#include "client_test.h"
 #include <vector>
 namespace Werewolf
 {
@@ -82,11 +81,13 @@ namespace Werewolf
         bool calculatewolf();
         bool calculatepeo();
         bool calculategod();
-        bool is_guarded(int);
+        bool cal_guard(int);
         bool is_saved(int);
         bool is_poisoned(int);
         bool func();
-		void find_dead();
+        void find_dead();
+        int officer;
+        bool hunting = false;
     public:
         Calculating(std::vector<Client> *cli, Process* hun, int calibra, Process* po) : Process(cli), _hun(hun), _calibra(calibra), _po(po){
             _log = readlog();
@@ -112,9 +113,10 @@ namespace Werewolf
         bool func();
         Process* ht;
         Process* Po_p;
+        Process* _Chat;
         bool is_end();
     public:
-        Voting(std::vector<Client> *cli, Process*, Process*);
+        Voting(std::vector<Client> *cli, Process*, Process*, Process*);
     };
     
     class Hunting : public Process
@@ -133,6 +135,7 @@ namespace Werewolf
     protected:
         bool func();
     public:
+        friend class Calculating;
         Po_passing(std::vector<Client>*);
     };
     

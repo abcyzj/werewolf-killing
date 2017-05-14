@@ -64,7 +64,7 @@ void Process::writelog(Cha doer,Act act,int geter)
 
 bool Guarding :: func()
 {
-    dynamic_cast<Guard*>(_rel_cli[0] -> selfCharacter()) -> who_i_guard(-1);    //将守卫的人置�?1
+    dynamic_cast<Guard*>(_rel_cli[0] -> selfCharacter()) -> who_i_guard(-1);    //Â∞ÜÂÆàÂç´ÁöÑ‰∫∫ÁΩÆ‰∏?1
     if(!_rel_cli[0] -> selfCharacter() -> is_dead())
     {
         _rel_cli[0] -> print("Please input the player number you want to guard:\n");
@@ -102,9 +102,9 @@ bool Killing::func(){
         cnt++;
         for(int i=0;i<_rel_cli.size();i++)
             if(isalive[i]){
-            	_rel_cli[i] -> print("please chat with you partner:"); 
+                _rel_cli[i] -> print("please chat with you partner:");
                 _rel_cli[i]->turn_on_input();
-                std::string words=_rel_cli[i]->recv(10);
+                std::string words=_rel_cli[i]->recv();
                 for(int j=0;j<_rel_cli.size();j++)
                     if(isalive[j])
                         _rel_cli[j]->print(words);
@@ -113,14 +113,13 @@ bool Killing::func(){
             if(isalive[i]){
                 _rel_cli[i]->print("Please input the player number you want to kill.\nPlease reach a consensus!!!\n");
                 _rel_cli[i]->turn_on_input();
-                std::string tgt=_rel_cli[i]->recv(10);
+                std::string tgt=_rel_cli[i]->recv();
                 if(i==0)
                     num=atoi(tgt.c_str())-1;
                 else if(num!=atoi(tgt.c_str())-1)
                     flag=false;
             }
         if(flag){
-            (*allclient)[num].selfCharacter()->set_dead();
             writelog(WOLF,BITE,num);
             break;
         }
@@ -142,16 +141,16 @@ bool Killing::func(){
 }
 
 
-bool Witching :: func() //女巫使用毒药或者解药
+bool Witching :: func() //Â•≥Â∑´‰ΩøÁî®ÊØíËçØÊàñËÄÖËß£ËçØ
 {
-    if (! _rel_cli[0] -> selfCharacter() -> is_dead()) //女巫没死
+    if (! _rel_cli[0] -> selfCharacter() -> is_dead()) //Â•≥Â∑´Ê≤°Ê≠ª
     {
         int pos_num = dynamic_cast<Witch*>(_rel_cli[0] -> selfCharacter()) -> have_poison();
         int anti_num = dynamic_cast<Witch*>(_rel_cli[0] -> selfCharacter()) -> have_antidote();
-        //告诉剩多少毒药和解药
+        //ÂëäËØâÂâ©Â§öÂ∞ëÊØíËçØÂíåËß£ËçØ
         _rel_cli[0] -> print("You have " + std::to_string(pos_num) + " poison " + std :: to_string(anti_num) + " antidote\n");
         if (pos_num == 0 && anti_num == 0) return true;
-        //读日志告诉女巫谁死谁活
+        //ËØªÊó•ÂøóÂëäËØâÂ•≥Â∑´Ë∞ÅÊ≠ªË∞ÅÊ¥ª
         if ((*readlog())[readlog() -> size() - 1]._act == 0)
         {
             int have_dead = (*readlog())[readlog() -> size() - 1]._geter;
@@ -159,7 +158,7 @@ bool Witching :: func() //女巫使用毒药或者解药
         }
         else _rel_cli[0] -> print("no one dead\n");
         
-        //请女巫选择毒药和解药
+        //ËØ∑Â•≥Â∑´ÈÄâÊã©ÊØíËçØÂíåËß£ËçØ
         _rel_cli[0] -> print("Please choose to use poison or antidote, p or a or n for nothing\n");
         _rel_cli[0] -> turn_on_input();
         std::string drug = _rel_cli[0] -> recv();
@@ -191,7 +190,7 @@ bool Witching :: func() //女巫使用毒药或者解药
         }
         
         
-        if (drug == "p")    //毒人
+        if (drug == "p")    //ÊØí‰∫∫
         {
             _rel_cli[0] -> print("Please Input the player you want to poison\n");
             _rel_cli[0] -> turn_on_input();
@@ -208,13 +207,31 @@ bool Witching :: func() //女巫使用毒药或者解药
     return true;
 }
 
-Voting::Voting(std::vector<Client>* _all, Process* hunt,Process* Po_passing ):Process(_all), ht(hunt),Po_p(Po_passing){}
+bool Predicting :: func()    //预言家进行身份检测
+{
+    if (! _rel_cli[0] -> selfCharacter() -> is_dead()) //预言家没死
+    {
+        _rel_cli[0] -> print("Please input the player number you want to see");
+        _rel_cli[0] -> turn_on_input();
+        std::string player = _rel_cli[0] -> recv();
+        int t = (*allclient)[atoi(player.c_str()) - 1].selfCharacter() -> type();
+        if (t == 1)
+            _rel_cli[0] -> print("The identity of the player is werewolf");
+        else
+            _rel_cli[0] -> print("The identity of the player is goodman\n");
+        writelog(SEER, PREDICT, atoi(player.c_str()) - 1);
+    }
+    return true;
+}
+
+Voting::Voting(std::vector<Client>* _all, Process* hunt,Process* Po_passing ,Process* chat):Process(_all), ht(hunt),Po_p(Po_passing),_Chat(chat){}
 Po_passing::Po_passing(std::vector<Client>* _all):Process(_all){}
 bool Voting::func(){
+    _Chat->begin();
     int n=allclient->size();
-    bool isalive[n];//”–À≠‘⁄≥�?
-    double num[n];//º«¬º√ø∏ˆ»À±ªÕ∂∆± ˝
-    int voteinfo[n];//º«¬º√ø∏ˆ»ÀÕ∂∆±«Èøˆ
+    bool isalive[n];//‚Äù‚Äì√Ä‚â†‚Äò‚ÅÑ‚â•¬?
+    double num[n];//¬∫¬´¬¨¬∫‚àö√∏‚àèÀÜ¬ª√Ä¬±¬™√ï‚àÇ‚àÜ¬±¬†Àù
+    int voteinfo[n];//¬∫¬´¬¨¬∫‚àö√∏‚àèÀÜ¬ª√Ä√ï‚àÇ‚àÜ¬±¬´√à√∏ÀÜ
     std::vector<int> player;
     for(int i=0;i<n;i++){
         isalive[i]=!(*allclient)[i].selfCharacter()->is_dead();
@@ -228,7 +245,7 @@ bool Voting::func(){
         voted+=" "+std::to_string(i+1);
     }
     voted+=".\n";
-    if(have_police>=0){//æØ≥§πÈ∆�?
+    if(have_police>=0){//√¶√ò‚â•¬ßœÄ√à‚àÜ¬?
         (*allclient)[have_police].print("Please vote a Player!\n");
         (*allclient)[have_police].turn_on_input();
         std::string pt=(*allclient)[have_police].recv();
@@ -240,7 +257,7 @@ bool Voting::func(){
         voteinfo[have_police]=atoi(pt.c_str())-1;
         num[atoi(pt.c_str())-1]+=1.5;
     }
-    for(int i=0;i<n;i++)//∆‰”‡»ÀÕ∂∆±
+    for(int i=0;i<n;i++)//‚àÜ‚Ä∞‚Äù‚Ä°¬ª√Ä√ï‚àÇ‚àÜ¬±
         if(isalive[i]||i!=have_police){
             (*allclient)[i].print("Please vote!\n"+voted);
             if(have_police>=0)
@@ -255,24 +272,24 @@ bool Voting::func(){
             voteinfo[i]=atoi(tgt.c_str())-1;
             num[atoi(tgt.c_str())-1]+=1.0;
         }
-    double maxx=0;//∆± ˝µƒ◊Ó¥Û÷µ
-    std::vector<int> maxnum;//∆± ˝◊Ó¥Ûµƒ»Ù∏…√˚ÕÊº“µƒ±‡∫�?
+    double maxx=0;//‚àÜ¬±¬†Àù¬µ∆í‚óä√ì¬•√õ√∑¬µ
+    std::vector<int> maxnum;//‚àÜ¬±¬†Àù‚óä√ì¬•√õ¬µ∆í¬ª√ô‚àè‚Ä¶‚àöÀö√ï√ä¬∫‚Äú¬µ∆í¬±‚Ä°‚à´‚â?
     for(int i=0;i<n;i++)
         if(num[i]>maxx)
             maxx=num[i];
     for(int i=0;i<n;i++)
         if(abs(num[i]-maxx)<1e-9)
             maxnum.push_back(i);
-    std::string s="";//–Ë“™¥Ú”°µƒÕ∂∆±–≈œ¢
+    std::string s="";//‚Äì√ã‚Äú‚Ñ¢¬•√ö‚Äù¬∞¬µ∆í√ï‚àÇ‚àÜ¬±‚Äì‚âà≈ì¬¢
     for(int i=0;i<n;i++)
         if(isalive[i])
             s+="Player "+std::to_string(i+1)+" votes to Player "+std::to_string(voteinfo[i]+1)+".\n";
     
-    for(int i=0;i<n;i++)//π´≤ºÕ∂∆±–≈œ¢
+    for(int i=0;i<n;i++)//œÄ¬¥‚â§¬∫√ï‚àÇ‚àÜ¬±‚Äì‚âà≈ì¬¢
         if(isalive[i])
             (*allclient)[i].print(s);
     
-    std::vector<int> deadnum;//À¿’ﬂ–≈œ¢
+    std::vector<int> deadnum;//√Ä¬ø‚ÄôÔ¨Ç‚Äì‚âà≈ì¬¢
     if(maxnum.size()==1){
         (*allclient)[maxnum[0]].selfCharacter()->set_dead();
         isalive[maxnum[0]]=0;
@@ -291,8 +308,8 @@ bool Voting::func(){
          (*allclient)[maxnum[0]].turn_on_input();
          std::string choice=(*allclient)[maxnum[0]].recv();
          if(choice=="Y"){
-         bool end=!ht->begin();//øº¬«¡‘»À…±»À∫ÛΩ·À�?/
-        /*
+         bool end=!ht->begin();//√∏¬∫¬¨¬´¬°‚Äò¬ª√Ä‚Ä¶¬±¬ª√Ä‚à´√õŒ©¬∑√Ä‚Ä?/
+         /*
          if(end)
          return false;
          }
@@ -300,7 +317,7 @@ bool Voting::func(){
          */
         /*
          for(int i=0;i<n;i++)
-         isalive[i]=!(*allclient)[i].selfCharacter()->is_dead();//∏¸–¬isalive[]*/
+         isalive[i]=!(*allclient)[i].selfCharacter()->is_dead();//‚àè¬∏‚Äì¬¨isalive[]*/
         /*
          for(int i=0;i<n;i++)
          if(isalive[i]||i==maxnum[0])
@@ -366,9 +383,9 @@ bool Voting::func(){
         }
         for(int i=0;i<n;i++)
             (*allclient)[i].print("Round 2 Chat end.\nRound 2 Voting start.\n");
-        int num2[n];//√ø∏ˆ»À±ªÕ∂∆±
-        int voteinfo2[n];//√ø∏ˆ»ÀÕ∂∏¯À�?
-        int maxx=0;//◊Ó∂‡∆± ˝
+        int num2[n];//‚àö√∏‚àèÀÜ¬ª√Ä¬±¬™√ï‚àÇ‚àÜ¬±
+        int voteinfo2[n];//‚àö√∏‚àèÀÜ¬ª√Ä√ï‚àÇ‚àè¬Ø√Ä‚â?
+        int maxx=0;//‚óä√ì‚àÇ‚Ä°‚àÜ¬±¬†Àù
         bool canvote[n];
         for(int i=0;i<n;i++){
             num2[i]=0;
@@ -382,7 +399,7 @@ bool Voting::func(){
         for(int i=0;i<maxnum.size();i++)
             sec+=" "+std::to_string(maxnum[i]+1);
         sec+=".\n";
-        maxnum.clear();//«Âø’◊Ó∂‡∆± ˝µƒÕÊº“–Ú¡�?
+        maxnum.clear();//¬´√Ç√∏‚Äô‚óä√ì‚àÇ‚Ä°‚àÜ¬±¬†Àù¬µ∆í√ï√ä¬∫‚Äú‚Äì√ö¬°‚Ä?
         for(int i=0;i<n;i++){
             if(isalive[i]&&canvote[i]){
                 (*allclient)[i].print("Please vote!\n"+sec);
@@ -402,21 +419,21 @@ bool Voting::func(){
         for(int i=0;i<n;i++)
             if(num2[i]==maxx)
                 maxnum.push_back(i);
-        std::string secs="";//–Ë“™¥Ú”°µƒÕ∂∆±–≈œ¢
+        std::string secs="";//‚Äì√ã‚Äú‚Ñ¢¬•√ö‚Äù¬∞¬µ∆í√ï‚àÇ‚àÜ¬±‚Äì‚âà≈ì¬¢
         for(int i=0;i<n;i++)
             if(isalive[i]&&canvote[i])
                 secs+="Player "+std::to_string(i+1)+" votes to Player "+std::to_string(voteinfo2[i]+1)+".\n";
-        for(int i=0;i<n;i++)//π´≤ºÕ∂∆±–≈œ¢
+        for(int i=0;i<n;i++)//œÄ¬¥‚â§¬∫√ï‚àÇ‚àÜ¬±‚Äì‚âà≈ì¬¢
             if(isalive[i])
                 (*allclient)[i].print(s);
-        for(int i=0;i<maxnum.size();i++){//À¿Õˆ≤Ÿ◊˜
+        for(int i=0;i<maxnum.size();i++){//√Ä¬ø√ïÀÜ‚â§≈∏‚óäÀú
             (*allclient)[maxnum[i]].selfCharacter()->set_dead();
             //	isalive[maxnum[i]]=0;
             writelog(ALL,VOTE,maxnum[i]);
             deadnum.push_back(maxnum[i]);
         }
     }
-    //π´≤ºÀ¿’ﬂ–≈œ¢º∞Ω¯––∫Û–¯¥¶¿�?
+    //œÄ¬¥‚â§¬∫√Ä¬ø‚ÄôÔ¨Ç‚Äì‚âà≈ì¬¢¬∫‚àûŒ©¬Ø‚Äì‚Äì‚à´√õ‚Äì¬Ø¬•¬∂¬ø√?
     std::string deathinfo="Player";
     for(int i=0;i<deadnum.size();i++)
         deathinfo+=" "+std::to_string(deadnum[i]+1);
@@ -427,15 +444,15 @@ bool Voting::func(){
     bool isend=is_end();
     if(isend)
         return false;
-    else{//”Œœ∑≤¢Œ¥Ω· �?Ω¯––æØ≥§∑…æØª’∫Õ¡‘»Àø™«π
+    else{//‚Äù≈í≈ì‚àë‚â§¬¢≈í¬•Œ©¬∑¬†¬?Œ©¬Ø‚Äì‚Äì√¶√ò‚â•¬ß‚àë‚Ä¶√¶√ò¬™‚Äô‚à´√ï¬°‚Äò¬ª√Ä√∏‚Ñ¢¬´œÄ
         bool flag1=0;
         bool flag2=0;
         for(int i=0;i<deadnum.size();i++)
             if(deadnum[i]==have_police){
                 flag1=1;
-				break;
+                break;
             }
-        if(flag1)//æØ≥§∑…æØª�?
+        if(flag1)//√¶√ò‚â•¬ß‚àë‚Ä¶√¶√ò¬™‚Ä?
             Po_p->begin();
         
         for(int i=0;i<deadnum.size();i++)
@@ -443,18 +460,18 @@ bool Voting::func(){
                 flag2=deadnum[i];
                 break;
             }
-        if(flag2>=0){//¡‘»Àø™«π
+        if(flag2>=0){//¬°‚Äò¬ª√Ä√∏‚Ñ¢¬´œÄ
             ht->begin();
             bool isend2=is_end();
             if(isend2)
                 return false;
-            else{//æØ≥§∑…æØª�?
+            else{//√¶√ò‚â•¬ß‚àë‚Ä¶√¶√ò¬™‚Ä?
                 int behunt=(*readlog())[readlog()->size()-1]._geter;
                 if(behunt==have_police)
                     Po_p->begin();
             }
         }
-        //“≈—‘≥¬ ˆ
+        //‚Äú‚âà‚Äî‚Äò‚â•¬¨¬†ÀÜ
         deadnum.clear();
         for(int i=_log.size()-1;i>=0;i--)
             if(_log[i]._act==VOTE||_log[i]._act==SHOOT)
@@ -521,34 +538,42 @@ bool Voting::is_end(){
     return true;
 }
 void Calculating::find_dead(){
-	for(int i = 0; i < (*allclient).size(); i++){
-		if((*_log)[1]._geter == i){
-			(*allclient)[i].selfCharacter() -> set_dead();
-		}
-	}
-}
-bool Calculating::is_guarded(int i){
-    if((*_log)[0]._geter == i){
-        return true;
+    for(int j = 0; j < (*_log).size(); j++){
+        if((*_log)[j]._act == 0){
+            (*allclient)[(*_log)[j]._geter].selfCharacter() -> set_dead();
+        }
     }
-    return false;
+}
+bool Calculating::cal_guard(int i){
+    /*if((*_log)[0]._geter == i){
+     return true;
+     }*/
+    return (*allclient)[i].selfCharacter()->is_guarded();
 }
 
 bool Calculating::is_saved(int i){
-    if((*_log)[1]._geter == i && (*_log)[1]._act == 2){
-        return true;
+    for(int i = 0; i < (*_log).size(); i++){
+        if((*_log)[i]._act == 2){
+            if((*_log)[i]._geter == i){
+                return true;
+            }
+        }
     }
     return false;
 }
 
 bool Calculating::is_poisoned(int i){
-    if((*_log)[1]._geter == i && (*_log)[1]._act == 1){
-        return true;
+    for(int i = 0; i < (*_log).size(); i++){
+        if((*_log)[i]._act == 1){
+            if((*_log)[i]._geter == i){
+                return true;
+            }
+        }
     }
     return false;
 }
 
-bool Calculating::calculatewolf(){//∑÷æØª’∫Õ∑…æØª’√ª”– µœ÷
+bool Calculating::calculatewolf(){//‚àë√∑√¶√ò¬™‚Äô‚à´√ï‚àë‚Ä¶√¶√ò¬™‚Äô‚àö¬™‚Äù‚Äì ¬µ≈ì√∑
     int sum = 0;
     int num = 0;
     std::vector<Client>& m = *allclient;
@@ -556,16 +581,19 @@ bool Calculating::calculatewolf(){//∑÷æØª’∫Õ∑…æØª’√ª”�
         if(m[i].selfCharacter() -> type() == 1){
             sum++;
             if(m[i].selfCharacter() -> is_dead() == true){
-                if(is_guarded(i) && is_saved(i)){
+                if(cal_guard(i) && is_saved(i)){
                     num++;
+                    if(m[i].selfCharacter() -> type() == 3){
+                        hunting = true;
+                    }
                     if(m[i].selfCharacter() -> is_police()){
                         officer = i;
                     }
                     
                     //willing(&m[i]);
                 }
-                else if(is_guarded(i)){
-                    m[i].selfCharacter() -> set_alive();//±ª ÿŒ¿µƒ»À÷™µ¿◊‘º∫±ª ÿŒ¿√¥£ø
+                else if(cal_guard(i)){
+                    m[i].selfCharacter() -> set_alive();//¬±¬™ √ø≈í¬ø¬µ∆í¬ª√Ä√∑‚Ñ¢¬µ¬ø‚óä‚Äò¬∫‚à´¬±¬™ √ø≈í¬ø‚àö¬•¬£√∏
                 }
                 else if(is_saved(i)){
                     m[i].selfCharacter() -> set_alive();
@@ -581,6 +609,9 @@ bool Calculating::calculatewolf(){//∑÷æØª’∫Õ∑…æØª’√ª”�
             else{
                 if(is_poisoned(i)){
                     num++;
+                    if(m[i].selfCharacter() -> type() == 3){
+                        hunting = true;
+                    }
                     if(m[i].selfCharacter() -> is_police()){
                         officer = i;
                     }
@@ -588,61 +619,67 @@ bool Calculating::calculatewolf(){//∑÷æØª’∫Õ∑…æØª’√ª”�
                 }
             }
         }
-        if(num == sum){
-            return true;
-        }
-        return false;
     }
-    return true;
+    if(num == sum){
+        return true;
+    }
+    return false;
+    
 }
 
 bool Calculating::calculatepeo(){
     int sum = 0;
     int num = 0;
     std::vector<Client>& m = *allclient;
-    for(auto i = 0; i < m.size(); i++){
-        for(auto i = 0; i < m.size(); i++){
-            if(m[i].selfCharacter() -> type() == 2){
-                sum++;
-                if(m[i].selfCharacter() -> is_dead() == true){
-                    if(is_guarded(i) && is_saved(i)){
-                        num++;
-                        if(m[i].selfCharacter() -> is_police()){
-                            officer = i;
-                        }
-                        //willing(&m[i]);
+    for(int i = 0; i < m.size(); i++){
+        if(m[i].selfCharacter() -> type() == 2){
+            sum++;
+            if(m[i].selfCharacter() -> is_dead() == true){
+                if(cal_guard(i) && is_saved(i)){
+                    num++;
+                    if(m[i].selfCharacter() -> type() == 3){
+                        hunting = true;
                     }
-                    else if(is_guarded(i)){
-                        m[i].selfCharacter() -> set_alive();//±ª ÿŒ¿µƒ»À÷™µ¿◊‘º∫±ª ÿŒ¿√¥£ø
+                    if(m[i].selfCharacter() -> is_police()){
+                        officer = i;
                     }
-                    else if(is_saved(i)){
-                        m[i].selfCharacter() -> set_alive();
-                    }
-                    else{
-                        num++;
-                        if(m[i].selfCharacter() -> is_police()){
-                            officer = i;
-                        }
-                        //willing(&m[i]);
-                    }
+                    //willing(&m[i]);
+                }
+                else if(cal_guard(i)){
+                    m[i].selfCharacter() -> set_alive();//¬±¬™ √ø≈í¬ø¬µ∆í¬ª√Ä√∑‚Ñ¢¬µ¬ø‚óä‚Äò¬∫‚à´¬±¬™ √ø≈í¬ø‚àö¬•¬£√∏
+                }
+                else if(is_saved(i)){
+                    m[i].selfCharacter() -> set_alive();
                 }
                 else{
-                    if(is_poisoned(i)){
-                        num++;
-                        if(m[i].selfCharacter() -> is_police()){
-                            officer = i;
-                        }
-                        //willing(&m[i]);
+                    num++;
+                    if(m[i].selfCharacter() -> type() == 3){
+                        hunting = true;
                     }
+                    if(m[i].selfCharacter() -> is_police()){
+                        officer = i;
+                    }
+                    //willing(&m[i]);
+                }
+            }
+            else{
+                if(is_poisoned(i)){
+                    num++;
+                    if(m[i].selfCharacter() -> type() == 3){
+                        hunting = true;
+                    }
+                    if(m[i].selfCharacter() -> is_police()){
+                        officer = i;
+                    }
+                    //willing(&m[i]);
                 }
             }
         }
-        if(num == sum){
-            return true;
-        }
-        return false;
     }
-    return true;
+    if(num == sum){
+        return true;
+    }
+    return false;
 }
 
 bool Calculating::calculategod(){
@@ -650,24 +687,31 @@ bool Calculating::calculategod(){
     int num = 0;
     std::vector<Client>& m = *allclient;
     for(auto i = 0; i < m.size(); i++){
-        if((m[i].selfCharacter() -> type() != 1 )&&(m[i].selfCharacter() -> type() != 2) && (m[i].selfCharacter() -> type() != 3)){
-            sum++;	
+        if((m[i].selfCharacter() -> type() != 1 )&&(m[i].selfCharacter() -> type() != 2)){
+            sum++;
             if(m[i].selfCharacter() -> is_dead() == true){
-                if(is_guarded(i) && is_saved(i)){
+                if(cal_guard(i) && is_saved(i)){
                     num++;
+                    if(m[i].selfCharacter() -> type() == 3){
+                        hunting = true;
+                    }
                     if(m[i].selfCharacter() -> is_police()){
                         officer = i;
                     }
                     //willing(&m[i]);
                 }
-                else if(is_guarded(i)){
-                    m[i].selfCharacter() -> set_alive();//±ª ÿŒ¿µƒ»À÷™µ¿◊‘º∫±ª ÿŒ¿√¥£ø
+                else if(cal_guard(i)){
+                    m[i].selfCharacter() -> set_alive();//¬±¬™ √ø≈í¬ø¬µ∆í¬ª√Ä√∑‚Ñ¢¬µ¬ø‚óä‚Äò¬∫‚à´¬±¬™ √ø≈í¬ø‚àö¬•¬£√∏
                 }
                 else if(is_saved(i)){
                     m[i].selfCharacter() -> set_alive();
                 }
                 else{
                     num++;
+                    if(m[i].selfCharacter() -> type() == 3){
+                        hunting = true;
+                    }
+                    
                     if(m[i].selfCharacter() -> is_police()){
                         officer = i;
                     }
@@ -677,6 +721,9 @@ bool Calculating::calculategod(){
             else{
                 if(is_poisoned(i)){
                     num++;
+                    if(m[i].selfCharacter() -> type() == 3){
+                        hunting = true;
+                    }
                     if(m[i].selfCharacter() -> is_police()){
                         officer = i;
                     }
@@ -692,15 +739,15 @@ bool Calculating::calculategod(){
 }
 
 bool Calculating::func(){
-	find_dead();
+    find_dead();
     if(_calibra == 1){
         if(calculatewolf() || calculatepeo() || calculategod()){
             return false;
         }
         else{
-			if((*allclient)[officer].selfCharacter() -> is_police()){
-				_po -> func();
-			}
+            if((*allclient)[officer].selfCharacter() -> is_police()){
+                _po -> begin();
+            }
             return true;
         }
         
@@ -709,17 +756,17 @@ bool Calculating::func(){
         if(calculatewolf() || calculategod() || calculatepeo()){
             return false;
         }
-		else{
-			if((*allclient)[officer].selfCharacter() -> is_police()){
-				_po -> func();
-			}
-			return true;
-		}
+        else{
+            if((*allclient)[officer].selfCharacter() -> is_police()){
+                _po -> begin();
+            }
+            return true;
         }
     }
+}
 
 
-bool check(int* a, int size, int k) //检测数组中有没有某个元素k
+bool check(int* a, int size, int k) //Ê£ÄÊµãÊï∞ÁªÑ‰∏≠ÊúâÊ≤°ÊúâÊüê‰∏™ÂÖÉÁ¥†k
 {
     for (int i = 0; i < size; i++)
         if (a[i] == k) return true;
@@ -836,13 +883,19 @@ bool Po_electing :: func()  //选举警长
                 
                 (*allclient)[i].print("Please input the player you want to choose to be the police again\n");
                 (*allclient)[i].turn_on_input();
-                std::string ans = (*allclient)[i].recv();
-                for (int l = 0; l < cnt; l++)
+                if (!(*allclient)[i].selfCharacter() -> is_dead() && !check(num, cnt, i))  //没有死且不参加竞选
                 {
-                    if (num[l] == atoi(ans.c_str()))    //找到相应的人并计票
+                    
+                    (*allclient)[i].print("Please input the player you want to choose to be the police again\n");
+                    (*allclient)[i].turn_on_input();
+                    std::string ans = (*allclient)[i].recv();
+                    for (int l = 0; l < cnt; l++)
                     {
-                        tot_poll[l] += 1;
-                        break;
+                        if (num[l] == atoi(ans.c_str()))    //找到相应的人并计票
+                        {
+                            tot_poll[l] += 1;
+                            break;
+                        }
                     }
                 }
             }
@@ -924,7 +977,7 @@ Chat :: Chat(std::vector<Client>* _cli) : Process(_cli)
     size = _cli -> size();
 }
 
-void Chat :: read()//获取dead_num,dead_player[],
+void Chat :: read()//Ëé∑Âèñdead_num,dead_player[],
 {
     
     int bite_man = -1;
@@ -933,7 +986,7 @@ void Chat :: read()//获取dead_num,dead_player[],
     int guard_man = -1;
     memset(dead_player, -1, sizeof(dead_player));
     _log = readlog();
-    for(int i=0 ; i<_log -> size() ; i++)//判断有没有被咬或者被毒,被守卫，被救
+    for(int i=0 ; i<_log -> size() ; i++)//Âà§Êñ≠ÊúâÊ≤°ÊúâË¢´Âí¨ÊàñËÄÖË¢´ÊØí,Ë¢´ÂÆàÂç´ÔºåË¢´Êïë
     {
         if((*_log)[i]._act == BITE)
             bite_man = (*_log)[i]._geter;
@@ -944,19 +997,19 @@ void Chat :: read()//获取dead_num,dead_player[],
         if((*_log)[i]._act == GUARDING)
             guard_man = (*_log)[i]._geter;
     }
-    for(int i=0 ; i<size ; i++)//判断有没有被守卫或者被救
+    for(int i=0 ; i<size ; i++)//Âà§Êñ≠ÊúâÊ≤°ÊúâË¢´ÂÆàÂç´ÊàñËÄÖË¢´Êïë
     {
-        if((bite_man == i)&&(poison_man != i)&&(guard_man != i))//被咬，不被救，不被守卫
+        if((bite_man == i)&&(poison_man != i)&&(guard_man != i))//Ë¢´Âí¨Ôºå‰∏çË¢´ÊïëÔºå‰∏çË¢´ÂÆàÂç´
         {
             dead_num++;
             dead_player[dead_num]=i;
         }
-        if((poison_man == i)&&(guard_man != i)) //  被毒，不被守卫
+        if((poison_man == i)&&(guard_man != i)) //  Ë¢´ÊØíÔºå‰∏çË¢´ÂÆàÂç´
         {
             dead_num++;
             dead_player[dead_num]=i;
         }
-        if((bite_man == i)&&(poison_man == i)&&(guard_man = i))//被咬，同守同救
+        if((bite_man == i)&&(poison_man == i)&&(guard_man = i))//Ë¢´Âí¨ÔºåÂêåÂÆàÂêåÊïë
         {
             dead_num++;
             dead_player[dead_num]=i;
@@ -1071,7 +1124,7 @@ void Chat :: left()
 bool Chat :: func()
 {
     read();
-    for(int i=0 ; i < size ; i++)//遗言环节
+    for(int i=0 ; i < size ; i++)//ÈÅóË®ÄÁéØËäÇ
     {
         for(int j=1 ; j<=dead_num ; j++)
         {
@@ -1087,16 +1140,16 @@ bool Chat :: func()
     }
     for(int i=0 ; i < size ; i++)
     {
-        if(have_police == i)//i是警长
+        if(have_police == i)//iÊòØË≠¶Èïø
         {
-            police=1;//表示有警长存在
+            police=1;//Ë°®Á§∫ÊúâË≠¶ÈïøÂ≠òÂú®
             if (dead_num==1)
             {
                 start_one=dead_player[1];
                 client[i].print("Please choose left or right:");
                 client[i].turn_on_input();;
                 std::string p = client[i].recv();
-                if( p == "right")//向右
+                if( p == "right")//ÂêëÂè≥
                     right();
                 else
                     left();
@@ -1107,7 +1160,7 @@ bool Chat :: func()
                 client[i].print("Please choose left or right:");
                 client[i].turn_on_input();
                 std::string p = client[i].recv();
-                if( p == "right")//向右
+                if( p == "right")//ÂêëÂè≥
                     right();
                 else
                     left();
@@ -1116,13 +1169,13 @@ bool Chat :: func()
         else
             continue;
     }
-    if(police==0)//警长不存在的情况
+    if(police==0)//Ë≠¶Èïø‰∏çÂ≠òÂú®ÁöÑÊÉÖÂÜµ
     {
         if(dead_num==1)
         {
             start_one = dead_player[1];
             srand( (unsigned)time( NULL ) );
-            int left_right = rand() % 2;//0为左，1为右
+            int left_right = rand() % 2;//0‰∏∫Â∑¶Ôºå1‰∏∫Âè≥
             if(left_right==1)
                 right();
             else
@@ -1149,12 +1202,12 @@ bool Hunting :: func()
     std::vector <Client>& tep_cli = *_cli;
     for(int i = 0 ; i < tep_cli.size() ; i++)
     {
-        if(tep_cli[i].selfCharacter() -> type() == 3)//判断是不是猎人
+        if(tep_cli[i].selfCharacter() -> type() == 3)//Âà§Êñ≠ÊòØ‰∏çÊòØÁåé‰∫∫
         {
             tep_cli[i].print("Please choose a man you want to kill");
             tep_cli[i].turn_on_input();
             std::string s = tep_cli[i].recv();
-            int x = std::atoi(s.c_str());//杀死第几客户端
+            int x = std::atoi(s.c_str());//ÊùÄÊ≠ªÁ¨¨Âá†ÂÆ¢Êà∑Á´Ø
             tep_cli[x].selfCharacter() ->set_dead();
         }
     }
