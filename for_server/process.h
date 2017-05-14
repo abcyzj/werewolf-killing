@@ -2,7 +2,7 @@
 #define PROCESS_H
 
 #include "character.h"
-#include "client_test.h"
+#include "client.h"
 #include <vector>
 namespace Werewolf
 {
@@ -44,7 +44,7 @@ namespace Werewolf
     protected:
         bool func();
     public:
-        Guarding(std::vector<Client> *cli) : Process(cli){};
+        Guarding(std::vector<Client> *cli);
     };
     
     class Killing : public Process //狼人杀人
@@ -52,7 +52,7 @@ namespace Werewolf
     protected:
         bool func();
     public:
-        Killing(std::vector<Client> *cli) : Process(cli){};
+        Killing(std::vector<Client> *cli);
     };
     
     class Witching : public Process//女巫
@@ -60,7 +60,7 @@ namespace Werewolf
     protected:
         bool func();
     public:
-        Witching(std::vector<Client> *cli) : Process(cli){};
+        Witching(std::vector<Client> *cli);
     };
     
     class Predicting : public Process   //预言家
@@ -68,7 +68,7 @@ namespace Werewolf
     protected:
         bool func();
     public:
-        Predicting(std::vector<Client> *cli) : Process(cli){};
+        Predicting(std::vector<Client> *cli);
     };
     
     class Calculating : public Process
@@ -102,7 +102,7 @@ namespace Werewolf
     protected:
         bool func();
     public:
-        Po_electing(std::vector<Client> *cli) : Process(cli){};
+        Po_electing(std::vector<Client> *cli);
     };
     
     class Hunting;
@@ -127,7 +127,7 @@ namespace Werewolf
         friend class Calculating;
         bool func();
     public:
-        Hunting(std::vector<Client> *cli) : Process(cli), _cli(cli){};
+        Hunting(std::vector<Client> *cli);
     };
     
     class Po_passing:public Process

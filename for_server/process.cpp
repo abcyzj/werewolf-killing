@@ -62,6 +62,18 @@ void Process::writelog(Cha doer,Act act,int geter)
     _log.push_back(logging{doer,act,geter});
 }
 
+Killing :: Killing(std::vector<Client> *cli) : Process(cli){}
+
+Guarding :: Guarding(std::vector<Client> *cli) : Process(cli){}
+
+Witching :: Witching(std::vector<Client> *cli) : Process(cli){}
+
+Predicting :: Predicting(std::vector<Client> *cli) : Process(cli){}
+
+Po_electing :: Po_electing(std::vector<Client> *cli) : Process(cli){}
+
+Hunting :: Hunting(std::vector<Client> *cli) : Process(cli), _cli(cli){}
+
 bool Guarding :: func()
 {
     dynamic_cast<Guard*>(_rel_cli[0] -> selfCharacter()) -> who_i_guard(-1);    //Â∞ÜÂÆàÂç´ÁöÑ‰∫∫ÁΩÆ‰∏?1
@@ -551,10 +563,10 @@ bool Calculating::cal_guard(int i){
     return (*allclient)[i].selfCharacter()->is_guarded();
 }
 
-bool Calculating::is_saved(int i){
+bool Calculating::is_saved(int cnt){
     for(int i = 0; i < (*_log).size(); i++){
         if((*_log)[i]._act == 2){
-            if((*_log)[i]._geter == i){
+            if((*_log)[i]._geter == cnt){
                 return true;
             }
         }
@@ -637,9 +649,6 @@ bool Calculating::calculatepeo(){
             if(m[i].selfCharacter() -> is_dead() == true){
                 if(cal_guard(i) && is_saved(i)){
                     num++;
-                    if(m[i].selfCharacter() -> type() == 3){
-                        hunting = true;
-                    }
                     if(m[i].selfCharacter() -> is_police()){
                         officer = i;
                     }
@@ -766,18 +775,26 @@ bool Calculating::func(){
 }
 
 
-bool check(int* a, int size, int k) //Ê£ÄÊµãÊï∞ÁªÑ‰∏≠ÊúâÊ≤°ÊúâÊüê‰∏™ÂÖÉÁ¥†k
+bool check(int* a, int size, int k) //检查数组a中有没有元素k
 {
     for (int i = 0; i < size; i++)
-        if (a[i] == k) return true;
+    {
+        if (a[i] == k)
+            return true;
+    }
     return false;
 }
 
 bool Po_electing :: func()  //选举警长
 {
-    have_police = -1; //没有警长，否则表示玩家编号
-    int *num, cnt = 0;   //num中存竞选警长的人的编号，cnt表示竞选警长的人的个数
-    int *tot_poll;  //记录每个竞选警长的玩家所得票数，与num相对应
+    have_police = -1; //-1表示没有警长，否则表示玩家编号
+    int num[(*allclient).size() + 1], cnt = 0;   //num中存竞选警长的人的编号，cnt表示竞选警长的人的个数
+    int tot_poll[(*allclient).size() + 1];  //记录每个竞选警长的玩家所得票数，与num相对应
+    for (int i = 0; i < (*allclient).size(); i++)
+    {
+        tot_poll[i] = 0;
+        num[i] = 0;
+    }
     int max_poll = 0;   //表示最大票数，防止有重复要重新计票
     for (int i = 0; i < (*allclient).size(); i++)   //遍历询问想当警长的人
     {
@@ -791,33 +808,42 @@ bool Po_electing :: func()  //选举警长
         }
     }
     
-    for (int i = 0; i < cnt && num[i] != 0; i++)
+    for (int i = 0; i < cnt; i++)
     {
-        (*allclient)[num[i]].print("Please input your Declaration of candidacy\n");
-        (*allclient)[num[i]].turn_on_input();
-        std::string words = (*allclient)[num[i]].recv(); //接受竞选宣言
-        for (int j = 0; j < (*allclient).size(); j++)//将竞选宣言发给所有玩家
-            (*allclient)[j].print("words from player " + std::to_string(num[i]) + " is" + words);
-        
-        
-        for (int j = 0; j < cnt && num[j] != 0; j++)    //每位竞选者发言后询问是否有人退出竞选
+        if (num[i] != 0)
         {
-            (*allclient)[num[j]].print("Do you want to quit electing, q or n");
-            (*allclient)[num[j]].turn_on_input();
-            std::string ans = (*allclient)[num[j]].recv();   //得到信息是否退水
-            if (ans[0] == 'q')
-                num[j] = 0;  //退水则将编号置为0
+            (*allclient)[num[i] - 1].print("Please input your Declaration of candidacy\n");
+            (*allclient)[num[i] - 1].turn_on_input();
+            std::string words = (*allclient)[num[i] - 1].recv(); //接受竞选宣言
+            for (int j = 0; j < (*allclient).size(); j++)//将竞选宣言发给所有玩家
+            {
+                if(!((*allclient)[j].selfCharacter() -> is_dead()))
+                {
+                    (*allclient)[j].print("words from player " + std::to_string(num[i]) + " is: " + words);
+                }
+            }
+            
+            for (int j = 0; j < cnt; j++)    //每位竞选者发言后询问是否有人退出竞选
+            {
+                if (num[j] != 0)
+                {
+                    (*allclient)[num[j] - 1].print("Do you want to quit electing, y or n");
+                    (*allclient)[num[j] - 1].turn_on_input();
+                    std::string ans = (*allclient)[num[j] - 1].recv();   //得到信息是否退水
+                    if (ans[0] == 'y')
+                        num[j] = 0;  //退水则将编号置为0
+                }
+            }
         }
-        
     }
     for (int i = 0; i < (*allclient).size(); i++)
     {
-        if (! (*allclient)[i].selfCharacter() -> is_dead() && !check(num, cnt, i))  //没有死且不参加竞选
+        if (! (*allclient)[i].selfCharacter() -> is_dead() && !check(num, cnt, i + 1))  //没有死且不参加竞选
         {
             for (int j = 0; j < cnt; j++)
             {
-                if (num[i])
-                    (*allclient)[i].print("player involved in election include " + std::to_string(num[i]));
+                if (num[j])
+                    (*allclient)[i].print("Player involved in election include " + std::to_string(num[j]));
             }
             (*allclient)[i].print("Please input the player you want to choose to be the police\n");
             (*allclient)[i].turn_on_input();
@@ -842,64 +868,77 @@ bool Po_electing :: func()  //选举警长
             target = i;
         }
     }
+    // for (int i = 0; i < cnt; i++)
+    //{
+    //  std::cout << num[i] << " " << tot_poll[i] << std::endl;
+    //}
     std::vector<int> rep;    //计算有最大票数的人数
     for (int i = 0; i < cnt; i++)
     {
         if (tot_poll[i] == max_poll)
+        {
+            //std::cout << "player " << num[i] << "is max";
             rep.push_back(num[i]);
+            //std::cout << std::endl;
+        }
     }
     if(rep.size() == 1)    have_police = target;   //警长
     else    //有多人同票
     {
         for (int i = 0; i < (*allclient).size(); i++) //向每个人发送消息
         {
-            for (int j = 0; j < rep.size(); j++)
+            if (! (*allclient)[i].selfCharacter() -> is_dead())
             {
-                (*allclient)[i].print("Player " + std::to_string(rep[j]) + " have the same poll, please say and vote again");
+                for (int j = 0; j < rep.size(); j++)
+                {
+                    (*allclient)[i].print("Player " + std::to_string(rep[j]) + " have the same poll, please say and vote again");
+                }
             }
         }
         for (int i = 0; i < rep.size(); i++) //同票者重新发言
         {
-            (*allclient)[rep[i]].print("Please input your declaration again\n");
-            (*allclient)[rep[i]].turn_on_input();
-            std::string words = (*allclient)[rep[i]].recv();
-            for (int j = 0; j < (*allclient).size(); i++)
-                (*allclient)[j].print(words);
-        }
-        for (int i = 0; i < cnt; i++)
-        {
-            for (int j = 0; j < rep.size(); j++)
+            (*allclient)[rep[i] - 1].print("Please input your declaration again\n");
+            (*allclient)[rep[i] - 1].turn_on_input();
+            std::string words = (*allclient)[rep[i] - 1].recv();
+            for (int j = 0; j < (*allclient).size(); j++)
             {
-                if (rep[j] == num[i])   break;
-                num[i] = 0; //将第一次竞选的票数少的踢出，后来要进行投票
+                if (!(*allclient)[j].selfCharacter() -> is_dead())
+                    (*allclient)[j].print(words);
             }
         }
+        //   for (int i = 0; i < cnt; i++)
+        //       std::cout << "player still " << num[i] << std::endl;
+        for (int i = 0; i < cnt; i++)
+        {
+            if (tot_poll[i] != max_poll)
+                num[i] = 0;
+        }
+        
         for (int i = 0; i < cnt; i++)
             tot_poll[i] = 0;    //票数清空
+        
+        // for (int i = 0; i < cnt; i++)
+        //      std::cout << "player still " << num[i] << std::endl;
         for (int i = 0; i < (*allclient).size(); i++)   //重新计票
         {
-            if (!(*allclient)[i].selfCharacter() -> is_dead() && !check(num, cnt, i))  //没有死且不参加竞选
+            if (!(*allclient)[i].selfCharacter() -> is_dead() && !check(num, cnt, i + 1))  //没有死且不参加竞选
             {
                 
                 (*allclient)[i].print("Please input the player you want to choose to be the police again\n");
                 (*allclient)[i].turn_on_input();
-                if (!(*allclient)[i].selfCharacter() -> is_dead() && !check(num, cnt, i))  //没有死且不参加竞选
+                std::string ans = (*allclient)[i].recv();
+                for (int l = 0; l < cnt; l++)
                 {
-                    
-                    (*allclient)[i].print("Please input the player you want to choose to be the police again\n");
-                    (*allclient)[i].turn_on_input();
-                    std::string ans = (*allclient)[i].recv();
-                    for (int l = 0; l < cnt; l++)
+                    if (num[l] == atoi(ans.c_str()))    //找到相应的人并计票
                     {
-                        if (num[l] == atoi(ans.c_str()))    //找到相应的人并计票
-                        {
-                            tot_poll[l] += 1;
-                            break;
-                        }
+                        tot_poll[l] += 1;
+                        break;
                     }
                 }
+                
             }
         }//重新计票结束
+        
         max_poll = 0, target = 0;
         for (int i = 0; i < cnt; i++)   //再次开始寻找最大票数
         {
@@ -916,7 +955,7 @@ bool Po_electing :: func()  //选举警长
                 rep2.push_back(num[i]);
         }
         if(rep2.size() == 1)    have_police = target;   //警长
-        //else无警长
+        else have_police = -1;
     }
     
     _valid = false; //执行完一次后直接不再可用（只竞选一次警长）
