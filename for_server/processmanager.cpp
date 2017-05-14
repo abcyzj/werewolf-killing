@@ -12,6 +12,7 @@ int ProcessManager :: calibration(){//选择屠边还是屠城
 		return (int) 2;
 	}
 }
+
 void ProcessManager::constructlist(){//基类的构造函�?!!
 	int msg = calibration();
 	Process* pro = new Hunting(_client);
@@ -48,26 +49,26 @@ void ProcessManager::constructlist(){//基类的构造函�?!!
 
 
 
-void ProcessManager :: add(Character* cha, Client* cli){//设置关联�
-	switch(cha -> type()){
-	case 1:
-		_process[1] -> add_client(cli);
-		break;
-	case 2:
-		break;
-	case 3:
-		_process[7] -> add_client(cli);
-		break;
-	case 4:
-		_process[2] -> add_client(cli);
-		break;
-	case 5:
-		_process[3] -> add_client(cli);
-		break;
-	case 6:
-		_process[0] -> add_client(cli);
-		break;
-}
+void ProcessManager :: add(Character* cha, Client* cli){//ËÆæÁΩÆÂÖ≥ËÅîÊÄ
+    switch(cha -> type()){
+        case 1:
+            _process[1] -> add_client(cli);
+            break;
+        case 2:
+            break;
+        case 3:
+            _process[7] -> add_client(cli);
+            break;
+        case 4:
+            _process[2] -> add_client(cli);
+            break;
+        case 5:
+            _process[3] -> add_client(cli);
+            break;
+        case 6:
+            _process[0] -> add_client(cli);
+            break;
+    }
 }
 
 void ProcessManager::Init(Client* cli){
@@ -78,11 +79,11 @@ void ProcessManager::Init(Client* cli){
 }
 
 void ProcessManager::Init(){
-	std::vector<Client>& client = *_client;
-	int size = client.size(); 
-	for(int i = 0;  i < size; i++){
-		Init(&client[i]);
-	}
+    std::vector<Client>& client = *_client;
+    int size = client.size();
+    for(int i = 0;  i < size; i++){
+        Init(&client[i]);
+    }
 }
 
 

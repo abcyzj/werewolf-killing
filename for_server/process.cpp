@@ -32,8 +32,8 @@ void Process :: activate()
 }
 
 int Process::get_size(){
-	return _rel_cli.size();
-} 
+    return _rel_cli.size();
+}
 
 Process* Process :: next()
 {
@@ -102,9 +102,9 @@ bool Killing::func(){
         cnt++;
         for(int i=0;i<_rel_cli.size();i++)
             if(isalive[i]){
-            	_rel_cli[i] -> print("please chat with you partner:"); 
+                _rel_cli[i] -> print("please chat with you partner:");
                 _rel_cli[i]->turn_on_input();
-                std::string words=_rel_cli[i]->recv(10);
+                std::string words=_rel_cli[i]->recv();
                 for(int j=0;j<_rel_cli.size();j++)
                     if(isalive[j])
                         _rel_cli[j]->print(words);
@@ -113,14 +113,13 @@ bool Killing::func(){
             if(isalive[i]){
                 _rel_cli[i]->print("Please input the player number you want to kill.\nPlease reach a consensus!!!\n");
                 _rel_cli[i]->turn_on_input();
-                std::string tgt=_rel_cli[i]->recv(10);
+                std::string tgt=_rel_cli[i]->recv();
                 if(i==0)
                     num=tgt[0]-'1';
                 else if(num!=tgt[0]-'1')
                     flag=false;
             }
         if(flag){
-            (*allclient)[num].selfCharacter()->set_dead();
             writelog(WOLF,BITE,num);
             break;
         }
@@ -212,7 +211,7 @@ Po_passing::Po_passing(std::vector<Client>* _all):Process(_all){}
 bool Voting::func(){
     int n=allclient->size();
     bool isalive[n];//”–À≠‘⁄≥°
-    double num[n];//º«¬º√ø∏ˆ»À±ªÕ∂∆± ˝
+    double num[n];//º«¬º√ø∏ˆ»À±ªÕ∂∆± ˝
     int voteinfo[n];//º«¬º√ø∏ˆ»ÀÕ∂∆±«Èøˆ
     std::vector<int> player;
     for(int i=0;i<n;i++){
@@ -254,8 +253,8 @@ bool Voting::func(){
             voteinfo[i]=tgt[0]-'1';
             num[tgt[0]-'1']+=1.0;
         }
-    double maxx=0;//∆± ˝µƒ◊Ó¥Û÷µ
-    std::vector<int> maxnum;//∆± ˝◊Ó¥Ûµƒ»Ù∏…√˚ÕÊº“µƒ±‡∫≈
+    double maxx=0;//∆± ˝µƒ◊Ó¥Û÷µ
+    std::vector<int> maxnum;//∆± ˝◊Ó¥Ûµƒ»Ù∏…√˚ÕÊº“µƒ±‡∫≈
     for(int i=0;i<n;i++)
         if(num[i]>maxx)
             maxx=num[i];
@@ -367,7 +366,7 @@ bool Voting::func(){
             (*allclient)[i].print("Round 2 Chat end.\nRound 2 Voting start.\n");
         int num2[n];//√ø∏ˆ»À±ªÕ∂∆±
         int voteinfo2[n];//√ø∏ˆ»ÀÕ∂∏¯À≠
-        int maxx=0;//◊Ó∂‡∆± ˝
+        int maxx=0;//◊Ó∂‡∆± ˝
         bool canvote[n];
         for(int i=0;i<n;i++){
             num2[i]=0;
@@ -381,7 +380,7 @@ bool Voting::func(){
         for(int i=0;i<maxnum.size();i++)
             sec+=" "+std::to_string(maxnum[i]+1);
         sec+=".\n";
-        maxnum.clear();//«Âø’◊Ó∂‡∆± ˝µƒÕÊº“–Ú¡–
+        maxnum.clear();//«Âø’◊Ó∂‡∆± ˝µƒÕÊº“–Ú¡–
         for(int i=0;i<n;i++){
             if(isalive[i]&&canvote[i]){
                 (*allclient)[i].print("Please vote!\n"+sec);
@@ -426,7 +425,7 @@ bool Voting::func(){
     bool isend=is_end();
     if(isend)
         return false;
-    else{//”Œœ∑≤¢Œ¥Ω· ¯ Ω¯––æØ≥§∑…æØª’∫Õ¡‘»Àø™«π
+    else{//”Œœ∑≤¢Œ¥Ω· ¯ Ω¯––æØ≥§∑…æØª’∫Õ¡‘»Àø™«π
         bool flag1=0;
         bool flag2=0;
         for(int i=0;i<deadnum.size();i++)
@@ -453,7 +452,7 @@ bool Voting::func(){
                     Po_p->begin();
             }
         }
-        //“≈—‘≥¬ ˆ
+        //“≈—‘≥¬ ˆ
         deadnum.clear();
         for(int i=_log.size()-1;i>=0;i--)
             if(_log[i]._act==VOTE||_log[i]._act==SHOOT)
@@ -546,7 +545,7 @@ bool Calculating::is_poisoned(int i){
     return false;
 }
 
-bool Calculating::calculatewolf(){//∑÷æØª’∫Õ∑…æØª’√ª”– µœ÷
+bool Calculating::calculatewolf(){//∑÷æØª’∫Õ∑…æØª’√ª”– µœ÷
     int sum = 0;
     int num = 0;
     std::vector<Client>& m = *allclient;
@@ -563,7 +562,7 @@ bool Calculating::calculatewolf(){//∑÷æØª’∫Õ∑…æØª’√ª”�
                     //willing(&m[i]);
                 }
                 else if(is_guarded(i)){
-                    m[i].selfCharacter() -> set_alive();//±ª ÿŒ¿µƒ»À÷™µ¿◊‘º∫±ª ÿŒ¿√¥£ø
+                    m[i].selfCharacter() -> set_alive();//±ª ÿŒ¿µƒ»À÷™µ¿◊‘º∫±ª ÿŒ¿√¥£ø
                 }
                 else if(is_saved(i)){
                     m[i].selfCharacter() -> set_alive();
@@ -611,7 +610,7 @@ bool Calculating::calculatepeo(){
                         //willing(&m[i]);
                     }
                     else if(is_guarded(i)){
-                        m[i].selfCharacter() -> set_alive();//±ª ÿŒ¿µƒ»À÷™µ¿◊‘º∫±ª ÿŒ¿√¥£ø
+                        m[i].selfCharacter() -> set_alive();//±ª ÿŒ¿µƒ»À÷™µ¿◊‘º∫±ª ÿŒ¿√¥£ø
                     }
                     else if(is_saved(i)){
                         m[i].selfCharacter() -> set_alive();
@@ -640,6 +639,7 @@ bool Calculating::calculatepeo(){
         }
         return false;
     }
+    return true;
 }
 
 bool Calculating::calculategod(){
@@ -658,7 +658,7 @@ bool Calculating::calculategod(){
                     //willing(&m[i]);
                 }
                 else if(is_guarded(i)){
-                    m[i].selfCharacter() -> set_alive();//±ª ÿŒ¿µƒ»À÷™µ¿◊‘º∫±ª ÿŒ¿√¥£ø
+                    m[i].selfCharacter() -> set_alive();//±ª ÿŒ¿µƒ»À÷™µ¿◊‘º∫±ª ÿŒ¿√¥£ø
                 }
                 else if(is_saved(i)){
                     m[i].selfCharacter() -> set_alive();
@@ -966,21 +966,37 @@ void Chat :: right()
     read();
     for(int m=start_one+1; m < size; m++)
     {
-        client[m].print("Please input your massages:");
-        client[m].turn_on_input();
-        std::string s = client[m].recv();
-        client[m].turn_off_input();
-        for(int k = 0; k < size; k++)
-            client[k].print(s);
+        if(! client[m].selfCharacter() -> is_dead())
+        {
+            client[m].print("Please input your massages:");
+            client[m].turn_on_input();
+            std::string s = client[m].recv();
+            for(int k = 0; k < size; k++)
+            {
+                if(! client[k].selfCharacter() -> is_dead())
+                {
+                    client[k].print("this is player " + std::to_string(m + 1) + "\n");
+                    client[k].print(s);
+                }
+            }
+        }
     }
     for(int m = 0 ; m <start_one ; m++)
     {
-        client[m].print("Please input your massages:");
-        client[m].turn_on_input();
-        std::string s = client[m].recv();
-        client[m].turn_off_input();
-        for(int k = 0; k < size; k++)
-            client[k].print(s);
+        if(! client[m].selfCharacter() -> is_dead())
+        {
+            client[m].print("Please input your massages:");
+            client[m].turn_on_input();
+            std::string s = client[m].recv();
+            for(int k = 0; k < size; k++)
+            {
+                if(! client[k].selfCharacter() -> is_dead())
+                {
+                    client[k].print("this is player " + std::to_string(m + 1) + "\n");
+                    client[k].print(s);
+                }
+            }
+        }
     }
 }
 
@@ -992,12 +1008,20 @@ void Chat :: left()
     {
         for(int m = size-1; m > 0; m--)
         {
-            client[m].print("Please input your massages:");
-            client[m].turn_on_input();
-            std::string s = client[m].recv();
-            client[m].turn_off_input();
-            for(int k = 0; k < size; k++)
-                client[k].print(s);
+            if(! client[m].selfCharacter() -> is_dead())
+            {
+                client[m].print("Please input your massages:");
+                client[m].turn_on_input();
+                std::string s = client[m].recv();
+                for(int k = 0; k < size; k++)
+                {
+                    if(! client[k].selfCharacter() -> is_dead())
+                    {
+                        client[k].print("this is player " + std::to_string(m + 1) + "\n");
+                        client[k].print(s);
+                    }
+                }
+            }
         }
         
     }
@@ -1005,21 +1029,37 @@ void Chat :: left()
     {
         for(int m = start_one-1; m>=0 ; m--)
         {
-            client[m].print("Please input your massages:");
-            client[m].turn_on_input();
-            std::string s = client[m].recv();
-            client[m].turn_off_input();
-            for(int k = 0; k < size; k++)
-                client[k].print(s);
+            if(! client[m].selfCharacter() -> is_dead())
+            {
+                client[m].print("Please input your massages:");
+                client[m].turn_on_input();
+                std::string s = client[m].recv();
+                for(int k = 0; k < size; k++)
+                {
+                    if(! client[k].selfCharacter() -> is_dead())
+                    {
+                        client[k].print("this is player " + std::to_string(m + 1) + "\n");
+                        client[k].print(s);
+                    }
+                }
+            }
         }
         for(int m = size-1; m >=start_one+1 ; m--)
         {
-            client[m].print("Please input your massages:");
-            client[m].turn_on_input();
-            std::string s = client[m].recv();
-            client[m].turn_off_input();
-            for(int k = 0; k < size; k++)
-                client[k].print(s);
+            if(! client[m].selfCharacter() -> is_dead())
+            {
+                client[m].print("Please input your massages:");
+                client[m].turn_on_input();
+                std::string s = client[m].recv();
+                for(int k = 0; k < size; k++)
+                {
+                    if(! client[k].selfCharacter() -> is_dead())
+                    {
+                        client[k].print("this is player " + std::to_string(m + 1) + "\n");
+                        client[k].print(s);
+                    }
+                }
+            }
         }
     }
 }
@@ -1037,7 +1077,6 @@ bool Chat :: func()
                 client[i].print("Please input your last words:");
                 client[i].turn_on_input();
                 std::string s = client[i].recv();
-                client[i].turn_off_input();
                 for(int k = 0; k<size ; k++)
                     client[k].print(s);
             }
