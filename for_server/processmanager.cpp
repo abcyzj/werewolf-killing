@@ -1,4 +1,4 @@
-﻿#include "processmanager.h"
+#include "processmanager.h"
 
 using namespace Werewolf;
 
@@ -15,8 +15,9 @@ int ProcessManager :: calibration(){//选择屠边还是屠城
 }
 void ProcessManager::constructlist(){//基类的构造函数!!!
 	int msg = calibration();
-	Process* pro; 
+	Process* pro = new Hunting(_client);
 	Process* Pro = new Po_passing(_client);
+	_process.clear();
 	Process* pro0 = new Guarding(_client);
 	_process.push_back(pro0);
 	Process* pro1 = new Killing(_client);
@@ -32,7 +33,6 @@ void ProcessManager::constructlist(){//基类的构造函数!!!
 	Process* pro6 = new Voting(_client, pro, Pro);
 	_process.push_back(pro6);
 	//以上是参加流程的类
-	pro =  new Hunting(_client);
 	_process.push_back(pro);
 	Process* _pro = new Chat(_client);
 	_process.push_back(_pro);
@@ -41,7 +41,7 @@ void ProcessManager::constructlist(){//基类的构造函数!!!
 	//以下是串成链表的过程
 	for(int i = 0; i < 7; i++){
 		if(i != 6)
-			_process[i] -> set_next(_process[++i]);
+			_process[i] -> set_next(_process[i + 1]);
 		else 
 			_process[i] -> set_next(_process[0]);
 	}
@@ -49,7 +49,7 @@ void ProcessManager::constructlist(){//基类的构造函数!!!
 
 
 
-void ProcessManager :: add(Character* cha, Client* cli){//设置关联性
+void ProcessManager :: add(Character* cha, Client* cli){//设置关联�
 	switch(cha -> type()){
 	case 1:
 		_process[1] -> add_client(cli);
@@ -74,7 +74,7 @@ void ProcessManager :: add(Character* cha, Client* cli){//设置关联性
 void ProcessManager::Init(Client* cli){
 	cli -> print("input your nickname");
 	cli -> turn_on_input();
-	std::string name = cli -> recv();
+	std::string name = cli -> recv(5);
 	cli -> turn_off_input();
 	cli -> changename(name);
 }
@@ -82,7 +82,7 @@ void ProcessManager::Init(Client* cli){
 void ProcessManager::Init(){
 	std::vector<Client>& client = *_client;
 	int size = client.size(); 
-	for(int i = 0;  i <= size; i++){
+	for(int i = 0;  i < size; i++){
 		Init(&client[i]);
 	}
 }
@@ -158,11 +158,20 @@ void ProcessManager::gameover(){//结束之后的操作，公布游戏结果，�
 }
 void ProcessManager :: run(){
 	Init();//初始化用户名
-	calibration();
 	for(auto i = 0; i < (*_client).size(); i++){
 		(*_client)[i].print("game started!!!");
 	}
+	_process[4] -> activate();
+	_process[6] -> activate(); 
 	Process* usepro;
+	usepro = _process[0];
+	for(int i = 0; i < 7; i++){
+		int cnt = usepro -> get_size();
+		if(usepro -> get_size() != 0){
+			usepro -> activate();
+		}
+		usepro = usepro -> next();
+	}
 	while(1)
 		for(int i = 0; i < 7; i++){
 			if(i != 4 && i != 6){
@@ -173,6 +182,9 @@ void ProcessManager :: run(){
 				if(!usepro -> begin()){
 					ptr = i;
 					gameover();
+				}
+				else{
+					usepro = usepro -> next(); 
 				}
 			}		
 

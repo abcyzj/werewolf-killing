@@ -26,6 +26,7 @@ namespace Werewolf
         static std::vector<logging> _log;
     public:
         int con = 0;
+        int get_size();
         Process(std::vector<Client>*);//allclient
         static int have_police;
         virtual bool begin() ;//true继续，false退出

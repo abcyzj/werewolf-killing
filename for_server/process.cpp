@@ -31,6 +31,10 @@ void Process :: activate()
     _valid = 1;
 }
 
+int Process::get_size(){
+	return _rel_cli.size();
+} 
+
 Process* Process :: next()
 {
     return _next;
