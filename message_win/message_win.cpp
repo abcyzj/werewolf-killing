@@ -1,4 +1,4 @@
-#include "message.h"
+#include "message_win.h"
 #include <string>
 #include <stdlib.h>
 #include <stdexcept>
@@ -54,11 +54,11 @@ Socket::~Socket(){
 		::closesocket(_socket);
 };
 /*
-void Socket::assign_SOCKET(SOCKET newsocket){
+  void Socket::assign_SOCKET(SOCKET newsocket){
 	_socket=newsocket;
-}
+  }
 
-SOCKET Socket::getsocket(){return _socket;}
+  SOCKET Socket::getsocket(){return _socket;}
 */
 void Socket::assign_addr(const std::string& addr,int port){
 	memset(&_addr,0,sizeof(_addr));
@@ -139,8 +139,8 @@ Socket Socket::accept(double delay) const
 	int len = sizeof(new_addr);
 	if(delay == 0.0){//不延时
 		int new_sock = ::accept(_socket, (sockaddr*) &new_addr, &len);
-	if(new_sock < 0)
-		throw std::runtime_error("accept wrong");
+    if(new_sock < 0)
+      throw std::runtime_error("accept wrong");
 		return Socket(_af, _type, _protocol, ::inet_ntoa(new_addr.sin_addr), new_addr.sin_port);
 	}
 	fd_set fds;
@@ -150,20 +150,20 @@ Socket Socket::accept(double delay) const
 	FD_ZERO(&fds);
 	FD_SET(_socket, &fds);
 	switch(::select(_socket + 1, &fds, NULL, NULL, &timeout)){
-		case -1:
-			throw std::runtime_error("select wrong");
-			break;
-		case 0:
-			return Socket();
-		default:
-			if(FD_ISSET(_socket, &fds)){
-				int new_socket = ::accept(_socket, (sockaddr *) &new_addr, &len);
+  case -1:
+    throw std::runtime_error("select wrong");
+    break;
+  case 0:
+    return Socket();
+  default:
+    if(FD_ISSET(_socket, &fds)){
+      int new_socket = ::accept(_socket, (sockaddr *) &new_addr, &len);
 			if(new_socket < 0)
 				throw std::runtime_error("accept wrong");
-				return Socket(new_socket,_af, _type, _protocol, ::inet_ntoa(new_addr.sin_addr), new_addr.sin_port);
-			}
-			else
-				return Socket();
+      return Socket(new_socket,_af, _type, _protocol, ::inet_ntoa(new_addr.sin_addr), new_addr.sin_port);
+    }
+    else
+      return Socket();
 	}
 }
 
@@ -172,8 +172,9 @@ Socket Socket::accept(double delay) const
 
 int Socket::send(const std::string &msg, double delay) const
 {
+	std::string Umsg = GBK_To_UTF8(msg);
   if(delay == 0.0)
-    return :: send(_socket, msg.c_str(), msg.length() + 1, 0);
+    return :: send(_socket, Umsg.c_str(), Umsg.length() + 1, 0);
 
   fd_set fds;
   int sec = std::floor(delay);
@@ -189,19 +190,19 @@ int Socket::send(const std::string &msg, double delay) const
     return -1;//-1表示发送超时
   default:
     if(FD_ISSET(_socket, &fds))
-      return ::send(_socket, msg.c_str(), msg.length() + 1, 0);
+      return ::send(_socket, Umsg.c_str(), Umsg.length() + 1, 0);
     else
       return -1;
   }
 }
 /*
-int Socket::send(const std::string &msg,double delay) const{
+  int Socket::send(const std::string &msg,double delay) const{
 	if(delay>1e-9){
-		int dt=delay*1000;
-		::setsockopt(_socket,SOL_SOCKET,SO_SNDTIMEO,(char*)&dt, sizeof(int));
+  int dt=delay*1000;
+  ::setsockopt(_socket,SOL_SOCKET,SO_SNDTIMEO,(char*)&dt, sizeof(int));
 	}
 	return ::send(_socket,msg.c_str(),msg.size()+1,0);
-}
+  }
 
 */
 int Socket :: recv(char * buf, int len, double delay) const
@@ -234,13 +235,13 @@ int Socket :: recv(char * buf, int len, double delay) const
 
 
 /*
-int Socket::recv(char* buf,int len,double delay)const {
+  int Socket::recv(char* buf,int len,double delay)const {
 	if(delay>1e-9){
-		int dt=delay*1000;
-		::setsockopt(_socket,SOL_SOCKET,SO_RCVTIMEO,(char*)&dt, sizeof(int));
+  int dt=delay*1000;
+  ::setsockopt(_socket,SOL_SOCKET,SO_RCVTIMEO,(char*)&dt, sizeof(int));
 	}
 	return ::recv(_socket,buf,len,0);//delay remained to be done
-}
+  }
 */
 std::string Socket::recv(double delay) const{
   char buf[200] = {0};
@@ -251,7 +252,7 @@ std::string Socket::recv(double delay) const{
     else if(res == 0)
       return std::string("__SHUTDOWN");
     else
-      return std::string(buf);
+      return UTF8_To_GBK(std::string(buf));
   }
 
   fd_set fds;
@@ -274,7 +275,7 @@ std::string Socket::recv(double delay) const{
       else if(res == 0)
         return std::string("__SHUTDOWN");
       else
-        return std::string(buf);
+        return UTF8_To_GBK(std::string(buf));
     }
     else
       return std::string();
@@ -283,20 +284,20 @@ std::string Socket::recv(double delay) const{
 
 
 /*
-std::string Socket::recv(double delay)const {//delay remained to be done
+  std::string Socket::recv(double delay)const {//delay remained to be done
 	char buf[200]={0};
 	if(delay>1e-9){
-		int dt=delay*1000;
-		::setsockopt(_socket,SOL_SOCKET,SO_RCVTIMEO,(char*)&dt,sizeof(int));
+  int dt=delay*1000;
+  ::setsockopt(_socket,SOL_SOCKET,SO_RCVTIMEO,(char*)&dt,sizeof(int));
 	}
 	int res=::recv(_socket,buf,199,0);
 	if(res<0)
-		return "";
+  return "";
 	else if(res==0)
-		return "__SHUTDOWN";
+  return "__SHUTDOWN";
 	else
-		return std::string(buf);
-}*/
+  return std::string(buf);
+  }*/
 
 
 
@@ -333,7 +334,7 @@ std::string Socket::recv_broadcast(double delay){
 		if(!is_bind){
 			_addr.sin_addr.s_addr=htonl(INADDR_ANY);
 			while(bind() < 0);
-				is_bind=true;
+      is_bind=true;
 		}
 		is_first_recv=false;
 	}
@@ -354,10 +355,10 @@ int Socket :: recv_from(char* buf, int len, const std::string& addr, int port, d
   int usec = (delay - std::floor(delay)) * 1e6;
   timeval timeout = {sec, usec};
   
-//  timeval *timeoutptr = &timeout;
-//  if(delay == 0.0)
-//  	timeoutptr = NULL;
-//  	
+  //  timeval *timeoutptr = &timeout;
+  //  if(delay == 0.0)
+  //  	timeoutptr = NULL;
+  //  	
   FD_ZERO(&fds);
   FD_SET(_socket, &fds);
   switch(::select(_socket + 1, &fds, NULL, NULL, &timeout)){
@@ -375,18 +376,18 @@ int Socket :: recv_from(char* buf, int len, const std::string& addr, int port, d
 }
 
 /*
-int Socket::recv_from(char*buf,int len,const std::string&addr,int port,double delay){
+  int Socket::recv_from(char*buf,int len,const std::string&addr,int port,double delay){
 	_addr.sin_family=_af;
 	_addr.sin_addr.s_addr=inet_addr(addr.c_str());
 	_addr.sin_port=htons(port);
 
 	if(delay>1e-9){
-		int dt=delay*1000;
-		::setsockopt(_socket,SOL_SOCKET,SO_RCVTIMEO,(char*)&dt,sizeof(int));
+  int dt=delay*1000;
+  ::setsockopt(_socket,SOL_SOCKET,SO_RCVTIMEO,(char*)&dt,sizeof(int));
 	}
 	int nsize=sizeof(_addr);
 	return ::recvfrom(_socket,buf,len,0,(SOCKADDR*)&_addr,&nsize);
-}*/
+  }*/
 std::string Socket :: recv_from(const std::string& addr, int port, double delay)
 {
   _addr.sin_family = _af;
@@ -400,7 +401,7 @@ std::string Socket :: recv_from(const std::string& addr, int port, double delay)
     if(res < 0)
       return std::string();
     else
-      return std::string(buf);
+      return UTF8_To_GBK(std::string(buf));
   }
 
   fd_set fds;
@@ -408,9 +409,9 @@ std::string Socket :: recv_from(const std::string& addr, int port, double delay)
   int usec = (delay - std::floor(delay)) * 1e6;
   timeval timeout = {sec, usec};
   
-//  timeval *timeoutptr = &timeout;
-//  if(delay == 0.0)
-//  	timeoutptr = NULL;
+  //  timeval *timeoutptr = &timeout;
+  //  if(delay == 0.0)
+  //  	timeoutptr = NULL;
   FD_ZERO(&fds);
   FD_SET(_socket, &fds);
   switch(::select(_socket + 1, &fds, NULL, NULL, &timeout)){
@@ -425,7 +426,7 @@ std::string Socket :: recv_from(const std::string& addr, int port, double delay)
       if(res < 0)
         return std::string();
       else
-        return std::string(buf);
+        return UTF8_To_GBK(std::string(buf));
     }
 
     else
@@ -435,29 +436,30 @@ std::string Socket :: recv_from(const std::string& addr, int port, double delay)
 
 
 /*
-std::string Socket::recv_from(const std::string& addr,int port,double delay)
-{
+  std::string Socket::recv_from(const std::string& addr,int port,double delay)
+  {
 	_addr.sin_family=_af;
 	_addr.sin_addr.s_addr=inet_addr(addr.c_str());
 	_addr.sin_port=htons(port);
 	char buf[200]={0};
 	if(delay>1e-9){
-		int dt=delay*1000;
-		::setsockopt(_socket,SOL_SOCKET,SO_RCVTIMEO,(char*)&dt,sizeof(int));
+  int dt=delay*1000;
+  ::setsockopt(_socket,SOL_SOCKET,SO_RCVTIMEO,(char*)&dt,sizeof(int));
 	}
 	int nsize=sizeof(_addr);
 	int res=::recvfrom(_socket,buf,199,0,(SOCKADDR*)&_addr,&nsize);
 	if(res<0)
-		return "";
+  return "";
 	else
-		return std::string(buf);
-}
+  return std::string(buf);
+  }
 */
 int Socket::send_to(const std::string& msg,const std::string &addr,int port){
+	std::string Umsg = GBK_To_UTF8(msg);
 	_addr.sin_family=_af;
 	_addr.sin_addr.s_addr=inet_addr(addr.c_str());
 	_addr.sin_port=htons(port);
-	return ::sendto(_socket,msg.c_str(),msg.size()+1,0,(SOCKADDR*)&_addr,sizeof(_addr));
+	return ::sendto(_socket,Umsg.c_str(), Umsg.size()+1,0,(SOCKADDR*)&_addr,sizeof(_addr));
 }
 
 void Socket::close(){
@@ -474,21 +476,21 @@ void Socket::shutdown(Socket::Howto how){
 	::shutdown(_socket,(int)how);
 }
 /*
-std::string Socket::get_host_addr()const{
+  std::string Socket::get_host_addr()const{
 	::ifaddrs *ifsptr = NULL;
 	::getifaddrs(&ifsptr);
 
   while(ifsptr != NULL){
-		if(ifsptr->ifa_adr->sa_family == AF_INET){
-			in_addr *temptr = &((sockaddr_in *)ifsptr->ifa_addr)->sin_addr;
-			std::string host_addr(inet_ntoa(*temptr));
-			if(host_addr != "127.0.0.1")
-				return host_addr;
-		}
-		ifsptr = ifsptr->ifa_next;
+  if(ifsptr->ifa_adr->sa_family == AF_INET){
+  in_addr *temptr = &((sockaddr_in *)ifsptr->ifa_addr)->sin_addr;
+  std::string host_addr(inet_ntoa(*temptr));
+  if(host_addr != "127.0.0.1")
+  return host_addr;
+  }
+  ifsptr = ifsptr->ifa_next;
   }
   return std::string();
-}
+  }
 */
 std::string Socket::get_host_addr(){
 	WSADATA wsaData;
@@ -499,13 +501,67 @@ std::string Socket::get_host_addr(){
 	hostent * lv_pHostent;
 	lv_pHostent = (hostent *)malloc(sizeof(hostent));
 	if( NULL == (lv_pHostent = gethostbyname(lv_name)))
-	{
-		printf("get Hosrname Fail \n");
-		return 0;
-	}
+    {
+      printf("get Hosrname Fail \n");
+      return 0;
+    }
 	SOCKADDR_IN lv_sa;
 	lv_sa.sin_family = AF_INET;
 	lv_sa.sin_port = htons(6000);
 	memcpy(&lv_sa.sin_addr.S_un.S_addr, lv_pHostent->h_addr_list[0], lv_pHostent->h_length);
 	return inet_ntoa(lv_sa.sin_addr);
+}
+
+std::string Socket::GBK_To_UTF8(const std::string & str)  
+{  
+  int nwLen = ::MultiByteToWideChar(CP_ACP, 0, str.c_str(), -1, NULL, 0);  
+  
+  wchar_t * pwBuf = new wchar_t[nwLen + 1];//一定要加1，不然会出现尾巴  
+  ZeroMemory(pwBuf, nwLen * 2 + 2);  
+  
+  ::MultiByteToWideChar(CP_ACP, 0, str.c_str(), str.length(), pwBuf, nwLen);  
+  
+  int nLen = ::WideCharToMultiByte(CP_UTF8, 0, pwBuf, -1, NULL, NULL, NULL, NULL);  
+  
+  char * pBuf = new char[nLen + 1];  
+  ZeroMemory(pBuf, nLen + 1);  
+  
+  ::WideCharToMultiByte(CP_UTF8, 0, pwBuf, nwLen, pBuf, nLen, NULL, NULL);  
+  
+  std::string retStr(pBuf);  
+  
+  delete []pwBuf;  
+  delete []pBuf;  
+  
+  pwBuf = NULL;  
+  pBuf = NULL;  
+  
+  return retStr;  
+}
+
+std::string Socket::UTF8_To_GBK(const std::string & str)  
+{  
+  int nwLen = MultiByteToWideChar(CP_UTF8, 0, str.c_str(), -1, NULL, 0);  
+  
+  wchar_t * pwBuf = new wchar_t[nwLen + 1];//一定要加1，不然会出现尾巴  
+  memset(pwBuf, 0, nwLen * 2 + 2);  
+  
+  MultiByteToWideChar(CP_UTF8, 0, str.c_str(), str.length(), pwBuf, nwLen);  
+  
+  int nLen = WideCharToMultiByte(CP_ACP, 0, pwBuf, -1, NULL, NULL, NULL, NULL);  
+  
+  char * pBuf = new char[nLen + 1];  
+  memset(pBuf, 0, nLen + 1);  
+  
+  WideCharToMultiByte(CP_ACP, 0, pwBuf, nwLen, pBuf, nLen, NULL, NULL);  
+  
+  std::string retStr = pBuf;  
+  
+  delete []pBuf;  
+  delete []pwBuf;  
+  
+  pBuf = NULL;  
+  pwBuf = NULL;  
+  
+  return retStr;  
 }
