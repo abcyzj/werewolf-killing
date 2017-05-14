@@ -86,6 +86,7 @@ namespace Werewolf
         bool is_saved(int);
         bool is_poisoned(int);
         bool func();
+		void find_dead();
     public:
         Calculating(std::vector<Client> *cli, Process* hun, int calibra, Process* po) : Process(cli), _hun(hun), _calibra(calibra), _po(po){
             _log = readlog();

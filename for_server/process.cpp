@@ -154,14 +154,16 @@ bool Witching :: func() //女巫使用毒药或者解药
         if ((*readlog())[readlog() -> size() - 1]._act == 0)
         {
             int have_dead = (*readlog())[readlog() -> size() - 1]._geter;
-            _rel_cli[0] -> print("Player " + std::to_string(have_dead) + " have been killed by werewolves\n");
+            _rel_cli[0] -> print("Player " + std::to_string(have_dead + 1) + " have been killed by werewolves\n");
         }
         else _rel_cli[0] -> print("no one dead\n");
         
         //请女巫选择毒药和解药
-        _rel_cli[0] -> print("Please choose to use poison or antidote, p or a\n");
+        _rel_cli[0] -> print("Please choose to use poison or antidote, p or a or n for nothing\n");
         _rel_cli[0] -> turn_on_input();
         std::string drug = _rel_cli[0] -> recv();
+        if (drug == "n")
+            return true;
         while(1)
         {
             if (drug == "p")
@@ -190,7 +192,7 @@ bool Witching :: func() //女巫使用毒药或者解药
         
         if (drug == "p")    //毒人
         {
-            _rel_cli[0] -> print("Please Input the player you want to act on\n");
+            _rel_cli[0] -> print("Please Input the player you want to poison\n");
             _rel_cli[0] -> turn_on_input();
             std::string ans = _rel_cli[0] -> recv();
             int num = atoi(ans.c_str());
@@ -201,23 +203,6 @@ bool Witching :: func() //女巫使用毒药或者解药
             int have_dead = (*readlog())[readlog() -> size() - 1]._geter;
             writelog(WITCH, SAVE, have_dead);
         }
-    }
-    return true;
-}
-
-bool Predicting :: func()    //预言家进行身份检测
-{
-    if (! _rel_cli[0] -> selfCharacter() -> is_dead()) //预言家没死
-    {
-        _rel_cli[0] -> print("Please input the player number you want to see\n");
-        _rel_cli[0] -> turn_on_input();
-        std::string player = _rel_cli[0] -> recv();
-        int t = (*allclient)[atoi(player.c_str()) - 1].selfCharacter() -> type();
-        if (t == 1)
-            _rel_cli[0] -> print("The identity of the player is werewolf\n");
-        else
-            _rel_cli[0] -> print("The identity of the player is goodman\n");
-        writelog(SEER, PREDICT, atoi(player.c_str()) - 1);
     }
     return true;
 }
@@ -533,8 +518,13 @@ bool Voting::is_end(){
     
     return true;
 }
-
-
+void Calculating::find_dead(){
+	for(int i = 0; i < (*allclient).size(); i++){
+		if((*_log)[1]._geter == i){
+			(*allclient)[i].selfCharacter() -> set_dead();
+		}
+	}
+}
 bool Calculating::is_guarded(int i){
     if((*_log)[0]._geter == i){
         return true;
@@ -567,7 +557,7 @@ bool Calculating::calculatewolf(){//∑÷æØª’∫Õ∑…æØª’√ª”�
                 if(is_guarded(i) && is_saved(i)){
                     num++;
                     if(m[i].selfCharacter() -> is_police()){
-                        _po -> begin();
+                        officer = i;
                     }
                     
                     //willing(&m[i]);
@@ -581,7 +571,7 @@ bool Calculating::calculatewolf(){//∑÷æØª’∫Õ∑…æØª’√ª”�
                 else{
                     num++;
                     if(m[i].selfCharacter() -> is_police()){
-                        _po -> begin();
+                        officer = i;
                     }
                     //willing(&m[i]);
                 }
@@ -590,7 +580,7 @@ bool Calculating::calculatewolf(){//∑÷æØª’∫Õ∑…æØª’√ª”�
                 if(is_poisoned(i)){
                     num++;
                     if(m[i].selfCharacter() -> is_police()){
-                        _po -> begin();
+                        officer = i;
                     }
                     //willing(&m[i]);
                 }
@@ -616,7 +606,7 @@ bool Calculating::calculatepeo(){
                     if(is_guarded(i) && is_saved(i)){
                         num++;
                         if(m[i].selfCharacter() -> is_police()){
-                            _po -> begin();
+                            officer = i;
                         }
                         //willing(&m[i]);
                     }
@@ -629,7 +619,7 @@ bool Calculating::calculatepeo(){
                     else{
                         num++;
                         if(m[i].selfCharacter() -> is_police()){
-                            _po -> begin();
+                            officer = i;
                         }
                         //willing(&m[i]);
                     }
@@ -638,7 +628,7 @@ bool Calculating::calculatepeo(){
                     if(is_poisoned(i)){
                         num++;
                         if(m[i].selfCharacter() -> is_police()){
-                            _po -> begin();
+                            officer = i;
                         }
                         //willing(&m[i]);
                     }
@@ -658,12 +648,12 @@ bool Calculating::calculategod(){
     std::vector<Client>& m = *allclient;
     for(auto i = 0; i < m.size(); i++){
         if((m[i].selfCharacter() -> type() != 1 )&&(m[i].selfCharacter() -> type() != 2) && (m[i].selfCharacter() -> type() != 3)){
-            sum++;
+            sum++;	
             if(m[i].selfCharacter() -> is_dead() == true){
                 if(is_guarded(i) && is_saved(i)){
                     num++;
                     if(m[i].selfCharacter() -> is_police()){
-                        _po -> begin();
+                        officer = i;
                     }
                     //willing(&m[i]);
                 }
@@ -676,7 +666,7 @@ bool Calculating::calculategod(){
                 else{
                     num++;
                     if(m[i].selfCharacter() -> is_police()){
-                        _po -> begin();
+                        officer = i;
                     }
                     //willing(&m[i]);
                 }
@@ -685,7 +675,7 @@ bool Calculating::calculategod(){
                 if(is_poisoned(i)){
                     num++;
                     if(m[i].selfCharacter() -> is_police()){
-                        _po -> begin();
+                        officer = i;
                     }
                     //willing(&m[i]);
                 }
@@ -699,24 +689,32 @@ bool Calculating::calculategod(){
 }
 
 bool Calculating::func(){
+	find_dead();
     if(_calibra == 1){
-        if(calculatewolf() || calculatepeo()){
+        if(calculatewolf() || calculatepeo() || calculategod()){
             return false;
         }
         else{
-            return _hun -> begin();
+			if((*allclient)[officer].selfCharacter() -> is_police()){
+				_po -> func();
+			}
+            return true;
         }
         
     }
     else{
-        if(calculatewolf()){
+        if(calculatewolf() || calculategod() || calculatepeo()){
             return false;
         }
-        else{
-            return _hun -> begin();
+		else{
+			if((*allclient)[officer].selfCharacter() -> is_police()){
+				_po -> func();
+			}
+			return true;
+		}
         }
     }
-}
+
 
 bool check(int* a, int size, int k) //检测数组中有没有某个元素k
 {
