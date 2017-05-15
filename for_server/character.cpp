@@ -33,7 +33,7 @@ bool Character :: is_dead()
 
 bool Character :: is_guarded()
 {
-    return guard;
+    return _guard;
 }
 
 int Wolf :: type()
