@@ -244,21 +244,19 @@ bool Voting::func(){
     bool isalive[n];//‚Äù‚Äì√Ä‚â†‚Äò‚ÅÑ‚â•¬?
     double num[n];//¬∫¬´¬¨¬∫‚àö√∏‚àèÀÜ¬ª√Ä¬±¬™√ï‚àÇ‚àÜ¬±¬†Àù
     int voteinfo[n];//¬∫¬´¬¨¬∫‚àö√∏‚àèÀÜ¬ª√Ä√ï‚àÇ‚àÜ¬±¬´√à√∏ÀÜ
-    std::vector<int> player;
     for(int i=0;i<n;i++){
         isalive[i]=!(*allclient)[i].selfCharacter()->is_dead();
-        if(isalive[i])
-            player.push_back(i);
         num[i]=0;
         voteinfo[i]=-1;
     }
     std::string voted="You can vote to Player";
-    for(int i=0;i<player.size();i++){
-        voted+=" "+std::to_string(i+1);
+    for(int i=0;i<n;i++){
+		if(isalive[i])
+			voted+=" "+std::to_string(i+1);
     }
     voted+=".\n";
     if(have_police>=0){//√¶√ò‚â•¬ßœÄ√à‚àÜ¬?
-        (*allclient)[have_police].print("Please vote a Player!\n");
+        (*allclient)[have_police].print("Please vote a Player!\n"+voted);
         (*allclient)[have_police].turn_on_input();
         std::string pt=(*allclient)[have_police].recv();
         while(!isalive[atoi(pt.c_str())-1]){
