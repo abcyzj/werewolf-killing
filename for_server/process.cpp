@@ -751,25 +751,39 @@ bool Calculating::calculategod(){
 bool Calculating::func(){
     find_dead();
     if(_calibra == 1){
-        if(calculatewolf() || calculatepeo() || calculategod()){
+		if(calculategod() || calculatepeo()){
             return false;
         }
+		else if(calculatewolf()){
+			wolf_lose = true;
+			return false;
+		}
         else{
             if((*allclient)[officer].selfCharacter() -> is_police()){
                 _po -> begin();
             }
+			if(hunting){
+				_hun -> begin();
+			}//the procedure is changable
             return true;
         }
         
     }
     else{
-        if(calculatewolf() || calculategod() || calculatepeo()){
+        if(calculategod() && calculatepeo()){
             return false;
         }
+        else if(calculatewolf()){
+        	wolf_lose = true;
+        	return false;
+		}
         else{
             if((*allclient)[officer].selfCharacter() -> is_police()){
                 _po -> begin();
             }
+            if(hunting){
+            	_hun -> begin();
+			}
             return true;
         }
     }

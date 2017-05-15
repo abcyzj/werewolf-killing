@@ -1,20 +1,22 @@
 #include "processmanager.h"
+#include <string>
 
 using namespace Werewolf;
 
 int ProcessManager :: calibration(){//选择屠边还是屠城
     (*_client)[0].print("please choose judge method : 1 for kill one side 2 for kill all");
     (*_client)[0].turn_on_input();
-    if((*_client)[0].recv() == "1"){
+	std::string s = (*_client)[0].recv();
+    if(s[0] == '1'){
         return (int) 1;
     }
-    else if((*_client)[0].recv() == "2"){
+    else if(s[0] == '2'){
         return (int) 2;
     }
     //(*_client)[0].turn_off_input();
-    return 1;
+    //return 1;
 }
-void ProcessManager::constructlist(){//基类的构造函数!!!
+void ProcessManager::constructlist(){//基类的构造函�?!!
     int msg = calibration();
     Process* pro = new Hunting(_client);
     Process* Pro = new Po_passing(_client);
@@ -34,7 +36,7 @@ void ProcessManager::constructlist(){//基类的构造函数!!!
     Process* _pro = new Chat(_client);
     Process* pro6 = new Voting(_client, pro, Pro, _pro);
     _process.push_back(pro6);
-    //以上是参加流程的类
+    //以上是参加流程的�?
     _process.push_back(pro);
     _process.push_back(_pro);
     _process.push_back(Pro);
@@ -89,7 +91,7 @@ void ProcessManager::Init(){
 }
 
 
-void ProcessManager :: shutdown(){//退出游戏
+void ProcessManager :: shutdown(){//退出游�?
     (*_client)[0].print("Press y to shut down the game");
     (*_client)[0].turn_on_input();
     if((*_client)[0].recv() == "y"){
@@ -101,67 +103,97 @@ void ProcessManager :: shutdown(){//退出游戏
     }
 }
 
-void ProcessManager::gameover(){//结束之后的操作，公布游戏结果，告诉所有人相应玩家的身份
+void ProcessManager::gameover(){//结束之后的操作，公布游戏结果，告诉所有人相应玩家的身�?
     for(auto i = 0; i < (*_client).size(); i++){
         (*_client)[i].print("game over!!!");
     }
-    if(_process[ptr] -> con == 1){
+    if((_process[ptr] -> wolf_lose)){
         for(auto i = 0; i < (*_client).size(); i++){
-            (*_client)[i].print("werewolf win");
+            (*_client)[i].print("goodman win");
         }
     }
     else{
         for(auto i = 0; i < (*_client).size(); i++){
-            (*_client)[i].print("good man win");
+            (*_client)[i].print("werewolf win");
         }
     }
     for(auto i = 0; i < (*_client).size(); i++){
-        switch((*_client)[i].selfCharacter() -> type()){
-            case 1:
-                for(auto i = 0; i < (*_client).size(); i++){
-                    (*_client)[i].print( (*_client)[i].getnickname());
-                    (*_client)[i].print("is werewolf");
+        int people_rel = (*_client)[i].selfCharacter() -> type();
+        if(people_rel == 1){
+                for(auto j = 0; j < (*_client).size(); j++){
+                   // (*_client)[i].print( (*_client)[i].getnickname());
+					char str[5];
+					itoa(i + 1, str, 10);
+					(*_client)[j].print("Player ");
+					(*_client)[j].print(str);
+                    (*_client)[j].print(" is werewolf");
                 }
-                break;
-            case 2:
-                for(auto i = 0; i < (*_client).size(); i++){
-                    (*_client)[i].print( (*_client)[i].getnickname());
-                    (*_client)[i].print("is villager");
-                }
-                break;
-            case 3:
-                for(auto i = 0; i < (*_client).size(); i++){
-                    (*_client)[i].print( (*_client)[i].getnickname());
-                    (*_client)[i].print("is hunter");
-                }
-                break;
-            case 4:
-                for(auto i = 0; i < (*_client).size(); i++){
-                    (*_client)[i].print( (*_client)[i].getnickname());
-                    (*_client)[i].print("is witch");
-                }
-                break;
-            case 5:
-                for(auto i = 0; i < (*_client).size(); i++){
-                    (*_client)[i].print( (*_client)[i].getnickname());
-                    (*_client)[i].print("is prophet");
-                }
-                break;
-            case 6:
-                for(auto i = 0; i < (*_client).size(); i++){
-                    (*_client)[i].print( (*_client)[i].getnickname());
-                    (*_client)[i].print("is guard");
-                }
-                break;
         }
+        else if(people_rel == 2){
+                for(auto j = 0; j < (*_client).size(); j++){
+                   // (*_client)[i].print( (*_client)[i].getnickname());
+					char str[5];
+					itoa(i + 1, str, 10);
+					(*_client)[j].print("Player ");
+					(*_client)[j].print(str);
+                    (*_client)[j].print("is villager");
+                }
+            }
+    	else if(people_rel == 3){
+                for(auto j = 0; j < (*_client).size(); j++){
+                   // (*_client)[i].print( (*_client)[i].getnickname());
+					char str[5];
+					itoa(i + 1, str, 10);
+					(*_client)[j].print("Player ");
+					(*_client)[j].print(str);
+                    (*_client)[j].print("is hunter");
+                }
+        }
+        else if(people_rel == 4){
+                for(auto j = 0; j < (*_client).size(); j++){
+                   // (*_client)[i].print( (*_client)[i].getnickname());
+					char str[5];
+					itoa(i + 1, str, 10);
+					(*_client)[j].print("Player ");
+					(*_client)[j].print(str);
+                    (*_client)[j].print("is witch");
+                }
+        }
+        else if(people_rel == 5){
+                for(auto j = 0; j < (*_client).size(); j++){
+                  //  (*_client)[i].print( (*_client)[i].getnickname());
+					char str[5];
+					itoa(i + 1, str, 10);
+					(*_client)[j].print("Player ");
+					(*_client)[j].print(str);
+                    (*_client)[j].print("is prophet");
+                }
+        }
+    	else{
+                for(auto j = 0; j < (*_client).size(); j++){
+                    //(*_client)[i].print( (*_client)[i].getnickname());
+					char str[5];
+					itoa(i + 1, str, 10);
+					(*_client)[j].print("Player ");
+					(*_client)[j].print(str);
+                    (*_client)[j].print("is guard");
+                }
+        }
+    }
         shutdown();
     }
-}
+
 void ProcessManager :: run(){
     Init();//初始化用户名
     for(auto i = 0; i < (*_client).size(); i++){
         (*_client)[i].print("game started!!!");
     }
+    for(auto i = 0; i < (*_client).size(); i++){
+    	(*_client)[i].print("You are Player ");
+    	char str[5];
+    	itoa(i + 1, str, 10);
+    	(*_client)[i].print(str);
+	}
     _process[4] -> activate();
     _process[5] -> activate();
     _process[6] -> activate();
@@ -180,7 +212,7 @@ void ProcessManager :: run(){
     while(1)
         for(int i = 0; i < 7; i++){
             if(i != 4 && i != 6){
-                usepro -> begin();//不知道是不是VC的原因，这个是不是有错啊！
+                usepro -> begin();//不知道是不是VC的原因，这个是不是有错啊�?
                 usepro = usepro -> next();
             }
             else{

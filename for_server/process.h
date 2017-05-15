@@ -2,8 +2,9 @@
 #define PROCESS_H
 
 #include "character.h"
-#include "client.h"
+#include "client_test.h"
 #include <vector>
+#include <cstring>
 namespace Werewolf
 {
     enum Act{BITE=0,POISON=1,SAVE=2,GUARDING=3,SHOOT=4,PREDICT=5,VOTE=6};
@@ -24,7 +25,7 @@ namespace Werewolf
         virtual bool func() = 0;    //进程的主要执行函数
         static std::vector<logging> _log;
     public:
-        int con = 0;
+        bool wolf_lose = false;
         int get_size();
         Process(std::vector<Client>*);//allclient
         static int have_police;
@@ -91,6 +92,7 @@ namespace Werewolf
     public:
         Calculating(std::vector<Client> *cli, Process* hun, int calibra, Process* po) : Process(cli), _hun(hun), _calibra(calibra), _po(po){
             _log = readlog();
+            wolf_lose = false; 
         }
         ~Calculating(){
             delete _hun;
