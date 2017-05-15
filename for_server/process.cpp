@@ -574,10 +574,10 @@ bool Calculating::is_saved(int cnt){
     return false;
 }
 
-bool Calculating::is_poisoned(int i){
+bool Calculating::is_poisoned(int cnt){
     for(int i = 0; i < (*_log).size(); i++){
         if((*_log)[i]._act == 1){
-            if((*_log)[i]._geter == i){
+            if((*_log)[i]._geter == cnt){
                 return true;
             }
         }
@@ -621,6 +621,7 @@ bool Calculating::calculatewolf(){//‚àë√∑√¶√ò¬™‚Äô‚à´�
             else{
                 if(is_poisoned(i)){
                     num++;
+                    m[i].selfCharacter() -> set_dead();
                     if(m[i].selfCharacter() -> type() == 3){
                         hunting = true;
                     }
@@ -674,6 +675,7 @@ bool Calculating::calculatepeo(){
             else{
                 if(is_poisoned(i)){
                     num++;
+                    m[i].selfCharacter() -> set_dead();
                     if(m[i].selfCharacter() -> type() == 3){
                         hunting = true;
                     }
@@ -730,6 +732,7 @@ bool Calculating::calculategod(){
             else{
                 if(is_poisoned(i)){
                     num++;
+                    m[i].selfCharacter() -> set_dead();
                     if(m[i].selfCharacter() -> type() == 3){
                         hunting = true;
                     }
@@ -808,6 +811,8 @@ bool Po_electing :: func()  //选举警长
         }
     }
     
+    if (cnt == 0)
+        return true;
     for (int i = 0; i < cnt; i++)
     {
         if (num[i] != 0)
@@ -1179,7 +1184,7 @@ bool Chat :: func()
     }
     for(int i=0 ; i < size ; i++)
     {
-        if(have_police == i)//iÊòØË≠¶Èïø
+        if(have_police == i+1 )//iÊòØË≠¶Èïø
         {
             police=1;//Ë°®Á§∫ÊúâË≠¶ÈïøÂ≠òÂú®
             if (dead_num==1)
