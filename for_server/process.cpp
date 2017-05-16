@@ -853,6 +853,23 @@ bool Po_electing :: func()  //选举警长
             }
         }
     }
+    
+    int fin_cnt = 0, fin_rank = 0; //计算退水后竞选警长的人数
+    for (int i = 0; i < cnt; i++)
+    {
+        if (num[i] == 0)
+        {
+            fin_cnt++;
+            fin_rank = num[i];
+        }
+    }
+    if (fin_cnt == 0) return true;  //退水后无人竞选
+    if (fin_cnt == 1)   //  退水后只剩下一个人，直接设为警长
+    {
+        have_police = fin_rank;
+        return true;
+    }
+    
     for (int i = 0; i < (*allclient).size(); i++)
     {
         if (! (*allclient)[i].selfCharacter() -> is_dead() && !check(num, cnt, i + 1))  //没有死且不参加竞选
