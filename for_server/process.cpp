@@ -251,8 +251,8 @@ bool Voting::func(){
     }
     std::string voted="You can vote to Player";
     for(int i=0;i<n;i++){
-		if(isalive[i])
-			voted+=" "+std::to_string(i+1);
+        if(isalive[i])
+            voted+=" "+std::to_string(i+1);
     }
     voted+=".\n";
     if(have_police>=0){//√¶√ò‚â•¬ßœÄ√à‚àÜ¬?
@@ -751,20 +751,20 @@ bool Calculating::calculategod(){
 bool Calculating::func(){
     find_dead();
     if(_calibra == 1){
-		if(calculategod() || calculatepeo()){
+        if(calculategod() || calculatepeo()){
             return false;
         }
-		else if(calculatewolf()){
-			wolf_lose = true;
-			return false;
-		}
+        else if(calculatewolf()){
+            wolf_lose = true;
+            return false;
+        }
         else{
             if((*allclient)[officer].selfCharacter() -> is_police()){
                 _po -> begin();
             }
-			if(hunting){
-				_hun -> begin();
-			}//the procedure is changable
+            if(hunting){
+                _hun -> begin();
+            }//the procedure is changable
             return true;
         }
         
@@ -774,16 +774,16 @@ bool Calculating::func(){
             return false;
         }
         else if(calculatewolf()){
-        	wolf_lose = true;
-        	return false;
-		}
+            wolf_lose = true;
+            return false;
+        }
         else{
             if((*allclient)[officer].selfCharacter() -> is_police()){
                 _po -> begin();
             }
             if(hunting){
-            	_hun -> begin();
-			}
+                _hun -> begin();
+            }
             return true;
         }
     }

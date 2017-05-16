@@ -1,12 +1,12 @@
 #include "processmanager.h"
 #include <string>
-
+#include <cstdlib>
 using namespace Werewolf;
 
 int ProcessManager :: calibration(){//选择屠边还是屠城
     (*_client)[0].print("please choose judge method : 1 for kill one side 2 for kill all");
     (*_client)[0].turn_on_input();
-	std::string s = (*_client)[0].recv();
+    std::string s = (*_client)[0].recv();
     if(s[0] == '1'){
         return (int) 1;
     }
@@ -14,8 +14,9 @@ int ProcessManager :: calibration(){//选择屠边还是屠城
         return (int) 2;
     }
     //(*_client)[0].turn_off_input();
-    //return 1;
+    return 1;
 }
+
 void ProcessManager::constructlist(){//基类的构造函�?!!
     int msg = calibration();
     Process* pro = new Hunting(_client);
@@ -120,68 +121,68 @@ void ProcessManager::gameover(){//结束之后的操作，公布游戏结果，�
     for(auto i = 0; i < (*_client).size(); i++){
         int people_rel = (*_client)[i].selfCharacter() -> type();
         if(people_rel == 1){
-                for(auto j = 0; j < (*_client).size(); j++){
-                   // (*_client)[i].print( (*_client)[i].getnickname());
-					char str[5];
-					itoa(i + 1, str, 10);
-					(*_client)[j].print("Player ");
-					(*_client)[j].print(str);
-                    (*_client)[j].print(" is werewolf");
-                }
+            for(auto j = 0; j < (*_client).size(); j++){
+                // (*_client)[i].print( (*_client)[i].getnickname());
+                // char str[5];
+                //std::to_string(i+1)(i + 1, str, 10);
+                (*_client)[j].print("Player ");
+                (*_client)[j].print(std::to_string(i+1));
+                (*_client)[j].print(" is werewolf");
+            }
         }
         else if(people_rel == 2){
-                for(auto j = 0; j < (*_client).size(); j++){
-                   // (*_client)[i].print( (*_client)[i].getnickname());
-					char str[5];
-					itoa(i + 1, str, 10);
-					(*_client)[j].print("Player ");
-					(*_client)[j].print(str);
-                    (*_client)[j].print("is villager");
-                }
+            for(auto j = 0; j < (*_client).size(); j++){
+                // (*_client)[i].print( (*_client)[i].getnickname());
+                //char str[5];
+                // std::to_string(i+1)(i + 1, str, 10);
+                (*_client)[j].print("Player ");
+                (*_client)[j].print(std :: to_string(i+1));
+                (*_client)[j].print("is villager");
             }
-    	else if(people_rel == 3){
-                for(auto j = 0; j < (*_client).size(); j++){
-                   // (*_client)[i].print( (*_client)[i].getnickname());
-					char str[5];
-					itoa(i + 1, str, 10);
-					(*_client)[j].print("Player ");
-					(*_client)[j].print(str);
-                    (*_client)[j].print("is hunter");
-                }
+        }
+        else if(people_rel == 3){
+            for(auto j = 0; j < (*_client).size(); j++){
+                // (*_client)[i].print( (*_client)[i].getnickname());
+                //char str[5];
+                //itoa(i + 1, str, 10);
+                (*_client)[j].print("Player ");
+                (*_client)[j].print(std::to_string(i+1));
+                (*_client)[j].print("is hunter");
+            }
         }
         else if(people_rel == 4){
-                for(auto j = 0; j < (*_client).size(); j++){
-                   // (*_client)[i].print( (*_client)[i].getnickname());
-					char str[5];
-					itoa(i + 1, str, 10);
-					(*_client)[j].print("Player ");
-					(*_client)[j].print(str);
-                    (*_client)[j].print("is witch");
-                }
+            for(auto j = 0; j < (*_client).size(); j++){
+                // (*_client)[i].print( (*_client)[i].getnickname());
+                //char str[5];
+                //itoa(i + 1, str, 10);
+                (*_client)[j].print("Player ");
+                (*_client)[j].print(std::to_string(i+1));
+                (*_client)[j].print("is witch");
+            }
         }
         else if(people_rel == 5){
-                for(auto j = 0; j < (*_client).size(); j++){
-                  //  (*_client)[i].print( (*_client)[i].getnickname());
-					char str[5];
-					itoa(i + 1, str, 10);
-					(*_client)[j].print("Player ");
-					(*_client)[j].print(str);
-                    (*_client)[j].print("is prophet");
-                }
+            for(auto j = 0; j < (*_client).size(); j++){
+                //  (*_client)[i].print( (*_client)[i].getnickname());
+                //char str[5];
+                //itoa(i + 1, str, 10);
+                (*_client)[j].print("Player ");
+                (*_client)[j].print(std::to_string(i+1));
+                (*_client)[j].print("is prophet");
+            }
         }
-    	else{
-                for(auto j = 0; j < (*_client).size(); j++){
-                    //(*_client)[i].print( (*_client)[i].getnickname());
-					char str[5];
-					itoa(i + 1, str, 10);
-					(*_client)[j].print("Player ");
-					(*_client)[j].print(str);
-                    (*_client)[j].print("is guard");
-                }
+        else{
+            for(auto j = 0; j < (*_client).size(); j++){
+                //(*_client)[i].print( (*_client)[i].getnickname());
+                //char str[5];
+                //itoa(i + 1, str, 10);
+                (*_client)[j].print("Player ");
+                (*_client)[j].print(std::to_string(i+1));
+                (*_client)[j].print("is guard");
+            }
         }
     }
-        shutdown();
-    }
+    shutdown();
+}
 
 void ProcessManager :: run(){
     Init();//初始化用户名
@@ -189,11 +190,9 @@ void ProcessManager :: run(){
         (*_client)[i].print("game started!!!");
     }
     for(auto i = 0; i < (*_client).size(); i++){
-    	(*_client)[i].print("You are Player ");
-    	char str[5];
-    	itoa(i + 1, str, 10);
-    	(*_client)[i].print(str);
-	}
+        (*_client)[i].print("You are Player ");
+        (*_client)[i].print(std::to_string(i+1));
+    }
     _process[4] -> activate();
     _process[5] -> activate();
     _process[6] -> activate();
@@ -222,10 +221,9 @@ void ProcessManager :: run(){
                     gameover();
                 }
                 else{
-                    usepro = usepro -> next(); 
+                    usepro = usepro -> next();
                 }
-            }		
+            }
             
         }
 }
-
