@@ -1072,7 +1072,7 @@ void Chat :: read()//Ëé∑Âèñdead_num,dead_player[],
     }
     for(int i=0 ; i<size ; i++)//Âà§Êñ≠ÊúâÊ≤°ÊúâË¢´ÂÆàÂç´ÊàñËÄÖË¢´Êïë
     {
-        if((bite_man == i)&&(poison_man != i)&&(guard_man != i))//Ë¢´Âí¨Ôºå‰∏çË¢´ÊïëÔºå‰∏çË¢´ÂÆàÂç´
+        if((bite_man == i)&&(save_man != i)&&(guard_man != i))//Ë¢´Âí¨Ôºå‰∏çË¢´ÊïëÔºå‰∏çË¢´ÂÆàÂç´
         {
             dead_num++;
             dead_player[dead_num]=i;
@@ -1082,7 +1082,7 @@ void Chat :: read()//Ëé∑Âèñdead_num,dead_player[],
             dead_num++;
             dead_player[dead_num]=i;
         }
-        if((bite_man == i)&&(poison_man == i)&&(guard_man = i))//Ë¢´Âí¨ÔºåÂêåÂÆàÂêåÊïë
+        if((bite_man == i)&&(save_man == i)&&(guard_man == i))//Ë¢´Âí¨ÔºåÂêåÂÆàÂêåÊïë
         {
             dead_num++;
             dead_player[dead_num]=i;
@@ -1257,7 +1257,7 @@ bool Chat :: func()
         else
         {
             srand( (unsigned)time( NULL ) );
-            int t =  rand() % dead_num + 1;
+            int t =  rand() % size + 1;
             start_one = dead_player[t];
             int left_right = rand() % 2;
             if(left_right==1)
