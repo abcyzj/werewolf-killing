@@ -1,4 +1,4 @@
-#include "client.h"
+#include "client_test.h"
 #include "character.h"
 #include "characterfac.h"
 #include "processmanager.h"
@@ -131,6 +131,35 @@ void Characterfac::set_client(){
 	else if(size >= 12 && size <= 13)
 		produce(5, 1, 1, 1, 1, size - 9);
 }
+
+void Characterfac::set_client(int wolf, int witch, int prophet, int hunter, int guard, int villager){
+	if(wolf + witch + prophet + hunter + guard + villager == _client -> size()){
+		produce(wolf, witch, prophet, hunter, guard, villager);
+	}
+	else{
+		set();
+	}
+}
+
+void Characterfac::set(){
+	(*_client)[0].print("do you want to set the characters yourselves? print y for Yes and n for No");
+	(*_client)[0].turn_on_input();
+	std::string s = (*_client)[0].recv();
+	if(s[0] == 'y'){
+		(*_client)[0].print("please input the number of wolf, witch, prophet, hunter, guard, villager");
+		int chra[10];
+		for(int i = 1; i <= 6; i++){
+			(*_client)[0].turn_on_input();
+			s = (*_client)[0].recv();
+			chra[i] = s[1] - '0';
+		}
+		set_client(chra[1], chra[2], chra[3], chra[4], chra[5], chra[6]);
+	}
+	else{
+		set_client();
+	}
+}
+
 
 
 Characterfac::~Characterfac(){

@@ -25,7 +25,6 @@ namespace Werewolf
         virtual bool func() = 0;    //进程的主要执行函数
         static std::vector<logging> _log;
     public:
-        bool wolf_lose = false;
         int get_size();
         Process(std::vector<Client>*);//allclient
         static int have_police;
@@ -91,8 +90,7 @@ namespace Werewolf
         bool hunting = false;
     public:
         Calculating(std::vector<Client> *cli, Process* hun, int calibra, Process* po) : Process(cli), _hun(hun), _calibra(calibra), _po(po){
-            _log = readlog();
-            wolf_lose = false;
+            _log = readlog(); 
         }
         ~Calculating(){
             delete _hun;
@@ -117,8 +115,9 @@ namespace Werewolf
         Process* Po_p;
         Process* _Chat;
         bool is_end();
+		int _msg;
     public:
-        Voting(std::vector<Client> *cli, Process*, Process*, Process*);
+        Voting(std::vector<Client> *cli, Process*, Process*, Process*,int);
     };
     
     class Hunting : public Process
