@@ -90,8 +90,7 @@ namespace Werewolf
         bool hunting = false;
     public:
         Calculating(std::vector<Client> *cli, Process* hun, int calibra, Process* po) : Process(cli), _hun(hun), _calibra(calibra), _po(po){
-            _log = readlog();
-            wolf_lose = false;
+            _log = readlog(); 
         }
         ~Calculating(){
             delete _hun;
