@@ -16,7 +16,7 @@ int main()
     std::cin >> roomname;
     
     std::vector<Werewolf::Client> cl_vec;
-    for (int i = 1; i <= 13; i++)
+    for (int i = 1; i <= 5; i++)
     {
         Werewolf :: Client tep = Werewolf :: Client(i);
         cl_vec.push_back(tep);
@@ -40,9 +40,9 @@ int main()
      cl_vec[4].set_charac(cha5);*/
     
     Werewolf::Characterfac fac(&cl_vec, &test);
-    fac.set();
+    fac.set_client();
     test.run();
-#ifdef _WIN32
+#ifdef WIN32
     WSACleanup();
 #endif
     return 0;
