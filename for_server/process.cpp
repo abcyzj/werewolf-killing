@@ -1184,6 +1184,15 @@ bool Chat :: func()
 		if(!(*allclient)[i].selfCharacter()->is_dead())
 			(*allclient)[i].print("Daytime begins.\n");
     read();
+    std::string deadpeo="Player";
+    for(int i=0;i<dead_num;i++)
+        deadpeo+=" "+std::to_string(dead_player[i]+1);
+    deadpeo+="have died.\n";
+    for(int i = 0; i<size ; i++)
+    {
+        if(!(*allclient)[i].selfCharacter()->is_dead())
+            (*allclient)[i].print(deadpeo);
+    }
     for(int i=0 ; i < size ; i++)//ÈÅóË®ÄÁéØËäÇ
     {
         for(int j=1 ; j<=dead_num ; j++)
