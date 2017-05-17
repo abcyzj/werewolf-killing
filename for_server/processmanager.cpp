@@ -192,8 +192,9 @@ void ProcessManager :: run(){
         (*_client)[i].print("game started!!!");
     }
     for(auto i = 0; i < (*_client).size(); i++){
-        (*_client)[i].print("You are Player ");
-        (*_client)[i].print(std::to_string(i+1));
+        std::string s = std::to_string(i + 1);
+		s = "You are Player " + s;
+		(*_client)[i].print(s);
     }
     _process[4] -> activate();
     _process[5] -> activate();
