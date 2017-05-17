@@ -7,10 +7,10 @@
 
 int main()
 {
-/*#ifdef _WIN32
+#ifdef _WIN32
     WSADATA wsaData;
     WSAStartup( MAKEWORD(2, 2), &wsaData);
-#endif*/
+#endif
     std::cout << "Input the roomname you want to use:\n";
     std::string roomname;
     std::cin >> roomname;
@@ -42,8 +42,8 @@ int main()
     Werewolf::Characterfac fac(&cl_vec, &test);
     fac.set();
     test.run();
-/*#ifdef WIN32
+#ifdef _WIN32
     WSACleanup();
 #endif
-    return 0;*/
+    return 0;
 }
