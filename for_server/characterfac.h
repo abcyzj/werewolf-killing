@@ -2,7 +2,7 @@
 #define CHARACTERFAC_H
 
 #include <vector>
-#include "client.h"
+#include "client_test.h"
 #include "character.h"
 #include "process.h"
 
@@ -20,7 +20,8 @@ namespace Werewolf{
     ~Characterfac();
     void produce(int wolf, int witch, int prophet, int hunter, int guard, int villager);
     void set_client();
-
+	void set_client(int wolf, int witch, int prophet, int hunter, int guard, int villager);
+	void set();
   };
 }
 
