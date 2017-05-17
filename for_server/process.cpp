@@ -236,7 +236,7 @@ bool Predicting :: func()    //预言家进行身份检测
     return true;
 }
 
-Voting::Voting(std::vector<Client>* _all, Process* hunt,Process* Po_passing ,Process* chat):Process(_all), ht(hunt),Po_p(Po_passing),_Chat(chat){}
+Voting::Voting(std::vector<Client>* _all, Process* hunt,Process* Po_passing ,Process* chat,int msg):Process(_all), ht(hunt),Po_p(Po_passing),_Chat(chat),_msg(msg){}
 Po_passing::Po_passing(std::vector<Client>* _all):Process(_all){}
 bool Voting::func(){
     _Chat->begin();
@@ -276,7 +276,7 @@ bool Voting::func(){
             (*allclient)[i].turn_on_input();
             std::string tgt=(*allclient)[i].recv();
             while(!isalive[atoi(tgt.c_str())-1]){
-                (*allclient)[i].print("Please choose another Player!, he is dead\n");
+                (*allclient)[i].print("Please choose another Player!, he is dead.\n");
                 (*allclient)[i].turn_on_input();
                 tgt=(*allclient)[i].recv();
             }
@@ -481,24 +481,44 @@ bool Voting::is_end(){
                 villnum++;
             else godnum++;
         }
-    if(wolfnum==0&&villnum!=0&&godnum!=0){
-        for(int i=0;i<n;i++)
-            (*allclient)[i].print("Good Man Win!\n");
-        return true;
+	if(_msg==1){
+		if(wolfnum==0&&villnum!=0&&godnum!=0){
+			for(int i=0;i<n;i++)
+				(*allclient)[i].print("Good Man Win!\n");
+			return true;
+		}
+		if(wolfnum==0&&(villnum==0||godnum==0)){
+			for(int i=0;i<n;i++)
+				(*allclient)[i].print("Tie Game!\n");
+			return true;
+		}
+		if(wolfnum!=0&&(villnum==0||godnum==0)){
+			for(int i=0;i<n;i++)
+				(*allclient)[i].print("Wolf Win!\n");
+		}
+		if(wolfnum!=0&&villnum!=0&&godnum!=0)
+			return false;
     }
-    if(wolfnum==0&&(villnum==0||godnum==0)){
-        for(int i=0;i<n;i++)
-            (*allclient)[i].print("Tie Game!\n");
-        return true;
-    }
-    if(wolfnum!=0&&(villnum==0||godnum==0)){
-        for(int i=0;i<n;i++)
-            (*allclient)[i].print("Wolf Win!\n");
-    }
-    if(wolfnum!=0&&villnum!=0&&godnum!=0)
-        return false;
-    
-    return true;
+	else{
+		int goodman=godnum+villnum;
+		if(goodman==0&&wolfnum!=0){
+			for(int i=0;i<n;i++)
+				(*allclient)[i].print("Wolf Win!\n");
+			return true;
+		}
+		if(goodman==0&&wolfnum==0){
+			for(int i=0;i<n;i++)
+				(*allclient)[i].print("Tie Game!\n");
+			return true;
+		}
+		if(goodman!=0&&wolfnum==0){
+			for(int i=0;i<n;i++)
+				(*allclient)[i].print("Good Man Win!\n");
+			return true;
+		}
+		if(goodman!=0&&wolfnum!=0)
+			return false;
+	}
 }
 void Calculating::find_dead(){
     for(int j = 0; j < (*_log).size(); j++){
@@ -705,10 +725,13 @@ bool Calculating::func(){
     find_dead();
     if(_calibra == 1){
         if(calculategod() || calculatepeo()){
+			for(int i=0;i<allclient->size();i++)
+				(*allclient)[i].print("Wolf Win!");
             return false;
         }
         else if(calculatewolf()){
-            wolf_lose = true;
+			for(int i=0;i<allclient->size();i++)
+				(*allclient)[i].print("Good Man Win!");
             return false;
         }
         else{
@@ -724,10 +747,13 @@ bool Calculating::func(){
     }
     else{
         if(calculategod() && calculatepeo()){
+			for(int i=0;i<allclient->size();i++)
+				(*allclient)[i].print("Wolf Win!");
             return false;
         }
         else if(calculatewolf()){
-            wolf_lose = true;
+			for(int i=0;i<allclient->size();i++)
+				(*allclient)[i].print("Good Man Win!");
             return false;
         }
         else{

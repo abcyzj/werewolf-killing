@@ -35,7 +35,7 @@ void ProcessManager::constructlist(){//基类的构造函�?!!
     Process* pro5 = new Po_electing(_client);
     _process.push_back(pro5);
     Process* _pro = new Chat(_client);
-    Process* pro6 = new Voting(_client, pro, Pro, _pro);
+    Process* pro6 = new Voting(_client, pro, Pro, _pro,msg);
     _process.push_back(pro6);
     //以上是参加流程的�?
     _process.push_back(pro);
@@ -108,6 +108,7 @@ void ProcessManager::gameover(){//结束之后的操作，公布游戏结果，�
     for(auto i = 0; i < (*_client).size(); i++){
         (*_client)[i].print("game over!!!");
     }
+	/*
     if((_process[ptr] -> wolf_lose)){
         for(auto i = 0; i < (*_client).size(); i++){
             (*_client)[i].print("goodman win");
@@ -117,7 +118,7 @@ void ProcessManager::gameover(){//结束之后的操作，公布游戏结果，�
         for(auto i = 0; i < (*_client).size(); i++){
             (*_client)[i].print("werewolf win");
         }
-    }
+    }*/
     for(auto i = 0; i < (*_client).size(); i++){
         int people_rel = (*_client)[i].selfCharacter() -> type();
         if(people_rel == 1){
