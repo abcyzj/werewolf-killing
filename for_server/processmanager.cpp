@@ -108,6 +108,7 @@ void ProcessManager::gameover(){//结束之后的操作，公布游戏结果，�
     for(auto i = 0; i < (*_client).size(); i++){
         (*_client)[i].print("game over!!!");
     }
+	std::string s;
 	/*
     if((_process[ptr] -> wolf_lose)){
         for(auto i = 0; i < (*_client).size(); i++){
@@ -126,9 +127,9 @@ void ProcessManager::gameover(){//结束之后的操作，公布游戏结果，�
                 // (*_client)[i].print( (*_client)[i].getnickname());
                 // char str[5];
                 //std::to_string(i+1)(i + 1, str, 10);
-                (*_client)[j].print("Player ");
-                (*_client)[j].print(std::to_string(i+1));
-                (*_client)[j].print(" is werewolf");
+                s = std::to_string(i + 1);
+				s = "Player " + s + " is werewolf";
+				(*_client)[j].print(s);
             }
         }
         else if(people_rel == 2){
@@ -136,9 +137,9 @@ void ProcessManager::gameover(){//结束之后的操作，公布游戏结果，�
                 // (*_client)[i].print( (*_client)[i].getnickname());
                 //char str[5];
                 // std::to_string(i+1)(i + 1, str, 10);
-                (*_client)[j].print("Player ");
-                (*_client)[j].print(std :: to_string(i+1));
-                (*_client)[j].print("is villager");
+                s = std::to_string(i + 1);
+				s = "Player " + s + " is villager";
+				(*_client)[j].print(s);
             }
         }
         else if(people_rel == 3){
@@ -146,9 +147,9 @@ void ProcessManager::gameover(){//结束之后的操作，公布游戏结果，�
                 // (*_client)[i].print( (*_client)[i].getnickname());
                 //char str[5];
                 //itoa(i + 1, str, 10);
-                (*_client)[j].print("Player ");
-                (*_client)[j].print(std::to_string(i+1));
-                (*_client)[j].print("is hunter");
+                s = std::to_string(i + 1);
+				s = "Player " + s + " is hunter";
+				(*_client)[j].print(s);
             }
         }
         else if(people_rel == 4){
@@ -156,9 +157,9 @@ void ProcessManager::gameover(){//结束之后的操作，公布游戏结果，�
                 // (*_client)[i].print( (*_client)[i].getnickname());
                 //char str[5];
                 //itoa(i + 1, str, 10);
-                (*_client)[j].print("Player ");
-                (*_client)[j].print(std::to_string(i+1));
-                (*_client)[j].print("is witch");
+                s = std::to_string(i + 1);
+				s = "Player " + s + " is witch";
+				(*_client)[j].print(s);
             }
         }
         else if(people_rel == 5){
@@ -166,9 +167,9 @@ void ProcessManager::gameover(){//结束之后的操作，公布游戏结果，�
                 //  (*_client)[i].print( (*_client)[i].getnickname());
                 //char str[5];
                 //itoa(i + 1, str, 10);
-                (*_client)[j].print("Player ");
-                (*_client)[j].print(std::to_string(i+1));
-                (*_client)[j].print("is prophet");
+                s = std::to_string(i + 1);
+				s = "Player " + s + " is prophet";
+				(*_client)[j].print(s);
             }
         }
         else{
@@ -176,9 +177,9 @@ void ProcessManager::gameover(){//结束之后的操作，公布游戏结果，�
                 //(*_client)[i].print( (*_client)[i].getnickname());
                 //char str[5];
                 //itoa(i + 1, str, 10);
-                (*_client)[j].print("Player ");
-                (*_client)[j].print(std::to_string(i+1));
-                (*_client)[j].print("is guard");
+                s = std::to_string(i + 1);
+				s = "Player " + s + " is guard";
+				(*_client)[j].print(s);
             }
         }
     }
