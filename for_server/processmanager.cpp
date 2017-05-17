@@ -30,9 +30,9 @@ void ProcessManager::constructlist(){//基类的构造函�?!!
     _process.push_back(pro2);
     Process* pro3 = new Predicting(_client);
     _process.push_back(pro3);
-    Process* pro4 = new Calculating(_client, pro, msg, Pro);
+    Process* pro4 = new Po_electing(_client);
     _process.push_back(pro4);
-    Process* pro5 = new Po_electing(_client);
+	Process* pro5 = new Calculating(_client, pro, msg, Pro);
     _process.push_back(pro5);
     Process* _pro = new Chat(_client);
     Process* pro6 = new Voting(_client, pro, Pro, _pro,msg);
@@ -213,7 +213,7 @@ void ProcessManager :: run(){
     }
     while(1)
         for(int i = 0; i < 7; i++){
-            if(i != 4 && i != 6){
+            if(i <= 4){
                 usepro -> begin();//不知道是不是VC的原因，这个是不是有错啊�?
                 usepro = usepro -> next();
             }
