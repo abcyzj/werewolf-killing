@@ -256,13 +256,14 @@ bool Voting::func(){
     }
     voted+=".\n";
     if(have_police>=0){//√¶√ò‚â•¬ßœÄ√à‚àÜ¬?
-        (*allclient)[have_police].print("Please vote a Player!\n"+voted);
-        (*allclient)[have_police].turn_on_input();
+        std::cout << have_police << std::endl;
+        (*allclient)[have_police - 1].print("Please vote a Player!\n"+voted);
+        (*allclient)[have_police - 1].turn_on_input();
         std::string pt=(*allclient)[have_police].recv();
         while(!isalive[atoi(pt.c_str())-1]){
-            (*allclient)[have_police].print("Please choose another Player!, he is dead\n");
-            (*allclient)[have_police].turn_on_input();
-            pt=(*allclient)[have_police].recv();
+            (*allclient)[have_police - 1].print("Please choose another Player!, he is dead\n");
+            (*allclient)[have_police - 1].turn_on_input();
+            pt=(*allclient)[have_police - 1].recv();
         }
         voteinfo[have_police]=atoi(pt.c_str())-1;
         num[atoi(pt.c_str())-1]+=1.5;
@@ -305,54 +306,6 @@ bool Voting::func(){
         isalive[maxnum[0]]=0;
         writelog(ALL,VOTE,maxnum[0]);
         deadnum.push_back(maxnum[0]);
-        /*
-         for(int i=0;i<n;i++)
-         if(isalive[i])
-         (*allclient)[i].print("Player "+std::to_string(maxnum[0])+" has been voted out!\n");
-         (*allclient)[maxnum[0]].print("You have been voted out!\n");
-         if(!is_end()){
-         if((*allclient)[maxnum[0]].selfCharacter()->type()==hunter){
-         bool end=!ht->begin();*/
-        /*
-         (*allclient)[maxnum[0]].print("You can choose to shoot or not.(Y/N)\n");
-         (*allclient)[maxnum[0]].turn_on_input();
-         std::string choice=(*allclient)[maxnum[0]].recv();
-         if(choice=="Y"){
-         bool end=!ht->begin();//√∏¬∫¬¨¬´¬°‚Äò¬ª√Ä‚Ä¶¬±¬ª√Ä‚à´√õŒ©¬∑√Ä‚Ä?/
-         /*
-         if(end)
-         return false;
-         }
-         }
-         */
-        /*
-         for(int i=0;i<n;i++)
-         isalive[i]=!(*allclient)[i].selfCharacter()->is_dead();//‚àè¬∏‚Äì¬¨isalive[]*/
-        /*
-         for(int i=0;i<n;i++)
-         if(isalive[i]||i==maxnum[0])
-         (*allclient)[i].print("Last words begin.\n");
-         (*allclient)[maxnum[0]].print("Please input the words you want to say before you quit the game.\n:q + Enter represents ending.\n");
-         std::string lwords="";
-         while(true){
-         (*allclient)[maxnum[0]].turn_on_input();
-         lwords=(*allclient)[maxnum[0]].recv();
-         if(lwords!=":q"){
-         for(int j=0;i<n;j++)
-         if(isalive[j]){
-         (*allclient)[j].print(lwords+"\n");
-         }
-         }
-         else break;
-         }
-         for(int i=0;i<n;i++)
-         if(isalive[i]||i==maxnum[0])
-         (*allclient)[i].print("Last words end.\n");
-         (*allclient)[maxnum[0]].print("You quit the game.\n");
-         return true;
-         }
-         else
-         return false;*/
     }
     else{
         std::string tie="Player";
@@ -857,7 +810,7 @@ bool Po_electing :: func()  //选举警长
     int fin_cnt = 0, fin_rank = 0; //计算退水后竞选警长的人数
     for (int i = 0; i < cnt; i++)
     {
-        if (num[i] == 0)
+        if (num[i] != 0)
         {
             fin_cnt++;
             fin_rank = num[i];
@@ -899,7 +852,7 @@ bool Po_electing :: func()  //选举警长
         if (tot_poll[i] > max_poll)
         {
             max_poll = tot_poll[i];
-            target = i;
+            target = num[i];
         }
     }
     // for (int i = 0; i < cnt; i++)
@@ -979,7 +932,7 @@ bool Po_electing :: func()  //选举警长
             if (tot_poll[i] > max_poll)
             {
                 max_poll = tot_poll[i];
-                target = i;
+                target = num[i];
             }
         }
         std::vector<int> rep2;    //计算有最大票数的人数
@@ -1077,12 +1030,12 @@ void Chat :: read()//Ëé∑Âèñdead_num,dead_player[],
             dead_num++;
             dead_player[dead_num]=i;
         }
-        if((poison_man == i)&&(guard_man != i)) //  Ë¢´ÊØíÔºå‰∏çË¢´ÂÆàÂç´
+        else if((poison_man == i)&&(guard_man != i)) //  Ë¢´ÊØíÔºå‰∏çË¢´ÂÆàÂç´
         {
             dead_num++;
             dead_player[dead_num]=i;
         }
-        if((bite_man == i)&&(save_man == i)&&(guard_man == i))//Ë¢´Âí¨ÔºåÂêåÂÆàÂêåÊïë
+        else if((bite_man == i)&&(save_man == i)&&(guard_man == i))//Ë¢´Âí¨ÔºåÂêåÂÆàÂêåÊïë
         {
             dead_num++;
             dead_player[dead_num]=i;
@@ -1213,6 +1166,7 @@ bool Chat :: func()
     }
     for(int i=0 ; i < size ; i++)
     {
+        std::cout << have_police << std::endl;
         if(have_police == i+1 )//iÊòØË≠¶Èïø
         {
             police=1;//Ë°®Á§∫ÊúâË≠¶ÈïøÂ≠òÂú®
@@ -1222,7 +1176,7 @@ bool Chat :: func()
                 client[i].print("Please choose left or right:");
                 client[i].turn_on_input();;
                 std::string p = client[i].recv();
-                if( p == "right")//ÂêëÂè≥
+                if(p[0] == 'r')//ÂêëÂè≥
                     right();
                 else
                     left();
@@ -1233,7 +1187,7 @@ bool Chat :: func()
                 client[i].print("Please choose left or right:");
                 client[i].turn_on_input();
                 std::string p = client[i].recv();
-                if( p == "right")//ÂêëÂè≥
+                if(p[0] == 'r')//ÂêëÂè≥
                     right();
                 else
                     left();
