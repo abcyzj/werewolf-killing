@@ -218,7 +218,6 @@ void ProcessManager :: run(){
                 usepro = usepro -> next();
             }
             else{
-                //  if(usepro -> valid()) std::cout << 1 << std::endl;
                 if(!usepro -> begin()){
                     ptr = i;
                     gameover();
