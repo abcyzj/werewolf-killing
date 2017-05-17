@@ -104,6 +104,9 @@ bool Guarding :: func()
 }
 
 bool Killing::func(){
+	for(int i=0;i<allclient->size();i++)
+		if(!(*allclient)[i].selfCharacter()->is_dead())
+			(*allclient)[i].print("Night Falls.\n");
     int cnt=0;
     int num=-1;
     bool flag=true;
@@ -269,7 +272,7 @@ bool Voting::func(){
         num[atoi(pt.c_str())-1]+=1.5;
     }
     for(int i=0;i<n;i++)//‚àÜ‚Ä∞‚Äù‚Ä°¬ª√Ä√ï‚àÇ‚àÜ¬±
-        if(isalive[i]||i!=have_police){
+        if(isalive[i]&&i!=have_police){
             (*allclient)[i].print("Please vote!\n"+voted);
             if(have_police>=0)
                 (*allclient)[i].print("The Police votes to Player "+std::to_string(voteinfo[have_police]+1)+".\n");
@@ -420,18 +423,20 @@ bool Voting::func(){
         
         for(int i=0;i<deadnum.size();i++)
             if((*allclient)[deadnum[i]].selfCharacter()->type()==hunter){
-                flag2=deadnum[i];
+                flag2=1;
                 break;
             }
-        if(flag2>=0){//¬°‚Äò¬ª√Ä√∏‚Ñ¢¬´œÄ
+        if(flag2){//¬°‚Äò¬ª√Ä√∏‚Ñ¢¬´œÄ
             ht->begin();
             bool isend2=is_end();
             if(isend2)
                 return false;
             else{//√¶√ò‚â•¬ß‚àë‚Ä¶√¶√ò¬™‚Ä?
-                int behunt=(*readlog())[readlog()->size()-1]._geter;
-                if(behunt==have_police)
-                    Po_p->begin();
+				if((*readlog())[readlog()->size()-1].Act==SHOOT){
+                	int behunt=(*readlog())[readlog()->size()-1]._geter;
+                	if(behunt==have_police)
+                    	Po_p->begin();
+				}
             }
         }
         //‚Äú‚âà‚Äî‚Äò‚â•¬¨¬†ÀÜ
@@ -792,14 +797,14 @@ bool Po_electing :: func()  //选举警长
     int max_poll = 0;   //表示最大票数，防止有重复要重新计票
     for (int i = 0; i < (*allclient).size(); i++)   //遍历询问想当警长的人
     {
-        if (! (*allclient)[i].selfCharacter() -> is_dead())
-        {
+        //if (! (*allclient)[i].selfCharacter() -> is_dead())
+        //{
             (*allclient)[i].print("Do you want to be police, y or n?\n");
             (*allclient)[i].turn_on_input();
             std::string ans = (*allclient)[i].recv();
             if (ans[0] == 'y')
                 num[cnt++] = i + 1; //记录下想当警长的人的编号
-        }
+        //}
     }
     
     if (cnt == 0)
@@ -1010,14 +1015,14 @@ bool Po_passing::func(){
         std::string pass="";
         (*allclient)[have_police].turn_on_input();
         pass=(*allclient)[have_police].recv();
-        while((*allclient)[pass[0]-'1'].selfCharacter()->is_dead()){
+        while((*allclient)[atoi(pass.c_str())-1].selfCharacter()->is_dead()){
             (*allclient)[have_police].print("That Player is dead.\nPlease choose another Player.\n");
             pass=(*allclient)[have_police].recv();
         }
         for(int i=0;i<n;i++)
             if(isalive[i])
-                (*allclient)[i].print("The Police chooses Player "+std::to_string(pass[0]-'1')+" to be the next Police.\n");
-        have_police=pass[0]-'1';
+                (*allclient)[i].print("The Police chooses Player "+std::to_string(atoi(pass.c_str())-1)+" to be the next Police.\n");
+        have_police=atoi(pass.c_str());
         _rel_cli.clear();
         _rel_cli.push_back(&((*allclient)[have_police]));
     }
@@ -1175,6 +1180,9 @@ void Chat :: left()
 
 bool Chat :: func()
 {
+	for(int i=0;i<allclient->size();i++)
+		if(!(*allclient)[i].selfCharacter()->is_dead())
+			(*allclient)[i].print("Daytime begins.\n");
     read();
     for(int i=0 ; i < size ; i++)//ÈÅóË®ÄÁéØËäÇ
     {
