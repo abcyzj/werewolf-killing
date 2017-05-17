@@ -58,9 +58,12 @@ namespace Werewolf
     class Witching : public Process//女巫
     {
     protected:
+        static int exe_time;    //总执行次数
         bool func();
     public:
         Witching(std::vector<Client> *cli);
+        int ex_time();    //总的执行次数
+        void add_ex_time(); //执行次数加1
     };
     
     class Predicting : public Process   //预言家
@@ -90,7 +93,7 @@ namespace Werewolf
         bool hunting = false;
     public:
         Calculating(std::vector<Client> *cli, Process* hun, int calibra, Process* po) : Process(cli), _hun(hun), _calibra(calibra), _po(po){
-            _log = readlog(); 
+            _log = readlog();
         }
         ~Calculating(){
             delete _hun;
@@ -115,7 +118,7 @@ namespace Werewolf
         Process* Po_p;
         Process* _Chat;
         bool is_end();
-		int _msg;
+        int _msg;
     public:
         Voting(std::vector<Client> *cli, Process*, Process*, Process*,int);
     };

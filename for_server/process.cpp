@@ -74,6 +74,17 @@ Po_electing :: Po_electing(std::vector<Client> *cli) : Process(cli){}
 
 Hunting :: Hunting(std::vector<Client> *cli) : Process(cli), _cli(cli){}
 
+int Witching :: exe_time = 0;
+int Witching :: ex_time()
+{
+    return exe_time;
+}
+
+void Witching :: add_ex_time()
+{
+    exe_time++;
+}
+
 bool Guarding :: func()
 {
     dynamic_cast<Guard*>(_rel_cli[0] -> selfCharacter()) -> who_i_guard(-1);    //Â∞ÜÂÆàÂç´ÁöÑ‰∫∫ÁΩÆ‰∏?1
@@ -104,9 +115,9 @@ bool Guarding :: func()
 }
 
 bool Killing::func(){
-	for(int i=0;i<allclient->size();i++)
-		if(!(*allclient)[i].selfCharacter()->is_dead())
-			(*allclient)[i].print("Night Falls.\n");
+    for(int i=0;i<allclient->size();i++)
+        if(!(*allclient)[i].selfCharacter()->is_dead())
+            (*allclient)[i].print("Night Falls.\n");
     int cnt=0;
     int num=-1;
     bool flag=true;
@@ -156,8 +167,15 @@ bool Killing::func(){
 }
 
 
-bool Witching :: func() //Â•≥Â∑´‰ΩøÁî®ÊØíËçØÊàñËÄÖËß£ËçØ
+bool Witching :: func() //女巫使用毒药或者解药
 {
+    add_ex_time();
+    int w_num = -1, have_dead = -1;  //女巫的client编号和死者的client编号
+    for (int i = 0; i < (*allclient).size(); i++)
+    {
+        if (4 == (*allclient)[i].selfCharacter() -> type())
+            w_num = i;
+    }
     if (! _rel_cli[0] -> selfCharacter() -> is_dead()) //Â•≥Â∑´Ê≤°Ê≠ª
     {
         int pos_num = dynamic_cast<Witch*>(_rel_cli[0] -> selfCharacter()) -> have_poison();
@@ -168,12 +186,12 @@ bool Witching :: func() //Â•≥Â∑´‰ΩøÁî®ÊØíËçØÊàñËÄÖË
         //ËØªÊó•ÂøóÂëäËØâÂ•≥Â∑´Ë∞ÅÊ≠ªË∞ÅÊ¥ª
         if ((*readlog())[readlog() -> size() - 1]._act == 0)
         {
-            int have_dead = (*readlog())[readlog() -> size() - 1]._geter;
+            have_dead = (*readlog())[readlog() -> size() - 1]._geter;
             _rel_cli[0] -> print("Player " + std::to_string(have_dead + 1) + " have been killed by werewolves\n");
         }
         else _rel_cli[0] -> print("no one dead\n");
         
-        //ËØ∑Â•≥Â∑´ÈÄâÊã©ÊØíËçØÂíåËß£ËçØ
+        //提示使用毒药或者解药
         _rel_cli[0] -> print("Please choose to use poison or antidote, p or a or n for nothing\n");
         _rel_cli[0] -> turn_on_input();
         std::string drug = _rel_cli[0] -> recv();
@@ -200,12 +218,18 @@ bool Witching :: func() //Â•≥Â∑´‰ΩøÁî®ÊØíËçØÊàñËÄÖË
                     _rel_cli[0] -> turn_on_input();
                     drug = _rel_cli[0] -> recv();
                 }
+                if (ex_time() != 1 && have_dead == w_num)
+                {
+                    _rel_cli[0] -> print("ERROR, You cannot save yourself except the first night\n");
+                    _rel_cli[0] -> turn_on_input();
+                    drug = _rel_cli[0] -> recv();
+                }
                 else break;
             }
         }
         
         
-        if (drug == "p")    //ÊØí‰∫∫
+        if (drug == "p")    //使用毒药
         {
             _rel_cli[0] -> print("Please Input the player you want to poison\n");
             _rel_cli[0] -> turn_on_input();
@@ -432,11 +456,11 @@ bool Voting::func(){
             if(isend2)
                 return false;
             else{//√¶√ò‚â•¬ß‚àë‚Ä¶√¶√ò¬™‚Ä?
-				if((*readlog())[readlog()->size()-1].Act==SHOOT){
-                	int behunt=(*readlog())[readlog()->size()-1]._geter;
-                	if(behunt==have_police)
-                    	Po_p->begin();
-				}
+                if((*readlog())[readlog()->size()-1]._act==SHOOT){
+                    int behunt=(*readlog())[readlog()->size()-1]._geter;
+                    if(behunt==have_police)
+                        Po_p->begin();
+                }
             }
         }
         //‚Äú‚âà‚Äî‚Äò‚â•¬¨¬†ÀÜ
@@ -486,44 +510,45 @@ bool Voting::is_end(){
                 villnum++;
             else godnum++;
         }
-	if(_msg==1){
-		if(wolfnum==0&&villnum!=0&&godnum!=0){
-			for(int i=0;i<n;i++)
-				(*allclient)[i].print("Good Man Win!\n");
-			return true;
-		}
-		if(wolfnum==0&&(villnum==0||godnum==0)){
-			for(int i=0;i<n;i++)
-				(*allclient)[i].print("Tie Game!\n");
-			return true;
-		}
-		if(wolfnum!=0&&(villnum==0||godnum==0)){
-			for(int i=0;i<n;i++)
-				(*allclient)[i].print("Wolf Win!\n");
-		}
-		if(wolfnum!=0&&villnum!=0&&godnum!=0)
-			return false;
+    if(_msg==1){
+        if(wolfnum==0&&villnum!=0&&godnum!=0){
+            for(int i=0;i<n;i++)
+                (*allclient)[i].print("Good Man Win!\n");
+            return true;
+        }
+        if(wolfnum==0&&(villnum==0||godnum==0)){
+            for(int i=0;i<n;i++)
+                (*allclient)[i].print("Tie Game!\n");
+            return true;
+        }
+        if(wolfnum!=0&&(villnum==0||godnum==0)){
+            for(int i=0;i<n;i++)
+                (*allclient)[i].print("Wolf Win!\n");
+        }
+        if(wolfnum!=0&&villnum!=0&&godnum!=0)
+            return false;
     }
-	else{
-		int goodman=godnum+villnum;
-		if(goodman==0&&wolfnum!=0){
-			for(int i=0;i<n;i++)
-				(*allclient)[i].print("Wolf Win!\n");
-			return true;
-		}
-		if(goodman==0&&wolfnum==0){
-			for(int i=0;i<n;i++)
-				(*allclient)[i].print("Tie Game!\n");
-			return true;
-		}
-		if(goodman!=0&&wolfnum==0){
-			for(int i=0;i<n;i++)
-				(*allclient)[i].print("Good Man Win!\n");
-			return true;
-		}
-		if(goodman!=0&&wolfnum!=0)
-			return false;
-	}
+    else{
+        int goodman=godnum+villnum;
+        if(goodman==0&&wolfnum!=0){
+            for(int i=0;i<n;i++)
+                (*allclient)[i].print("Wolf Win!\n");
+            return true;
+        }
+        if(goodman==0&&wolfnum==0){
+            for(int i=0;i<n;i++)
+                (*allclient)[i].print("Tie Game!\n");
+            return true;
+        }
+        if(goodman!=0&&wolfnum==0){
+            for(int i=0;i<n;i++)
+                (*allclient)[i].print("Good Man Win!\n");
+            return true;
+        }
+        if(goodman!=0&&wolfnum!=0)
+            return false;
+    }
+    return false;
 }
 void Calculating::find_dead(){
     for(int j = 0; j < (*_log).size(); j++){
@@ -730,13 +755,13 @@ bool Calculating::func(){
     find_dead();
     if(_calibra == 1){
         if(calculategod() || calculatepeo()){
-			for(int i=0;i<allclient->size();i++)
-				(*allclient)[i].print("Wolf Win!");
+            for(int i=0;i<allclient->size();i++)
+                (*allclient)[i].print("Wolf Win!");
             return false;
         }
         else if(calculatewolf()){
-			for(int i=0;i<allclient->size();i++)
-				(*allclient)[i].print("Good Man Win!");
+            for(int i=0;i<allclient->size();i++)
+                (*allclient)[i].print("Good Man Win!");
             return false;
         }
         else{
@@ -752,13 +777,13 @@ bool Calculating::func(){
     }
     else{
         if(calculategod() && calculatepeo()){
-			for(int i=0;i<allclient->size();i++)
-				(*allclient)[i].print("Wolf Win!");
+            for(int i=0;i<allclient->size();i++)
+                (*allclient)[i].print("Wolf Win!");
             return false;
         }
         else if(calculatewolf()){
-			for(int i=0;i<allclient->size();i++)
-				(*allclient)[i].print("Good Man Win!");
+            for(int i=0;i<allclient->size();i++)
+                (*allclient)[i].print("Good Man Win!");
             return false;
         }
         else{
@@ -797,14 +822,11 @@ bool Po_electing :: func()  //选举警长
     int max_poll = 0;   //表示最大票数，防止有重复要重新计票
     for (int i = 0; i < (*allclient).size(); i++)   //遍历询问想当警长的人
     {
-        //if (! (*allclient)[i].selfCharacter() -> is_dead())
-        //{
-            (*allclient)[i].print("Do you want to be police, y or n?\n");
-            (*allclient)[i].turn_on_input();
-            std::string ans = (*allclient)[i].recv();
-            if (ans[0] == 'y')
-                num[cnt++] = i + 1; //记录下想当警长的人的编号
-        //}
+        (*allclient)[i].print("Do you want to be police, y or n?\n");
+        (*allclient)[i].turn_on_input();
+        std::string ans = (*allclient)[i].recv();
+        if (ans[0] == 'y')
+            num[cnt++] = i + 1; //记录下想当警长的人的编号
     }
     
     if (cnt == 0)
@@ -818,10 +840,7 @@ bool Po_electing :: func()  //选举警长
             std::string words = (*allclient)[num[i] - 1].recv(); //接受竞选宣言
             for (int j = 0; j < (*allclient).size(); j++)//将竞选宣言发给所有玩家
             {
-                if(!((*allclient)[j].selfCharacter() -> is_dead()))
-                {
-                    (*allclient)[j].print("words from player " + std::to_string(num[i]) + " is: " + words);
-                }
+                (*allclient)[j].print("words from player " + std::to_string(num[i]) + " is: " + words);
             }
             
             for (int j = 0; j < cnt; j++)    //每位竞选者发言后询问是否有人退出竞选
@@ -856,7 +875,7 @@ bool Po_electing :: func()  //选举警长
     
     for (int i = 0; i < (*allclient).size(); i++)
     {
-        if (! (*allclient)[i].selfCharacter() -> is_dead() && !check(num, cnt, i + 1))  //没有死且不参加竞选
+        if (!check(num, cnt, i + 1))  //没有死且不参加竞选
         {
             for (int j = 0; j < cnt; j++)
             {
@@ -905,12 +924,9 @@ bool Po_electing :: func()  //选举警长
     {
         for (int i = 0; i < (*allclient).size(); i++) //向每个人发送消息
         {
-            if (! (*allclient)[i].selfCharacter() -> is_dead())
+            for (int j = 0; j < rep.size(); j++)
             {
-                for (int j = 0; j < rep.size(); j++)
-                {
-                    (*allclient)[i].print("Player " + std::to_string(rep[j]) + " have the same poll, please say and vote again");
-                }
+                (*allclient)[i].print("Player " + std::to_string(rep[j]) + " have the same poll, please say and vote again");
             }
         }
         for (int i = 0; i < rep.size(); i++) //同票者重新发言
@@ -920,8 +936,7 @@ bool Po_electing :: func()  //选举警长
             std::string words = (*allclient)[rep[i] - 1].recv();
             for (int j = 0; j < (*allclient).size(); j++)
             {
-                if (!(*allclient)[j].selfCharacter() -> is_dead())
-                    (*allclient)[j].print(words);
+                (*allclient)[j].print(words);
             }
         }
         //   for (int i = 0; i < cnt; i++)
@@ -939,7 +954,7 @@ bool Po_electing :: func()  //选举警长
         //      std::cout << "player still " << num[i] << std::endl;
         for (int i = 0; i < (*allclient).size(); i++)   //重新计票
         {
-            if (!(*allclient)[i].selfCharacter() -> is_dead() && !check(num, cnt, i + 1))  //没有死且不参加竞选
+            if (!check(num, cnt, i + 1))  //没有死且不参加竞选
             {
                 
                 (*allclient)[i].print("Please input the player you want to choose to be the police again\n");
@@ -1180,18 +1195,21 @@ void Chat :: left()
 
 bool Chat :: func()
 {
-	for(int i=0;i<allclient->size();i++)
-		if(!(*allclient)[i].selfCharacter()->is_dead())
-			(*allclient)[i].print("Daytime begins.\n");
+    for(int i=0;i<allclient->size();i++)
+        if(!(*allclient)[i].selfCharacter()->is_dead())
+            (*allclient)[i].print("Daytime begins.\n");
     read();
-    std::string deadpeo="Player";
-    for(int i=0;i<dead_num;i++)
-        deadpeo+=" "+std::to_string(dead_player[i]+1);
-    deadpeo+="have died.\n";
+    std::string dead_peo="Player";
+    for(int i = 1; i <= dead_num; i++)
+    {
+        dead_peo+=" "+std::to_string(dead_player[i]+1);
+        std::cout << dead_player[i] << std::endl;
+    }
+    dead_peo+=" have died.\n";
     for(int i = 0; i<size ; i++)
     {
         if(!(*allclient)[i].selfCharacter()->is_dead())
-            (*allclient)[i].print(deadpeo);
+            (*allclient)[i].print(dead_peo);
     }
     for(int i=0 ; i < size ; i++)//ÈÅóË®ÄÁéØËäÇ
     {
@@ -1209,7 +1227,7 @@ bool Chat :: func()
     }
     for(int i=0 ; i < size ; i++)
     {
-        std::cout << have_police << std::endl;
+        //std::cout << have_police << std::endl;
         if(have_police == i+1 )//iÊòØË≠¶Èïø
         {
             police=1;//Ë°®Á§∫ÊúâË≠¶ÈïøÂ≠òÂú®
