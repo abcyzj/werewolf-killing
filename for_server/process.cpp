@@ -557,10 +557,8 @@ void Calculating::find_dead(){
         }
     }
 }
-bool Calculating::cal_guard(int i){
-    /*if((*_log)[0]._geter == i){
-     return true;
-     }*/
+bool Calculating::cal_guard(int i)
+{
     return (*allclient)[i].selfCharacter()->is_guarded();
 }
 
@@ -597,10 +595,10 @@ bool Calculating::calculatewolf(){//鈥毭犆垰鈭戔垰露鈭毭猜劉�
                 if(cal_guard(i) && is_saved(i)){
                     num++;
                     for(int j = 0; j < allclient -> size(); j++){
-                    	std::string s = std::to_string(i + 1);
-                    	s = "Player " + s + " is dead";
-                    	(*allclient)[j].print(s);
-					} 
+                        std::string s = std::to_string(i + 1);
+                        s = "Player " + s + " is dead";
+                        (*allclient)[j].print(s);
+                    }
                     if(m[i].selfCharacter() -> type() == 3){
                         hunting = true;
                     }
@@ -619,10 +617,10 @@ bool Calculating::calculatewolf(){//鈥毭犆垰鈭戔垰露鈭毭猜劉�
                 else{
                     num++;
                     for(int j = 0; j < allclient -> size(); j++){
-                    	std::string s = std::to_string(i + 1);
-                    	s = "Player " + s + " is dead";
-                    	(*allclient)[j].print(s);
-					} 
+                        std::string s = std::to_string(i + 1);
+                        s = "Player " + s + " is dead";
+                        (*allclient)[j].print(s);
+                    }
                     if(m[i].selfCharacter() -> is_police()){
                         officer = i;
                     }
@@ -633,10 +631,10 @@ bool Calculating::calculatewolf(){//鈥毭犆垰鈭戔垰露鈭毭猜劉�
                 if(is_poisoned(i)){
                     num++;
                     for(int j = 0; j < allclient -> size(); j++){
-                    	std::string s = std::to_string(i + 1);
-                    	s = "Player " + s + " is dead";
-                    	(*allclient)[j].print(s);
-					} 
+                        std::string s = std::to_string(i + 1);
+                        s = "Player " + s + " is dead";
+                        (*allclient)[j].print(s);
+                    }
                     m[i].selfCharacter() -> set_dead();
                     if(m[i].selfCharacter() -> type() == 3){
                         hunting = true;
@@ -667,10 +665,10 @@ bool Calculating::calculatepeo(){
                 if(cal_guard(i) && is_saved(i)){
                     num++;
                     for(int j = 0; j < allclient -> size(); j++){
-                    	std::string s = std::to_string(i + 1);
-                    	s = "Player " + s + " is dead";
-                    	(*allclient)[j].print(s);
-					} 
+                        std::string s = std::to_string(i + 1);
+                        s = "Player " + s + " is dead";
+                        (*allclient)[j].print(s);
+                    }
                     if(m[i].selfCharacter() -> is_police()){
                         officer = i;
                     }
@@ -685,10 +683,10 @@ bool Calculating::calculatepeo(){
                 else{
                     num++;
                     for(int j = 0; j < allclient -> size(); j++){
-                    	std::string s = std::to_string(i + 1);
-                    	s = "Player " + s + " is dead";
-                    	(*allclient)[j].print(s);
-					} 
+                        std::string s = std::to_string(i + 1);
+                        s = "Player " + s + " is dead";
+                        (*allclient)[j].print(s);
+                    }
                     if(m[i].selfCharacter() -> type() == 3){
                         hunting = true;
                     }
@@ -702,10 +700,10 @@ bool Calculating::calculatepeo(){
                 if(is_poisoned(i)){
                     num++;
                     for(int j = 0; j < allclient -> size(); j++){
-                    	std::string s = std::to_string(i + 1);
-                    	s = "Player " + s + " is dead";
-                    	(*allclient)[j].print(s);
-					} 
+                        std::string s = std::to_string(i + 1);
+                        s = "Player " + s + " is dead";
+                        (*allclient)[j].print(s);
+                    }
                     m[i].selfCharacter() -> set_dead();
                     if(m[i].selfCharacter() -> type() == 3){
                         hunting = true;
@@ -735,10 +733,10 @@ bool Calculating::calculategod(){
                 if(cal_guard(i) && is_saved(i)){
                     num++;
                     for(int j = 0; j < allclient -> size(); j++){
-                    	std::string s = std::to_string(i + 1);
-                    	s = "Player " + s + " is dead";
-                    	(*allclient)[j].print(s);
-					} 
+                        std::string s = std::to_string(i + 1);
+                        s = "Player " + s + " is dead";
+                        (*allclient)[j].print(s);
+                    }
                     if(m[i].selfCharacter() -> type() == 3){
                         hunting = true;
                     }
@@ -756,10 +754,10 @@ bool Calculating::calculategod(){
                 else{
                     num++;
                     for(int j = 0; j < allclient -> size(); j++){
-                    	std::string s = std::to_string(i + 1);
-                    	s = "Player " + s + " is dead";
-                    	(*allclient)[j].print(s);
-					} 
+                        std::string s = std::to_string(i + 1);
+                        s = "Player " + s + " is dead";
+                        (*allclient)[j].print(s);
+                    }
                     if(m[i].selfCharacter() -> type() == 3){
                         hunting = true;
                     }
@@ -774,10 +772,10 @@ bool Calculating::calculategod(){
                 if(is_poisoned(i)){
                     num++;
                     for(int j = 0; j < allclient -> size(); j++){
-                    	std::string s = std::to_string(i + 1);
-                    	s = "Player " + s + " is dead";
-                    	(*allclient)[j].print(s);
-					} 
+                        std::string s = std::to_string(i + 1);
+                        s = "Player " + s + " is dead";
+                        (*allclient)[j].print(s);
+                    }
                     m[i].selfCharacter() -> set_dead();
                     if(m[i].selfCharacter() -> type() == 3){
                         hunting = true;
@@ -1240,21 +1238,32 @@ void Chat :: left()
 
 bool Chat :: func()
 {
-    for(int i=0;i<allclient->size();i++)
-        if(!(*allclient)[i].selfCharacter()->is_dead())
+    for(int i = 0;i < (*allclient).size(); i++)
+        if(!(*allclient)[i].selfCharacter() -> is_dead())
             (*allclient)[i].print("Daytime begins.\n");
     read();
-    std::string dead_peo="Player";
-    for(int i = 1; i <= dead_num; i++)
+    if (dead_num == 0)
     {
-        dead_peo+=" "+std::to_string(dead_player[i]+1);
-        std::cout << dead_player[i] << std::endl;
+        for(int i = 0; i < size ; i++)
+        {
+            if(!(*allclient)[i].selfCharacter() -> is_dead())
+                (*allclient)[i].print("Silent Night!");
+        }
     }
-    dead_peo+=" have died.\n";
-    for(int i = 0; i<size ; i++)
+    else
     {
-        if(!(*allclient)[i].selfCharacter()->is_dead())
-            (*allclient)[i].print(dead_peo);
+        std::string dead_peo = "Player";
+        for(int i = 1; i <= dead_num; i++)
+        {
+            dead_peo+=" "+std::to_string(dead_player[i] + 1);
+        }
+        dead_peo += " have died.\n";
+        for(int i = 0; i<size ; i++)
+        {
+            if(!(*allclient)[i].selfCharacter() -> is_dead())
+                (*allclient)[i].print(dead_peo);
+        }
+        
     }
     for(int i=0 ; i < size ; i++)//ÈÅóË®ÄÁéØËäÇ
     {
