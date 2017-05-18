@@ -62,7 +62,13 @@ void Process::writelog(Cha doer,Act act,int geter)
     _log.push_back(logging{doer,act,geter});
 }
 
-Killing :: Killing(std::vector<Client> *cli) : Process(cli){}
+Killing :: Killing(std::vector<Client> *cli) : Process(cli){
+	for(int i=0;i<allclient->size();i++)
+		if((*allclient)[i].selfCharacter()->type()==wolf){
+			add_client(&(*allclient)[i]);
+			cli_num.push_back(i);	
+		}
+}
 
 Guarding :: Guarding(std::vector<Client> *cli) : Process(cli){}
 
@@ -115,15 +121,13 @@ bool Guarding :: func()
 }
 
 bool Killing::func(){
-    for(int i=0;i<allclient->size();i++)
+   for(int i=0;i<allclient->size();i++)
         if(!(*allclient)[i].selfCharacter()->is_dead())
             (*allclient)[i].print("Night Falls.\n");
-    int cnt=0;
-    int num=-1;
-    bool flag=true;
-    bool isalive[_rel_cli.size()];
-    for(int i=0;i<_rel_cli.size();i++)
-        isalive[i]=!_rel_cli[i]->selfCharacter()->is_dead();
+   // int cnt=0;
+   // int num=-1;
+   // bool flag=true;
+	/*
     while(true){
         cnt++;
         for(int i=0;i<_rel_cli.size();i++)
@@ -162,7 +166,53 @@ bool Killing::func(){
                     _rel_cli[i]->print("No chance left.You didn't kill anyone.\n");
             break;
         }
-    }
+    }*/
+	bool isalive[cli_num.size()];
+	int lastalive=-1;
+	for(int i=0;i<cli_num.size();i++){
+		isalive[i]=!(*allclient)[cli_num[i]].selfCharacter()->is_dead();
+		lastalive=cli_num[i];
+	}
+	for(int i=0;i<cli_num.size();i++)
+		if(isalive[i]){
+			(*allclient)[cli_num[i]].print("It is wolves' turn.\nPlease chat with your partners to decide which one to kill.\n\tAttention: Player "+std::to_string(lastalive+1)+" can make the decision.\n\tHe can input \"KILL\" when he wants to make the final dicision.\n");
+			(*allclient)[cli_num[i]].hold_on_input();
+		}
+	int tgt=-1;
+	while(true){
+		for(int i=0;i<cli_num.size();i++)
+			if(isalive[i]){
+				std::string mes=(*allclient)[cli_num[i]].recv();
+				if(mes!=""){
+					for(int j=0;j<cli_num.size();j++)
+						if(isalive[j])
+							(*allclient)[cli_num[j]].print("Player "+std::to_string(cli_num[i]+1)+": "+mes+"\n");
+				}
+				if(cli_num[i]==lastalive&&mes=="KILL"){
+					(*allclient)[lastalive].turn_off_input();
+					(*allclient)[lastalive].print("Which one you want to kill?\nJust input the player number.(-1 represents you haven't decided. 0 represents you won't kill anyone)\n");
+					(*allclient)[lastalive].turn_on_input();	
+					tgt=atoi((*allclient)[lastalive].recv().c_str());
+					(*allclient)[lastalive].hold_on_input();
+				}
+			}
+		if(tgt>=0)
+			break;
+	}
+	for(int i=0;i<cli_num.size();i++)
+		if(isalive[i])
+			(*allclient)[cli_num[i]].turn_off_input();
+	for(int i=0;i<cli_num.size();i++){
+		if(isalive[i]){
+			(*allclient)[cli_num[i]].print("A decision has been made.\nChat ends.\n");
+			if(tgt>=1)
+				(*allclient)[cli_num[i]].print("You will kill Player "+std::to_string(tgt)+".\n");
+			else
+				(*allclient)[cli_num[i]].print("You won't kill anyone.\n");
+		}
+	}
+	if(tgt>=1)
+		writelog(WOLF,BITE,tgt-1);
     return true;
 }
 

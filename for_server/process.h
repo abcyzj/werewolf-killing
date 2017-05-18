@@ -51,6 +51,7 @@ namespace Werewolf
     {
     protected:
         bool func();
+		std::vector<int> cli_num;
     public:
         Killing(std::vector<Client> *cli);
     };

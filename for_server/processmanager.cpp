@@ -56,7 +56,7 @@ void ProcessManager::constructlist(){//基类的构造函�?!!
 void ProcessManager :: add(Character* cha, Client* cli){//设置关联�
     switch(cha -> type()){
         case 1:
-            _process[1] -> add_client(cli);
+            //_process[1] -> add_client(cli);
             break;
         case 2:
             break;
