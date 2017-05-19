@@ -141,7 +141,7 @@ Socket Socket::accept(double delay) const
 		int new_sock = ::accept(_socket, (sockaddr*) &new_addr, &len);
     if(new_sock < 0)
       throw std::runtime_error("accept wrong");
-		return Socket(_af, _type, _protocol, ::inet_ntoa(new_addr.sin_addr), new_addr.sin_port);
+		return Socket(newsock, _af, _type, _protocol, ::inet_ntoa(new_addr.sin_addr), new_addr.sin_port);
 	}
 	fd_set fds;
 	int sec = std::floor(delay);
@@ -174,7 +174,7 @@ int Socket::send(const std::string &msg, double delay) const
 {
 	std::string Umsg = GBK_To_UTF8(msg);
   if(delay == 0.0)
-    return :: send(_socket, Umsg.c_str(), Umsg.length() + 1, 0);
+    return :: send(_socket, Umsg.c_str(), Umsg.length(), 0);
 
   fd_set fds;
   int sec = std::floor(delay);
@@ -190,7 +190,7 @@ int Socket::send(const std::string &msg, double delay) const
     return -1;//-1表示发送超时
   default:
     if(FD_ISSET(_socket, &fds))
-      return ::send(_socket, Umsg.c_str(), Umsg.length() + 1, 0);
+      return ::send(_socket, Umsg.c_str(), Umsg.length(), 0);
     else
       return -1;
   }
@@ -252,7 +252,7 @@ std::string Socket::recv(double delay) const{
     else if(res == 0)
       return std::string("__SHUTDOWN");
     else
-      return UTF8_To_GBK(std::string(buf));
+      return UTF8_To_GBK(std::string(buf, res));
   }
 
   fd_set fds;
@@ -275,7 +275,7 @@ std::string Socket::recv(double delay) const{
       else if(res == 0)
         return std::string("__SHUTDOWN");
       else
-        return UTF8_To_GBK(std::string(buf));
+        return UTF8_To_GBK(std::string(buf, res));
     }
     else
       return std::string();
@@ -401,7 +401,7 @@ std::string Socket :: recv_from(const std::string& addr, int port, double delay)
     if(res < 0)
       return std::string();
     else
-      return UTF8_To_GBK(std::string(buf));
+      return UTF8_To_GBK(std::string(buf, res));
   }
 
   fd_set fds;
@@ -426,7 +426,7 @@ std::string Socket :: recv_from(const std::string& addr, int port, double delay)
       if(res < 0)
         return std::string();
       else
-        return UTF8_To_GBK(std::string(buf));
+        return UTF8_To_GBK(std::string(buf, res));
     }
 
     else
@@ -459,7 +459,7 @@ int Socket::send_to(const std::string& msg,const std::string &addr,int port){
 	_addr.sin_family=_af;
 	_addr.sin_addr.s_addr=inet_addr(addr.c_str());
 	_addr.sin_port=htons(port);
-	return ::sendto(_socket,Umsg.c_str(), Umsg.size()+1,0,(SOCKADDR*)&_addr,sizeof(_addr));
+	return ::sendto(_socket,Umsg.c_str(), Umsg.size(),0,(SOCKADDR*)&_addr,sizeof(_addr));
 }
 
 void Socket::close(){

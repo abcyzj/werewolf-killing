@@ -188,10 +188,10 @@ ClientExecutor::~ClientExecutor(){
 
 void ClientExecutor::add_order(std::string info){
   _order += info;
-  unsigned long a = info.find(';');
-  if(a != std::string::npos){
-    execute(_order.substr(0, a));
-    _order.erase(0, a + 1);
+  unsigned long sep_pos;
+  while((sep_pos = _order.find(';')) != std::string::npos){
+      execute(_order.substr(0, sep_pos));
+      _order.erase(0, sep_pos + 1);
   }
 }
 
@@ -235,7 +235,7 @@ void Messenger::do_commu(){
     else
       _info_mtx.unlock();
 
-    std::string order = _sock.recv(0.02);//尝试接受
+    std::string order = _sock.recv(0.0000001);//尝试接受
     if(order != ""){
       executor.add_order(order);
     }

@@ -150,7 +150,7 @@ Socket Socket::accept(double delay) const
     int new_sock = ::accept(_socket, (sockaddr*) &new_addr, &len);
     if(new_sock < 0)
       throw std::runtime_error("accept wrong");
-    return Socket(_af, _type, _protocol, ::inet_ntoa(new_addr.sin_addr), new_addr.sin_port);
+    return Socket(new_sock, _af, _type, _protocol, ::inet_ntoa(new_addr.sin_addr), new_addr.sin_port);
   }
   fd_set fds;
   int sec = std::floor(delay);
@@ -179,7 +179,7 @@ Socket Socket::accept(double delay) const
 int Socket::send(const std::string &msg, double delay) const
 {
   if(delay == 0.0)
-    return :: send(_socket, msg.c_str(), msg.length() + 1, 0);
+    return :: send(_socket, msg.c_str(), msg.length(), 0);
 
   fd_set fds;
   int sec = std::floor(delay);
@@ -195,7 +195,7 @@ int Socket::send(const std::string &msg, double delay) const
     return -1;//-1表示发送超时
   default:
     if(FD_ISSET(_socket, &fds))
-      return ::send(_socket, msg.c_str(), msg.length() + 1, 0);
+      return ::send(_socket, msg.c_str(), msg.length(), 0);
     else
       return -1;
   }
@@ -220,7 +220,7 @@ int Socket :: recv(char * buf, int len, double delay) const
     return -1;//-1表示发送超时
   default:
     if(FD_ISSET(_socket, &fds))
-      return ::send(_socket, buf, len, 0);
+      return ::recv(_socket, buf, len, 0);
     else
       return -1;
   }
@@ -235,7 +235,7 @@ std::string Socket::recv(double delay) const{
     else if(res == 0)
       return std::string("__SHUTDOWN");
     else
-      return std::string(buf);
+      return std::string(buf, res);
   }
 
   fd_set fds;
@@ -258,7 +258,7 @@ std::string Socket::recv(double delay) const{
       else if(res == 0)
         return std::string("__SHUTDOWN");
       else
-        return std::string(buf);
+        return std::string(buf, res);
     }
     else
       return std::string();
@@ -359,7 +359,7 @@ std::string Socket :: recv_from(const std::string& addr, int port, double delay)
     if(res < 0)
       return std::string();
     else
-      return std::string(buf);
+      return std::string(buf, res);
   }
 
   fd_set fds;
@@ -380,7 +380,7 @@ std::string Socket :: recv_from(const std::string& addr, int port, double delay)
       if(res < 0)
         return std::string();
       else
-        return std::string(buf);
+        return std::string(buf, res);
     }
 
     else
@@ -393,7 +393,7 @@ int Socket :: send_to (const std::string& msg, const std::string& addr, int port
   _addr.sin_family = _af;
   _addr.sin_addr.s_addr = inet_addr(addr.c_str());
   _addr.sin_port = port;
-  return ::sendto(_socket, msg.c_str(), msg.length() + 1, 0, (sockaddr*) &_addr, sizeof(_addr));
+  return ::sendto(_socket, msg.c_str(), msg.length(), 0, (sockaddr*) &_addr, sizeof(_addr));
 }
 
 std::string Socket::get_host_addr(){
