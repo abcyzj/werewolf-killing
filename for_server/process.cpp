@@ -967,7 +967,7 @@ bool Po_electing :: func()  //选举警长
     }
     if (fin_cnt == 1)   //  退水后只剩下一个人，直接设为警长
     {
-        for (int i = 0; i < (*allclient).size(); j++)//将竞选宣言发给所有玩家
+        for (int i = 0; i < (*allclient).size(); i++)//将竞选宣言发给所有玩家
         {
             (*allclient)[i].print("Only player " + std::to_string(fin_cnt) + " wants to be police\n");
         }
@@ -976,7 +976,7 @@ bool Po_electing :: func()  //选举警长
     }
     if (fin_cnt == (*allclient).size()) //退水后竞选的人还是所有人，直接没有警长
     {
-        for (int i = 0; i < (*allclient).size(); j++)//将竞选宣言发给所有玩家
+        for (int i = 0; i < (*allclient).size(); i++)//将竞选宣言发给所有玩家
         {
             (*allclient)[i].print("There is no police since you all want to be police\n");
         }
