@@ -1,4 +1,4 @@
-#include "client.h"
+#include "client_test.h"
 #include "character.h"
 #include "characterfac.h"
 #include "processmanager.h"
@@ -34,7 +34,7 @@ void Characterfac::produce(int wolf, int witch, int prophet, int hunter, int gua
 				_manager -> add(cha[sum], &client[randomnum]);
 				sum++;
 				client[randomnum].print("you are chosed to be werewolf");
-				client[randomnum].set_charac(cha[--sum]);
+				client[randomnum].set_charac(cha[sum - 1]);
 			}
 		}
 	}
@@ -49,7 +49,7 @@ void Characterfac::produce(int wolf, int witch, int prophet, int hunter, int gua
 				_manager -> add(cha[sum], &client[randomnum]);
 				sum++;
 				client[randomnum].print("you are chosed to be witch");
-				client[randomnum].set_charac(cha[--sum]);
+				client[randomnum].set_charac(cha[sum - 1]);
 			}
 		}
 	}
@@ -64,7 +64,7 @@ void Characterfac::produce(int wolf, int witch, int prophet, int hunter, int gua
 				_manager -> add(cha[sum], &client[randomnum]);
 				sum++;
 				client[randomnum].print("you are chosed to be prophet");
-				client[randomnum].set_charac(cha[--sum]);
+				client[randomnum].set_charac(cha[sum - 1]);
 			}
 		}
 	}
@@ -79,7 +79,7 @@ void Characterfac::produce(int wolf, int witch, int prophet, int hunter, int gua
 				_manager -> add(cha[sum], &client[randomnum]);
 				sum++;
 				client[randomnum].print("you are chosed to be guard");
-				client[randomnum].set_charac(cha[--sum]);
+				client[randomnum].set_charac(cha[sum - 1]);
 			}
 		}
 		}
@@ -94,7 +94,7 @@ void Characterfac::produce(int wolf, int witch, int prophet, int hunter, int gua
 				_manager -> add(cha[sum], &client[randomnum]);
 				sum++;
 				client[randomnum].print("you are chosed to be hunter");
-				client[randomnum].set_charac(cha[--sum]);
+				client[randomnum].set_charac(cha[sum - 1]);
 			}
 		}
 		}
@@ -109,7 +109,7 @@ void Characterfac::produce(int wolf, int witch, int prophet, int hunter, int gua
 				_manager -> add(cha[sum], &client[randomnum]);
 				sum++;
 				client[randomnum].print("you are chosed to be villager");
-				client[randomnum].set_charac(cha[--sum]);
+				client[randomnum].set_charac(cha[sum - 1]);
 			}
 		}
 		}

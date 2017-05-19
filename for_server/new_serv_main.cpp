@@ -38,7 +38,7 @@ int main()
 	}
 	Werewolf::ProcessManager test(&cl_vec);
 	Werewolf::Characterfac fac(&cl_vec, &test);
-	fac.set_client();
+	fac.set();
 	test.run();
 #ifdef WIN32
 	WSACleanup();
