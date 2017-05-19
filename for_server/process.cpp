@@ -1245,7 +1245,7 @@ void Chat :: left()
     int size = client.size();
     if(start_one==0)
     {
-        for(int m = size-1; m > 0; m--)
+        for(int m = size-1; m >= 0; m--)
         {
             if(! client[m].selfCharacter() -> is_dead())
             {
