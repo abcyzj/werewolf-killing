@@ -62,12 +62,10 @@ void Process::writelog(Cha doer,Act act,int geter)
     _log.push_back(logging{doer,act,geter});
 }
 
-Killing :: Killing(std::vector<Client> *cli) : Process(cli){
-	for(int i=0;i<allclient->size();i++)
-		if((*allclient)[i].selfCharacter()->type()==wolf){
-			add_client(&(*allclient)[i]);
-			cli_num.push_back(i);	
-		}
+Killing :: Killing(std::vector<Client> *cli) : Process(cli){}
+
+void Killing :: push_cli_num(int num){
+  cli_num.push_back(num);
 }
 
 Guarding :: Guarding(std::vector<Client> *cli) : Process(cli){}

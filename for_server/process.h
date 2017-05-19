@@ -54,6 +54,7 @@ namespace Werewolf
 		std::vector<int> cli_num;
     public:
         Killing(std::vector<Client> *cli);
+        void push_cli_num(int num);
     };
     
     class Witching : public Process//女巫

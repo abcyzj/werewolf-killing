@@ -3,7 +3,7 @@
 #include <cstdlib>
 using namespace Werewolf;
 
-int ProcessManager :: calibration(){//é€‰æ‹©å± è¾¹è¿˜æ˜¯å± åŸ
+int ProcessManager :: calibration(){//é€‰æ‹æ‹™± æ†è²‰„ô°ˆ¥ æ­£˜æ˜è‡ç‚³ åŸ
     (*_client)[0].print("please choose judge method : 1 for kill one side 2 for kill all");
     (*_client)[0].turn_on_input();
     std::string s = (*_client)[0].recv();
@@ -17,7 +17,7 @@ int ProcessManager :: calibration(){//é€‰æ‹©å± è¾¹è¿˜æ˜¯å± åŸ
     return 1;
 }
 
-void ProcessManager::constructlist(){//åŸºç±»çš„æ„é€ å‡½æ•?!!
+void ProcessManager::constructlist(){//åŸè‡ææ‹š„æ„é€ å‡éˆ£•?!!
     int msg = calibration();
     Process* pro = new Hunting(_client);
     Process* Pro = new Po_passing(_client);
@@ -37,12 +37,12 @@ void ProcessManager::constructlist(){//åŸºç±»çš„æ„é€ å‡½æ•?!!
     Process* _pro = new Chat(_client);
     Process* pro6 = new Voting(_client, pro, Pro, _pro,msg);
     _process.push_back(pro6);
-    //ä»¥ä¸Šæ˜¯å‚åŠ æµç¨‹çš„ç±?
+    //éšéŠ‹æ’˜©Šæ˜è‡¬‚åŠ ç˜šè”‹çš„è?
     _process.push_back(pro);
     _process.push_back(_pro);
     _process.push_back(Pro);
     
-    //ä»¥ä¸‹æ˜¯ä¸²æˆé“¾è¡¨çš„è¿‡ç¨‹
+    //éšéŠ‹æ’˜©‹æ˜è‡å‰›‘âŠ¥ˆé“æ›‡â€çš„æ“—ˆ‡è”‹
     for(int i = 0; i < 7; i++){
         if(i != 6)
             _process[i] -> set_next(_process[i + 1]);
@@ -53,10 +53,13 @@ void ProcessManager::constructlist(){//åŸºç±»çš„æ„é€ å‡½æ•?!!
 
 
 
-void ProcessManager :: add(Character* cha, Client* cli){//è®¾ç½®å…³è”æ€
+void ProcessManager :: add(Character* cha, Client* cli){//éœˆæ›„è”å‰–…å”¾”æ€
+  Werewolf::Killing *klpro;
     switch(cha -> type()){
         case 1:
-            //_process[1] -> add_client(cli);
+            _process[1] -> add_client(cli);
+            klpro = dynamic_cast<Werewolf::Killing*>(_process[1]);
+            klpro -> push_cli_num(cli - &(_client->at(0)));
             break;
         case 2:
             break;
@@ -92,7 +95,7 @@ void ProcessManager::Init(){
 }
 
 
-void ProcessManager :: shutdown(){//é€€å‡ºæ¸¸æˆ?
+void ProcessManager :: shutdown(){//é€€å‡èé‰™œæˆ?
     (*_client)[0].print("Press y to shut down the game");
     (*_client)[0].turn_on_input();
     if((*_client)[0].recv() == "y"){
@@ -104,7 +107,7 @@ void ProcessManager :: shutdown(){//é€€å‡ºæ¸¸æˆ?
     }
 }
 
-void ProcessManager::gameover(){//ç»“æŸä¹‹åçš„æ“ä½œï¼Œå…¬å¸ƒæ¸¸æˆç»“æœï¼Œå‘Šè¯‰æ‰€æœ‰äººç›¸åº”ç©å®¶çš„èº«ä»?
+void ProcessManager::gameover(){//è“æŸéŠ‹‹åçš„æ“é›¿œåš—Œå…ç ¸ƒçšœéŠ¢ˆè“æœåš—Œå‘Šéœ‚‰æ‰€æœ‰éˆå‰”®‡›é–åœˆ‚£”çæ‹™æŒèˆš„é å†½€»?
     for(auto i = 0; i < (*_client).size(); i++){
         (*_client)[i].print("game over!!!");
     }
@@ -187,7 +190,7 @@ void ProcessManager::gameover(){//ç»“æŸä¹‹åçš„æ“ä½œï¼Œå…¬å¸ƒæ¸¸æˆç»“æœï¼Œå
 }
 
 void ProcessManager :: run(){
-    Init();//åˆå§‹åŒ–ç”¨æˆ·å
+    Init();//åˆæ†ª‹åŒ–ç”å†½ˆç‘•
     for(auto i = 0; i < (*_client).size(); i++){
         (*_client)[i].print("game started!!!");
     }
@@ -214,7 +217,7 @@ void ProcessManager :: run(){
     while(1)
         for(int i = 0; i < 7; i++){
             if(i <= 4){
-                usepro -> begin();//ä¸çŸ¥é“æ˜¯ä¸æ˜¯VCçš„åŸå› ï¼Œè¿™ä¸ªæ˜¯ä¸æ˜¯æœ‰é”™å•Šï¼?
+                usepro -> begin();//éŠçŸéš¿“æ˜è‡æ†Œ›æ˜ç‹ç˜ çš„åŸå› åš—Œæ“—ˆ™éŠèŠ£˜è‡æ†Œ›æ˜èˆ€œ‰é”™å•Šåš—?
                 usepro = usepro -> next();
             }
             else{
