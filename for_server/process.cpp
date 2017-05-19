@@ -1027,7 +1027,7 @@ bool Po_electing :: func()  //选举警长
             std::string words = (*allclient)[rep[i] - 1].recv();
             for (int j = 0; j < (*allclient).size(); j++)
             {
-                (*allclient)[j].print(words);
+                (*allclient)[j].print("words from Player " + std::to_string(rep[i]) + " is: " + words);
             }
         }
         //   for (int i = 0; i < cnt; i++)
