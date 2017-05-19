@@ -142,6 +142,14 @@ void Characterfac::set_client(int wolf, int witch, int prophet, int hunter, int 
 }
 
 void Characterfac::set(){
+	if(_client -> size() < 3){
+		for(int i = 0; i < _client -> size(); i++){
+			(*_client)[i].print("You have to get more people to start the game! At least 3");
+			(*_client)[i].print("Please quit");
+		}
+		exit(0);
+	}
+	else{
 	(*_client)[0].print("do you want to set the characters yourselves? print y for Yes and n for No");
 	(*_client)[0].turn_on_input();
 	std::string s = (*_client)[0].recv();
@@ -157,6 +165,7 @@ void Characterfac::set(){
 	}
 	else{
 		set_client();
+	}
 	}
 }
 
