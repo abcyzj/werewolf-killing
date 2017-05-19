@@ -1183,7 +1183,7 @@ void Chat :: read()//Ëé∑Âèñdead_num,dead_player[],
 void Chat :: right()
 {
     read();
-    for(int m=start_one+1; m < size; m++)
+    for(int m=start_one; m < size; m++)
     {
         if(! client[m].selfCharacter() -> is_dead())
         {
@@ -1246,7 +1246,7 @@ void Chat :: left()
     }
     else
     {
-        for(int m = start_one-1; m>=0 ; m--)
+        for(int m = start_one; m>=0 ; m--)
         {
             if(! client[m].selfCharacter() -> is_dead())
             {
@@ -1286,7 +1286,7 @@ void Chat :: left()
 
 bool Chat :: func()
 {
-    for(int i = 0;i < (*allclient).size(); i++)
+    for(int i = 0; i < (*allclient).size(); i++)
         if(!(*allclient)[i].selfCharacter() -> is_dead())
             (*allclient)[i].print("Daytime begins.\n");
     read();
