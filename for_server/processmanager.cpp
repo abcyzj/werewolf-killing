@@ -5,7 +5,7 @@
 #include <chrono>
 using namespace Werewolf;
 
-int ProcessManager :: calibration(){//é€‰æ‹æ‹™± æ†é‰„ç¾ºˆ¥ ç”‡£˜æ˜è‡ç‚³ åŸ
+int ProcessManager :: calibration(){//é€‰æ‹æ‹™± æ†é‰„è¢ºˆ¥ ç”‡£˜æ˜è‡ç‚³ åŸ
     (*_client)[0].print("please choose judge method : 1 for kill one side 2 for kill all");
     (*_client)[0].turn_on_input();
     std::string s = (*_client)[0].recv();
@@ -105,6 +105,7 @@ void ProcessManager :: shutdown(){//é€€å‡èé‰™œæˆ?
     if((*_client)[0].recv() == "y"){
         for(auto i = 0; i < (*_client).size(); i++){
             (*_client)[i].print("exited");
+            (*_client)[i].shut_down();
         }
         //(*_client)[0].turn_off_input();
         exit(0);
