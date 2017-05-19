@@ -959,7 +959,7 @@ bool Po_electing :: func()  //选举警长
     }
     if (fin_cnt == 0)
     {
-        for (int i = 0; i < (*allclient).size(); j++)//将竞选宣言发给所有玩家
+        for (int i = 0; i < (*allclient).size(); i++)//将竞选宣言发给所有玩家
         {
             (*allclient)[i].print("No one want to police\n");
         }
