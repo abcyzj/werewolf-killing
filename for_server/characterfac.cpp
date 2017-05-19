@@ -159,7 +159,8 @@ void Characterfac::set(){
 		for(int i = 1; i <= 6; i++){
 			(*_client)[0].turn_on_input();
 			s = (*_client)[0].recv();
-			chra[i] = s[1] - '0';
+      std::cout << s << std::endl;
+			chra[i] = s[0] - '0';
 		}
 		set_client(chra[1], chra[2], chra[3], chra[4], chra[5], chra[6]);
 	}

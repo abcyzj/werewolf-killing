@@ -1,9 +1,11 @@
 #include "processmanager.h"
 #include <string>
 #include <cstdlib>
+#include <thread>
+#include <chrono>
 using namespace Werewolf;
 
-int ProcessManager :: calibration(){//é€‰æ‹æ‹™± æ†è²‰„ô°ˆ¥ æ­£˜æ˜è‡ç‚³ åŸ
+int ProcessManager :: calibration(){//é€‰æ‹æ‹™± æ†é‰„ç¾ºˆ¥ ç”‡£˜æ˜è‡ç‚³ åŸ
     (*_client)[0].print("please choose judge method : 1 for kill one side 2 for kill all");
     (*_client)[0].turn_on_input();
     std::string s = (*_client)[0].recv();
@@ -79,6 +81,8 @@ void ProcessManager :: add(Character* cha, Client* cli){//éœˆæ›„è”å‰–…å”¾”æ€
 }
 
 void ProcessManager::Init(Client* cli){
+  std::cout << "Initing" << std::endl;
+  std::this_thread::sleep_for(std::chrono::milliseconds(200));
     cli -> print("input your nickname");
     cli -> turn_on_input();
     std::string name = cli -> recv();

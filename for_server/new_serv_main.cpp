@@ -40,7 +40,7 @@ int main()
 	Werewolf::Characterfac fac(&cl_vec, &test);
 	fac.set();
 	test.run();
-#ifdef WIN32
+#ifdef _WIN32
 	WSACleanup();
 #endif
 	return 0;
