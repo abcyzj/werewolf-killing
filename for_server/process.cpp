@@ -957,10 +957,30 @@ bool Po_electing :: func()  //选举警长
             fin_rank = num[i];
         }
     }
-    if (fin_cnt == 0) return true;  //退水后无人竞选
+    if (fin_cnt == 0)
+    {
+        for (int i = 0; i < (*allclient).size(); j++)//将竞选宣言发给所有玩家
+        {
+            (*allclient)[i].print("No one want to police\n");
+        }
+        return true;  //退水后无人竞选
+    }
     if (fin_cnt == 1)   //  退水后只剩下一个人，直接设为警长
     {
+        for (int i = 0; i < (*allclient).size(); j++)//将竞选宣言发给所有玩家
+        {
+            (*allclient)[i].print("Only player " + std::to_string(fin_cnt) + " wants to be police\n");
+        }
         have_police = fin_rank;
+        return true;
+    }
+    if (fin_cnt == (*allclient).size()) //退水后竞选的人还是所有人，直接没有警长
+    {
+        for (int i = 0; i < (*allclient).size(); j++)//将竞选宣言发给所有玩家
+        {
+            (*allclient)[i].print("There is no police since you all want to be police\n");
+        }
+        have_police = -1;
         return true;
     }
     
@@ -1183,7 +1203,7 @@ void Chat :: read()//Ëé∑Âèñdead_num,dead_player[],
 void Chat :: right()
 {
     read();
-    for(int m=start_one; m < size; m++)
+    for(int m=start_one+1; m < size; m++)
     {
         if(! client[m].selfCharacter() -> is_dead())
         {
@@ -1200,7 +1220,7 @@ void Chat :: right()
             }
         }
     }
-    for(int m = 0 ; m <start_one ; m++)
+    for(int m = 0 ; m <=start_one ; m++)
     {
         if(! client[m].selfCharacter() -> is_dead())
         {
@@ -1246,7 +1266,7 @@ void Chat :: left()
     }
     else
     {
-        for(int m = start_one; m>=0 ; m--)
+        for(int m = start_one-1; m>=0 ; m--)
         {
             if(! client[m].selfCharacter() -> is_dead())
             {
@@ -1263,7 +1283,7 @@ void Chat :: left()
                 }
             }
         }
-        for(int m = size-1; m >=start_one+1 ; m--)
+        for(int m = size-1; m >=start_one ; m--)
         {
             if(! client[m].selfCharacter() -> is_dead())
             {
