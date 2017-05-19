@@ -2,7 +2,7 @@
 #define PROCESS_H
 
 #include "character.h"
-#include "client_test.h"
+#include "client.h"
 #include <vector>
 #include <cstring>
 namespace Werewolf
