@@ -97,6 +97,10 @@ bool Guarding :: func()
         _rel_cli[0] -> print("Please input the player number you want to guard(-1 for not guard anyone: \n");
         _rel_cli[0] -> turn_on_input();
         std::string res1 = _rel_cli[0]->recv();
+        if (res1 == "-1")
+        {
+            return true;
+        }
         if ((*allclient)[atoi(res1.c_str()) - 1].selfCharacter() -> type() ==
             dynamic_cast<Guard*>(_rel_cli[0] -> selfCharacter()) -> last())
         {
@@ -297,20 +301,20 @@ bool Voting::func(){
     }
     voted+=".\n";
     if(have_police>=0){//√¶√ò‚â•¬ßœÄ√à‚àÜ¬?
-        std::cout << have_police << std::endl;
         (*allclient)[have_police - 1].print("Please vote a Player!\n"+voted);
         (*allclient)[have_police - 1].turn_on_input();
-        std::string pt=(*allclient)[have_police].recv();
-        while(!isalive[atoi(pt.c_str())-1]){
+        std::string pt = (*allclient)[have_police - 1].recv();
+        while(!isalive[atoi(pt.c_str())-1])
+        {
             (*allclient)[have_police - 1].print("Please choose another Player!, he is dead\n");
             (*allclient)[have_police - 1].turn_on_input();
-            pt=(*allclient)[have_police - 1].recv();
+            pt = (*allclient)[have_police - 1].recv();
         }
-        voteinfo[have_police]=atoi(pt.c_str())-1;
+        voteinfo[have_police] = atoi(pt.c_str())-1;
         num[atoi(pt.c_str())-1]+=1.5;
     }
     for(int i=0;i<n;i++)//‚àÜ‚Ä∞‚Äù‚Ä°¬ª√Ä√ï‚àÇ‚àÜ¬±
-        if(isalive[i]&&i!=have_police){
+        if(isalive[i] && i!=have_police - 1){
             (*allclient)[i].print("Please vote!\n"+voted);
             if(have_police>=0)
                 (*allclient)[i].print("The Police votes to Player "+std::to_string(voteinfo[have_police]+1)+".\n");
