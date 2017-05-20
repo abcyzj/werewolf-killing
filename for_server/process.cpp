@@ -94,7 +94,7 @@ bool Guarding :: func()
     dynamic_cast<Guard*>(_rel_cli[0] -> selfCharacter()) -> who_i_guard(-1);    //Â∞ÜÂÆàÂç´ÁöÑ‰∫∫ÁΩÆ‰∏?1
     if(!_rel_cli[0] -> selfCharacter() -> is_dead())
     {
-        _rel_cli[0] -> print("Please input the player number you want to guard:\n");
+        _rel_cli[0] -> print("Please input the player number you want to guard(-1 for not guard anyone: \n");
         _rel_cli[0] -> turn_on_input();
         std::string res1 = _rel_cli[0]->recv();
         if ((*allclient)[atoi(res1.c_str()) - 1].selfCharacter() -> type() ==
@@ -122,49 +122,6 @@ bool Killing::func(){
    for(int i=0;i<allclient->size();i++)
         if(!(*allclient)[i].selfCharacter()->is_dead())
             (*allclient)[i].print("Night Falls.\n");
-   // int cnt=0;
-   // int num=-1;
-   // bool flag=true;
-	/*
-    while(true){
-        cnt++;
-        for(int i=0;i<_rel_cli.size();i++)
-            if(isalive[i]){
-                _rel_cli[i] -> print("please chat with you partner:");
-                _rel_cli[i]->turn_on_input();
-                std::string words=_rel_cli[i]->recv();
-                for(int j=0;j<_rel_cli.size();j++)
-                    if(isalive[j])
-                        _rel_cli[j]->print(words);
-            }
-        for(int i=0;i<_rel_cli.size();i++)
-            if(isalive[i]){
-                _rel_cli[i]->print("Please input the player number you want to kill.\nPlease reach a consensus!!!\n");
-                _rel_cli[i]->turn_on_input();
-                std::string tgt=_rel_cli[i]->recv();
-                if(i==0)
-                    num=atoi(tgt.c_str())-1;
-                else if(num!=atoi(tgt.c_str())-1)
-                    flag=false;
-            }
-        if(flag){
-            writelog(WOLF,BITE,num);
-            break;
-        }
-        else{
-            flag=true;
-            num=-1;
-            for(int i=0;i<_rel_cli.size();i++)
-                if(isalive[i])
-                    _rel_cli[i]->print("You don't have the same target.\nYou have only "+std::to_string(5-cnt)+" chances\n");
-        }
-        if(cnt>=5){
-            for(int i=0;i<_rel_cli.size();i++)
-                if(isalive[i])
-                    _rel_cli[i]->print("No chance left.You didn't kill anyone.\n");
-            break;
-        }
-    }*/
 	bool isalive[cli_num.size()];
 	int lastalive=-1;
 	for(int i=0;i<cli_num.size();i++){
@@ -191,7 +148,7 @@ bool Killing::func(){
 					(*allclient)[lastalive].print("Which one you want to kill?\nJust input the player number.(-1 represents you haven't decided. 0 represents you won't kill anyone)\n");
 					(*allclient)[lastalive].turn_on_input();	
 					tgt=atoi((*allclient)[lastalive].recv().c_str());
-					(*allclient)[lastalive].hold_on_input();
+					//(*allclient)[lastalive].hold_on_input(); //单机测试的时候注释
 				}
 			}
 		if(tgt>=0)
@@ -210,7 +167,7 @@ bool Killing::func(){
 		}
 	}
 	if(tgt>=1)
-		writelog(WOLF,BITE,tgt-1);
+    writelog(WOLF,BITE,tgt-1);
     return true;
 }
 
@@ -232,9 +189,18 @@ bool Witching :: func() //女巫使用毒药或者解药
         _rel_cli[0] -> print("You have " + std::to_string(pos_num) + " poison " + std :: to_string(anti_num) + " antidote\n");
         if (pos_num == 0 && anti_num == 0) return true;
         //ËØªÊó•ÂøóÂëäËØâÂ•≥Â∑´Ë∞ÅÊ≠ªË∞ÅÊ¥ª
-        if ((*readlog())[readlog() -> size() - 1]._act == 0)
+        int have_dead = -1;
+        for(int i = readlog() -> size()-1; i >= 0; i--)
         {
-            have_dead = (*readlog())[readlog() -> size() - 1]._geter;
+            if((*readlog())[i]._act == BITE)
+            {
+                have_dead = (*readlog())[i]._geter;
+                break;
+            }
+        }
+        
+        if (have_dead >= 0)
+        {
             _rel_cli[0] -> print("Player " + std::to_string(have_dead + 1) + " have been killed by werewolves\n");
         }
         else _rel_cli[0] -> print("no one dead\n");

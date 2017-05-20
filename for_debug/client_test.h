@@ -41,17 +41,17 @@ namespace Werewolf{
     //void end_thread();//关闭通信进程(放在private里是否更好？)
     //void send(const std::string&, double = 0.0);
        */
-    void print(std::string);//命令客户端打印信息
-    void turn_on_input();//命令客户端打开输入读取,只读取一次
-  //  void hold_on_input();//命令客户端打开输入读取，直到调用turn_off_input为止
-  //  void turn_off_input();//命令客户端关闭输入读取
+      void print(std::string);//命令客户端打印信息
+      void turn_on_input();//命令客户端打开输入读取,只读取一次
+      void hold_on_input();//命令客户端打开输入读取，直到调用turn_off_input为止
+      void turn_off_input();//命令客户端关闭输入读取
   //  void shut_down();//命令客户端断开连接
       bool available();//返回当前Client是否可用
-    std::string recv();//从客户端接受信息
-    void set_charac(Character*);//绑定角色类
-    Character* selfCharacter();
-    void changename(std::string);
-    std::string getnickname();
+      std::string recv();//从客户端接受信息
+      void set_charac(Character*);//绑定角色类
+      Character* selfCharacter();
+      void changename(std::string);
+      std::string getnickname();
       Client(int);  //传入成员编号
   };
 }

@@ -105,7 +105,7 @@ void ProcessManager :: shutdown(){//é€€å‡èé‰™œæˆ?
     if((*_client)[0].recv() == "y"){
         for(auto i = 0; i < (*_client).size(); i++){
             (*_client)[i].print("exited");
-            (*_client)[i].shut_down();
+            //(*_client)[i].shut_down();
         }
         //(*_client)[0].turn_off_input();
         exit(0);

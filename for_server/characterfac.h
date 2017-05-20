@@ -2,7 +2,7 @@
 #define CHARACTERFAC_H
 
 #include <vector>
-#include "client.h"
+#include "client_test.h"
 #include "character.h"
 #include "process.h"
 

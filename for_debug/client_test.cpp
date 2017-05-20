@@ -45,3 +45,13 @@ void Client :: print(std::string s)
     std::cout << "Client " << _rank << " ";
     std::cout << s << std::endl;
 }
+
+void Client :: hold_on_input()
+{
+    std::cin >> ans;
+}
+
+void Client :: turn_off_input()
+{
+    
+}
